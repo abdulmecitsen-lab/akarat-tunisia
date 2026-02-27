@@ -1,40 +1,481 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>عقارات تونس | Akarat Tunisia</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<style>
-  :root {
-    --primary: #C4953A;
-    --primary-dark: #9E7830;
-    --primary-light: #F0D49A;
-    --dark: #1A1208;
-    --dark2: #2C1F0A;
-    --mid: #4A3518;
-    --surface: #FDF6EB;
-    --surface2: #F5E8CC;
-    --text: #2C1F0A;
-    --text-light: #7A6040;
-    --white: #FFFFFF;
-    --success: #2D8A4E;
-    --error: #C0392B;
-    --shadow: 0 4px 24px rgba(196,149,58,0.15);
-    --radius: 16px;
-    --radius-sm: 8px;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    font-family: 'Cairo', 'Tajawal', sans-serif;
-    background: var(--surface);
-    color: var(--text);
-    min-height: 100vh;
-    direction: rtl;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Akarat Tunisia - Hayalindeki Ev</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            direction: ltr; /* Türkçe için soldan sağa */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        /* Header */
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 32px;
+            margin-bottom: 32px;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 24px;
+        }
+
+        /* İstatistik Kartları */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px 16px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        /* Bölüm Başlığı */
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title span {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Boş İlan Mesajı */
+        .empty-listings {
+            background: white;
+            border-radius: 24px;
+            padding: 60px 20px;
+            text-align: center;
+            border: 2px dashed #cbd5e1;
+            margin-bottom: 40px;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-listings h3 {
+            font-size: 1.5rem;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        .empty-listings p {
+            color: #64748b;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        /* İlan Ekleme Butonu - Sabit */
+        .fab-button {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0f172a;
+            color: white;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 1000;
+            text-decoration: none;
+        }
+
+        .fab-button:hover {
+            background: #1e293b;
+            transform: scale(1.1);
+        }
+
+        /* Modal (Açılır Pencere) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 32px;
+            padding: 32px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h2 {
+            font-size: 1.8rem;
+            color: #0f172a;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #64748b;
+            padding: 0 8px;
+        }
+
+        /* Form Stilleri */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #334155;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #0f172a;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .image-upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .image-upload-area:hover {
+            border-color: #0f172a;
+            background: #f8fafc;
+        }
+
+        .submit-button {
+            background: #0f172a;
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .submit-button:hover {
+            background: #1e293b;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 40px;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 2rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .modal-content { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Bölümü -->
+        <div class="hero">
+            <h1>Hayalindeki Evi Bul</h1>
+            <p>Tunus'un her yerinden binlerce emlak ilanı</p>
+        </div>
+
+        <!-- İstatistikler (Sıfırlanmış) -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">0</div>
+                <div class="stat-label">Aktif İlan</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">0</div>
+                <div class="stat-label">Şehir</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">0</div>
+                <div class="stat-label">Üye</div>
+            </div>
+        </div>
+
+        <!-- Son Eklenen İlanlar (Boş) -->
+        <div class="section-title">
+            📢 Son Eklenen İlanlar
+            <span>0 ilan</span>
+        </div>
+
+        <div class="empty-listings">
+            <div class="empty-icon">🏡</div>
+            <h3>Henüz ilan eklenmemiş</h3>
+            <p>İlk ilanı sen ekle! Sağ alttaki butona tıkla.</p>
+        </div>
+
+        <!-- Footer (isteğe bağlı) -->
+        <div class="footer">
+            © 2024 Akarat Tunisia - Tüm hakları saklıdır.
+        </div>
+    </div>
+
+    <!-- Sabit İlan Ekleme Butonu -->
+    <button class="fab-button" id="addListingBtn">+</button>
+
+    <!-- İlan Ekleme Modal'ı (Popup) -->
+    <div class="modal" id="listingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>➕ Yeni İlan Ekle</h2>
+                <button class="close-button" id="closeModalBtn">&times;</button>
+            </div>
+
+            <form id="listingForm">
+                <!-- İlan Türü -->
+                <div class="form-group">
+                    <label>İlan Türü</label>
+                    <select id="listingType" required>
+                        <option value="">Seçiniz</option>
+                        <option value="satilik">Satılık</option>
+                        <option value="kiralik">Kiralık</option>
+                    </select>
+                </div>
+
+                <!-- Başlık -->
+                <div class="form-group">
+                    <label>İlan Başlığı</label>
+                    <input type="text" id="title" placeholder="Örn: Deniz manzaralı lüks daire" required>
+                </div>
+
+                <!-- Fiyat -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fiyat</label>
+                        <input type="number" id="price" placeholder="280000" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Para Birimi</label>
+                        <select id="currency">
+                            <option value="DT">Tunus Dinarı (DT)</option>
+                            <option value="TL">Türk Lirası (TL)</option>
+                            <option value="EUR">Euro (€)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Konum -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Şehir</label>
+                        <input type="text" id="city" placeholder="Tunus" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Semt/Bölge</label>
+                        <input type="text" id="district" placeholder="Hay Nasr">
+                    </div>
+                </div>
+
+                <!-- Detaylar -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Oda Sayısı</label>
+                        <input type="number" id="rooms" min="1" value="3">
+                    </div>
+                    <div class="form-group">
+                        <label>Banyo Sayısı</label>
+                        <input type="number" id="bathrooms" min="1" value="2">
+                    </div>
+                    <div class="form-group">
+                        <label>Alan (m²)</label>
+                        <input type="number" id="area" min="1" value="110">
+                    </div>
+                </div>
+
+                <!-- Açıklama -->
+                <div class="form-group">
+                    <label>Açıklama</label>
+                    <textarea id="description" rows="3" placeholder="Emlak hakkında detaylı bilgi..."></textarea>
+                </div>
+
+                <!-- Fotoğraf Yükleme (simüle) -->
+                <div class="form-group">
+                    <label>Fotoğraflar</label>
+                    <div class="image-upload-area" id="imageUploadArea">
+                        📷 Fotoğraf eklemek için tıkla<br>
+                        <small style="color: #94a3b8;">(Şu an sadece önizleme, gerçek yükleme için backend gerekir)</small>
+                    </div>
+                </div>
+
+                <!-- İletişim -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>İsim</label>
+                        <input type="text" id="contactName" placeholder="Adın Soyadın" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefon</label>
+                        <input type="tel" id="contactPhone" placeholder="+216 ..." required>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-button">İlanı Yayınla</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Basit JavaScript -->
+    <script>
+        // Modal işlemleri
+        const modal = document.getElementById('listingModal');
+        const addBtn = document.getElementById('addListingBtn');
+        const closeBtn = document.getElementById('closeModalBtn');
+
+        addBtn.onclick = function() {
+            modal.classList.add('active');
+        }
+
+        closeBtn.onclick = function() {
+            modal.classList.remove('active');
+        }
+
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.classList.remove('active');
+            }
+        }
+
+        // Form gönderimi (şimdilik sadece uyarı verir)
+        document.getElementById('listingForm').onsubmit = function(e) {
+            e.preventDefault();
+            alert('İlanın alındı! (Şu an sadece test amaçlı, veri tabanına kaydedilmiyor)');
+            modal.classList.remove('active');
+            // İleride burada ilanları listeye ekleme mantığı kurulabilir
+        }
+
+        // Fotoğraf yükleme alanı (simüle)
+        document.getElementById('imageUploadArea').onclick = function() {
+            alert('Fotoğraf yükleme özelliği şu an aktif değil. İlanlarını manuel olarak HTML\'e ekleyebilirsin.');
+        }
+    </script>
+</body>
+</html>  }
 
   /* ===== NAVBAR ===== */
   nav {
