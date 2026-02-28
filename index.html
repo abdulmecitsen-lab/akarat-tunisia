@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         * {
             margin: 0;
@@ -162,17 +164,8 @@
             font-size: 18px;
             color: #2c3e50;
         }
-        #logout-btn {
-            background: none;
-            border: none;
-            color: #e74c3c;
-            cursor: pointer;
-            margin-left: 5px;
-            font-size: 14px;
-        }
         .hidden { display: none !important; }
 
-        /* Admin badge */
         .admin-badge {
             background: #f1c40f;
             color: #2c3e50;
@@ -182,7 +175,6 @@
             margin-left: 5px;
         }
 
-        /* Dropdown */
         .user-dropdown {
             position: relative;
             display: inline-block;
@@ -217,7 +209,7 @@
             display: block;
         }
 
-        /* Filtre paneli (gelişmiş) */
+        /* Filtre paneli */
         .filter-panel {
             background: white;
             border-radius: 12px;
@@ -402,6 +394,16 @@
         }
         .ad-actions button:hover { color: #2c3e50; }
         .ad-actions .delete-btn:hover { color: #e74c3c; }
+        .favorite-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #7c8b9a;
+        }
+        .favorite-btn.active {
+            color: #e74c3c;
+        }
 
         /* Modal */
         .modal {
@@ -465,6 +467,13 @@
             border: 1px solid #e9ecef;
         }
 
+        /* Harita */
+        #map {
+            height: 200px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
         /* Form */
         .form-section {
             background: white;
@@ -526,6 +535,25 @@
             border-radius: 6px;
             object-fit: cover;
             border: 1px solid #dde4e9;
+            position: relative;
+        }
+        .preview-image-wrapper {
+            position: relative;
+        }
+        .remove-photo {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
         }
 
         .btn {
@@ -554,7 +582,6 @@
             background: #e74c3c;
             color: white;
         }
-        .btn-danger:hover { background: #c0392b; }
 
         .footer {
             margin-top: 50px;
@@ -588,8 +615,8 @@
                 <li><a onclick="showPage('home'); setActiveMenu('home')" id="menu-home" class="active">Ana Sayfa</a></li>
                 <li><a onclick="showPage('for-sale'); setActiveMenu('for-sale')" id="menu-for-sale">Satılıklar</a></li>
                 <li><a onclick="showPage('for-rent'); setActiveMenu('for-rent')" id="menu-for-rent">Kiralıklar</a></li>
+                <li><a onclick="showPage('favorites'); setActiveMenu('favorites')" id="menu-favorites">Favoriler</a></li>
                 <li><a onclick="showPage('about'); setActiveMenu('about')" id="menu-about">Hakkımızda</a></li>
-                <li><a onclick="showPage('city'); setActiveMenu('city')" id="menu-city">Şehir Tanıtımı</a></li>
                 <li><a onclick="showPage('contact'); setActiveMenu('contact')" id="menu-contact">İletişim</a></li>
                 <li><a onclick="showPage('admin'); setActiveMenu('admin')" id="menu-admin" class="hidden">Admin</a></li>
             </ul>
@@ -611,6 +638,8 @@
                         <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
                         <div class="dropdown-content">
                             <a onclick="showPage('myads')"><i class="fas fa-list"></i> İlanlarım</a>
+                            <a onclick="showPage('favorites')"><i class="fas fa-heart"></i> Favorilerim</a>
+                            <a onclick="showPage('messages')"><i class="fas fa-envelope"></i> Mesajlarım</a>
                             <a onclick="showPage('profile')"><i class="fas fa-user-circle"></i> Profil</a>
                             <a id="admin-menu-item" onclick="showPage('admin')" class="hidden"><i class="fas fa-cog"></i> Admin Paneli</a>
                             <a onclick="logout()"><i class="fas fa-sign-out-alt"></i> Çıkış</a>
@@ -620,7 +649,7 @@
             </div>
         </header>
 
-        <!-- Gelişmiş Filtre Paneli -->
+        <!-- Filtre Paneli (Sadece ilan sayfalarında görünür) -->
         <div id="filter-panel" class="filter-panel">
             <div class="filter-grid">
                 <div class="filter-group">
@@ -651,11 +680,11 @@
                     <label>Oda Sayısı</label>
                     <select id="filter-rooms">
                         <option value="">Tümü</option>
-                        <option value="1">1+0</option>
-                        <option value="2">2+1</option>
-                        <option value="3">3+1</option>
-                        <option value="4">4+2</option>
-                        <option value="5">5+ üzeri</option>
+                        <option value="1+0">1+0</option>
+                        <option value="2+1">2+1</option>
+                        <option value="3+1">3+1</option>
+                        <option value="4+2">4+2</option>
+                        <option value="5+">5+</option>
                     </select>
                 </div>
                 <div class="filter-group">
@@ -663,10 +692,10 @@
                     <select id="filter-age">
                         <option value="">Tümü</option>
                         <option value="0">Sıfır</option>
-                        <option value="5">0-5 yıl</option>
-                        <option value="10">5-10 yıl</option>
-                        <option value="20">10-20 yıl</option>
-                        <option value="21">20+ yıl</option>
+                        <option value="0-5">0-5 yıl</option>
+                        <option value="5-10">5-10 yıl</option>
+                        <option value="10-20">10-20 yıl</option>
+                        <option value="20+">20+ yıl</option>
                     </select>
                 </div>
                 <div class="filter-group">
@@ -674,9 +703,9 @@
                     <select id="filter-floor">
                         <option value="">Tümü</option>
                         <option value="ground">Zemin</option>
-                        <option value="1">1-3</option>
-                        <option value="4">4-7</option>
-                        <option value="8">8+</option>
+                        <option value="1-3">1-3</option>
+                        <option value="4-7">4-7</option>
+                        <option value="8+">8+</option>
                     </select>
                 </div>
                 <div class="filter-group">
@@ -739,7 +768,15 @@
             <div class="ads-list" id="for-rent-container"></div>
         </div>
 
-        <!-- Hakkımızda Sayfası -->
+        <!-- Favoriler Sayfası -->
+        <div id="favorites-page" class="page-section hidden">
+            <div class="section-header">
+                <h2 class="section-title">Favori İlanlarım</h2>
+            </div>
+            <div class="ads-list" id="favorites-container"></div>
+        </div>
+
+        <!-- Hakkımızda -->
         <div id="about-page" class="page-section hidden">
             <div style="background: white; border-radius: 12px; padding: 40px; text-align: center;">
                 <h2>Hakkımızda</h2>
@@ -747,19 +784,12 @@
             </div>
         </div>
 
-        <!-- Şehir Tanıtımı Sayfası -->
-        <div id="city-page" class="page-section hidden">
-            <div style="background: white; border-radius: 12px; padding: 40px; text-align: center;">
-                <h2>Şehir Tanıtımı</h2>
-                <p style="margin-top: 20px; color: #5f6b7a;">Tunus, Akdeniz'in incisi, tarihi ve kültürel zenginlikleriyle büyüleyici bir ülke. Başkent Tunus'tan sahillerdeki Sidi Bou Said'e kadar her şehirde size özel emlak seçenekleri sunuyoruz.</p>
-            </div>
-        </div>
-
-        <!-- İletişim Sayfası -->
+        <!-- İletişim -->
         <div id="contact-page" class="page-section hidden">
             <div style="background: white; border-radius: 12px; padding: 40px; text-align: center;">
                 <h2>İletişim</h2>
                 <p style="margin-top: 20px; color: #5f6b7a;">📞 +216 12 345 67 89<br>📧 info@akarattunisia.com<br>📍 Tunus, Tunus</p>
+                <div id="contact-map" style="height: 200px; margin-top: 20px;"></div>
             </div>
         </div>
 
@@ -769,6 +799,14 @@
                 <h2 class="section-title" id="myads-title">İlanlarım</h2>
             </div>
             <div class="ads-list" id="myads-container"></div>
+        </div>
+
+        <!-- Mesajlar Sayfası -->
+        <div id="messages-page" class="page-section hidden">
+            <div class="section-header">
+                <h2 class="section-title">Mesajlarım</h2>
+            </div>
+            <div class="ads-list" id="messages-container"></div>
         </div>
 
         <!-- Profil Sayfası -->
@@ -800,8 +838,8 @@
             </div>
         </div>
 
-        <!-- İlan Ekleme/Düzenleme Formu (Gelişmiş) -->
-        <section class="form-section">
+        <!-- İlan Ekleme/Düzenleme Formu (Sadece ilgili sayfalarda görünecek) -->
+        <section id="ad-form-section" class="form-section">
             <h2 class="section-title" id="add-ad-text">Yeni İlan Ekle</h2>
             <input type="hidden" id="editing-id" value="">
             <div class="form-grid">
@@ -840,7 +878,6 @@
                     <input type="number" class="form-control" id="adArea" placeholder="Örn: 120">
                 </div>
 
-                <!-- Gelişmiş özellikler -->
                 <div class="form-group full-width">
                     <label class="form-label" style="margin-top: 10px;">🏠 Detaylı Bilgiler</label>
                 </div>
@@ -913,11 +950,14 @@
             </div>
         </section>
 
-        <!-- Detay Modalı (iletişim bilgileri dahil) -->
+        <!-- Detay Modalı -->
         <div id="detail-modal" class="modal">
             <div class="modal-content">
                 <span class="close-modal" onclick="closeModal()">&times;</span>
-                <h2 id="modal-title"></h2>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2 id="modal-title"></h2>
+                    <button id="modal-favorite-btn" class="favorite-btn" onclick="toggleFavorite()"><i class="far fa-heart"></i></button>
+                </div>
                 <div id="modal-images" class="modal-image-gallery"></div>
                 <div id="modal-info" class="modal-info"></div>
                 <div id="modal-contact" class="contact-info hidden">
@@ -926,48 +966,68 @@
                     <p id="modal-contact-phone"></p>
                     <p id="modal-contact-email"></p>
                 </div>
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="showMessageModal()"><i class="fas fa-envelope"></i> Mesaj Gönder</button>
+                </div>
+                <div id="modal-map" style="height: 200px; margin-top: 20px;"></div>
             </div>
         </div>
 
-        <!-- Login Modal (Şifreli) -->
+        <!-- Mesaj Gönderme Modalı -->
+        <div id="message-modal" class="modal">
+            <div class="modal-content" style="max-width: 400px;">
+                <span class="close-modal" onclick="closeMessageModal()">&times;</span>
+                <h2>Mesaj Gönder</h2>
+                <div class="form-group">
+                    <label>Mesajınız</label>
+                    <textarea id="message-text" class="form-control" rows="4" placeholder="İlan sahibine iletmek istediğiniz mesaj..."></textarea>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="sendMessage()">Gönder</button>
+                    <button class="btn btn-secondary" onclick="closeMessageModal()">İptal</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Modal -->
         <div id="login-modal" class="modal">
             <div class="modal-content" style="max-width: 400px;">
                 <span class="close-modal" onclick="closeLoginModal()">&times;</span>
-                <h2 style="margin-bottom: 20px;">Giriş Yap</h2>
+                <h2>Giriş Yap</h2>
                 <div class="form-group">
                     <label>E-posta</label>
-                    <input type="email" id="login-email" class="form-control" placeholder="ornek@email.com">
+                    <input type="email" id="login-email" class="form-control">
                 </div>
                 <div class="form-group">
                     <label>Şifre</label>
-                    <input type="password" id="login-password" class="form-control" placeholder="********">
+                    <input type="password" id="login-password" class="form-control">
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button class="btn btn-primary" onclick="login()">Giriş Yap</button>
+                    <button class="btn btn-primary" onclick="login()">Giriş</button>
                     <button class="btn btn-secondary" onclick="closeLoginModal()">İptal</button>
                 </div>
             </div>
         </div>
 
-        <!-- Register Modal (Şifreli) -->
+        <!-- Register Modal -->
         <div id="register-modal" class="modal">
             <div class="modal-content" style="max-width: 400px;">
                 <span class="close-modal" onclick="closeRegisterModal()">&times;</span>
-                <h2 style="margin-bottom: 20px;">Kayıt Ol</h2>
+                <h2>Kayıt Ol</h2>
                 <div class="form-group">
                     <label>Ad Soyad</label>
-                    <input type="text" id="register-name" class="form-control" placeholder="Adınız Soyadınız">
+                    <input type="text" id="register-name" class="form-control">
                 </div>
                 <div class="form-group">
                     <label>E-posta</label>
-                    <input type="email" id="register-email" class="form-control" placeholder="ornek@email.com">
+                    <input type="email" id="register-email" class="form-control">
                 </div>
                 <div class="form-group">
                     <label>Şifre</label>
-                    <input type="password" id="register-password" class="form-control" placeholder="********">
+                    <input type="password" id="register-password" class="form-control">
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button class="btn btn-primary" onclick="register()">Kayıt Ol</button>
+                    <button class="btn btn-primary" onclick="register()">Kayıt</button>
                     <button class="btn btn-secondary" onclick="closeRegisterModal()">İptal</button>
                 </div>
             </div>
@@ -978,6 +1038,8 @@
         </footer>
     </div>
 
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         // Dil çevirileri
         const translations = {
@@ -989,7 +1051,7 @@
                 photos: "Fotoğraflar", clickToAddPhotos: "Fotoğraf eklemek için tıkla",
                 contactInfo: "İletişim Bilgileri", myAdsTitle: "İlanlarım",
                 menuHome: "Ana Sayfa", menuForSale: "Satılıklar", menuForRent: "Kiralıklar",
-                menuAbout: "Hakkımızda", menuCity: "Şehir Tanıtımı", menuContact: "İletişim",
+                menuFavorites: "Favoriler", menuAbout: "Hakkımızda", menuContact: "İletişim",
                 menuAdmin: "Admin"
             },
             ar: {
@@ -1000,22 +1062,26 @@
                 photos: "الصور", clickToAddPhotos: "انقر لإضافة الصور",
                 contactInfo: "معلومات التواصل", myAdsTitle: "إعلاناتي",
                 menuHome: "الرئيسية", menuForSale: "للبيع", menuForRent: "للإيجار",
-                menuAbout: "من نحن", menuCity: "تعريف المدينة", menuContact: "اتصل بنا",
+                menuFavorites: "المفضلة", menuAbout: "من نحن", menuContact: "اتصل بنا",
                 menuAdmin: "المشرف"
             }
         };
 
         let currentLanguage = 'ar';
         let selectedImagesBase64 = [];
-        let loggedInUser = null; // { id, name, email, password, isAdmin }
+        let loggedInUser = null;
         let currentFilters = { 
             priceMin: '', priceMax: '', city: '', district: '', type: '',
             rooms: '', buildingAge: '', floor: '', heating: '' 
         };
+        let currentAdId = null; // Detayda gösterilen ilanın ID'si
+        let map = null;
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        let messages = JSON.parse(localStorage.getItem('messages')) || [];
 
         // Sayfa göster/gizle
         function showPage(page) {
-            const pages = ['home', 'for-sale', 'for-rent', 'about', 'city', 'contact', 'myads', 'profile', 'admin'];
+            const pages = ['home', 'for-sale', 'for-rent', 'favorites', 'about', 'contact', 'myads', 'messages', 'profile', 'admin'];
             pages.forEach(p => {
                 const el = document.getElementById(p + '-page');
                 if (el) el.classList.add('hidden');
@@ -1025,10 +1091,14 @@
 
             // Filtre panelini sadece ilan sayfalarında göster
             const filterPanel = document.getElementById('filter-panel');
-            if (['home', 'for-sale', 'for-rent', 'myads'].includes(page)) {
+            const adForm = document.getElementById('ad-form-section');
+            
+            if (['home', 'for-sale', 'for-rent', 'favorites', 'myads'].includes(page)) {
                 filterPanel.style.display = 'block';
+                adForm.style.display = 'block';
             } else {
                 filterPanel.style.display = 'none';
+                adForm.style.display = 'none';
             }
 
             if (page === 'home') {
@@ -1039,8 +1109,12 @@
             } else if (page === 'for-rent') {
                 document.getElementById('filter-type').value = 'rent';
                 applyFilters();
+            } else if (page === 'favorites') {
+                displayFavorites();
             } else if (page === 'myads') {
                 displayMyAds();
+            } else if (page === 'messages') {
+                displayMessages();
             } else if (page === 'profile') {
                 updateProfilePage();
             } else if (page === 'admin') {
@@ -1050,16 +1124,21 @@
                     showPage('home');
                     alert('Bu sayfaya erişim yetkiniz yok.');
                 }
+            } else if (page === 'contact') {
+                setTimeout(() => initContactMap(), 100); // Haritayı başlat
             }
 
-            // Menü aktifliğini güncelle (admin hariç normal menü)
-            if (page !== 'admin') {
+            // Menü aktifliğini güncelle
+            if (page !== 'admin' && page !== 'myads' && page !== 'messages' && page !== 'profile' && page !== 'favorites') {
                 setActiveMenu(page);
+            } else {
+                // Favoriler için menü aktifliği
+                if (page === 'favorites') setActiveMenu('favorites');
             }
         }
 
         function setActiveMenu(menu) {
-            const menus = ['home', 'for-sale', 'for-rent', 'about', 'city', 'contact'];
+            const menus = ['home', 'for-sale', 'for-rent', 'favorites', 'about', 'contact'];
             menus.forEach(m => {
                 const el = document.getElementById('menu-' + m);
                 if (el) el.classList.remove('active');
@@ -1090,8 +1169,8 @@
             document.getElementById('menu-home').innerText = t.menuHome;
             document.getElementById('menu-for-sale').innerText = t.menuForSale;
             document.getElementById('menu-for-rent').innerText = t.menuForRent;
+            document.getElementById('menu-favorites').innerText = t.menuFavorites;
             document.getElementById('menu-about').innerText = t.menuAbout;
-            document.getElementById('menu-city').innerText = t.menuCity;
             document.getElementById('menu-contact').innerText = t.menuContact;
             document.getElementById('menu-admin').innerText = t.menuAdmin;
 
@@ -1105,10 +1184,11 @@
             if (!document.getElementById('home-page').classList.contains('hidden')) applyFilters();
             if (!document.getElementById('for-sale-page').classList.contains('hidden')) applyFilters();
             if (!document.getElementById('for-rent-page').classList.contains('hidden')) applyFilters();
+            if (!document.getElementById('favorites-page').classList.contains('hidden')) displayFavorites();
             if (!document.getElementById('myads-page').classList.contains('hidden')) displayMyAds();
         }
 
-        // Kullanıcı işlemleri (Şifreli)
+        // Kullanıcı işlemleri
         function showLoginModal() {
             document.getElementById('login-modal').classList.add('show');
         }
@@ -1125,10 +1205,6 @@
         function login() {
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
-            if (!email || !password) {
-                alert('E-posta ve şifre giriniz.');
-                return;
-            }
             const users = JSON.parse(localStorage.getItem('users')) || [];
             const user = users.find(u => u.email === email && u.password === password);
             if (user) {
@@ -1156,13 +1232,10 @@
                 alert('Bu e-posta zaten kayıtlı!');
                 return;
             }
-            // İlk kullanıcı admin olsun (örnek)
-            const isAdmin = users.length === 0; // İlk kayıt olan admin
+            const isAdmin = users.length === 0;
             const newUser = {
                 id: Date.now(),
-                name: name,
-                email: email,
-                password: password, // Basit şifre (gerçek uygulamada hash'lenmeli)
+                name, email, password,
                 isAdmin: isAdmin
             };
             users.push(newUser);
@@ -1173,7 +1246,7 @@
             document.getElementById('register-name').value = '';
             document.getElementById('register-email').value = '';
             document.getElementById('register-password').value = '';
-            alert('Kayıt başarılı! Hoş geldiniz.');
+            alert('Kayıt başarılı!');
         }
 
         function logout() {
@@ -1218,15 +1291,140 @@
             }
         }
 
+        // Favoriler
+        function toggleFavorite(adId) {
+            if (!loggedInUser) {
+                alert('Favorilere eklemek için giriş yapın.');
+                return;
+            }
+            let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            const index = favorites.findIndex(f => f.adId === adId && f.userId === loggedInUser.id);
+            if (index === -1) {
+                favorites.push({ userId: loggedInUser.id, adId: adId });
+            } else {
+                favorites.splice(index, 1);
+            }
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            // Detay modalında favori butonunu güncelle
+            if (currentAdId === adId) {
+                updateFavoriteButton();
+            }
+            // Sayfayı yenile
+            if (!document.getElementById('favorites-page').classList.contains('hidden')) {
+                displayFavorites();
+            }
+        }
+
+        function isFavorite(adId) {
+            if (!loggedInUser) return false;
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            return favorites.some(f => f.adId === adId && f.userId === loggedInUser.id);
+        }
+
+        function updateFavoriteButton() {
+            const btn = document.getElementById('modal-favorite-btn');
+            if (isFavorite(currentAdId)) {
+                btn.innerHTML = '<i class="fas fa-heart"></i>';
+                btn.style.color = '#e74c3c';
+            } else {
+                btn.innerHTML = '<i class="far fa-heart"></i>';
+                btn.style.color = '#7c8b9a';
+            }
+        }
+
+        function displayFavorites() {
+            if (!loggedInUser) {
+                showPage('home');
+                alert('Favorilerinizi görmek için giriş yapın.');
+                return;
+            }
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            const userFavs = favorites.filter(f => f.userId === loggedInUser.id).map(f => f.adId);
+            const allAds = JSON.parse(localStorage.getItem('ads')) || [];
+            const favAds = allAds.filter(ad => userFavs.includes(ad.id));
+            document.getElementById('favorites-container').innerHTML = renderAdList(favAds);
+        }
+
+        // Mesajlar
+        function showMessageModal() {
+            if (!loggedInUser) {
+                alert('Mesaj göndermek için giriş yapın.');
+                return;
+            }
+            document.getElementById('message-modal').classList.add('show');
+        }
+
+        function closeMessageModal() {
+            document.getElementById('message-modal').classList.remove('show');
+            document.getElementById('message-text').value = '';
+        }
+
+        function sendMessage() {
+            const text = document.getElementById('message-text').value;
+            if (!text.trim()) {
+                alert('Mesaj boş olamaz.');
+                return;
+            }
+            const adId = currentAdId;
+            const ads = JSON.parse(localStorage.getItem('ads')) || [];
+            const ad = ads.find(a => a.id === adId);
+            if (!ad) return;
+
+            const messages = JSON.parse(localStorage.getItem('messages')) || [];
+            const newMessage = {
+                id: Date.now(),
+                fromUserId: loggedInUser.id,
+                toUserId: ad.userId,
+                adId: adId,
+                text: text,
+                date: new Date().toLocaleString(),
+                read: false
+            };
+            messages.push(newMessage);
+            localStorage.setItem('messages', JSON.stringify(messages));
+            closeMessageModal();
+            alert('Mesajınız gönderildi.');
+        }
+
+        function displayMessages() {
+            if (!loggedInUser) {
+                showPage('home');
+                alert('Mesajlarınızı görmek için giriş yapın.');
+                return;
+            }
+            const messages = JSON.parse(localStorage.getItem('messages')) || [];
+            const userMessages = messages.filter(m => m.toUserId === loggedInUser.id || m.fromUserId === loggedInUser.id);
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const ads = JSON.parse(localStorage.getItem('ads')) || [];
+
+            const container = document.getElementById('messages-container');
+            if (userMessages.length === 0) {
+                container.innerHTML = '<div style="padding: 30px; text-align: center;">Henüz mesajınız yok.</div>';
+                return;
+            }
+
+            container.innerHTML = userMessages.map(msg => {
+                const fromUser = users.find(u => u.id === msg.fromUserId) || { name: 'Bilinmeyen' };
+                const ad = ads.find(a => a.id === msg.adId) || { title: 'Bilinmeyen İlan' };
+                return `
+                    <div class="ad-item" style="cursor: default;">
+                        <div style="flex:1;">
+                            <strong>${fromUser.name}</strong> - ${ad.title}<br>
+                            <small>${msg.date}</small>
+                            <p style="margin-top: 5px;">${msg.text}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
         // Admin paneli
         function loadAdminPanel() {
             if (!loggedInUser?.isAdmin) return;
             
-            // Kullanıcıları listele
             const users = JSON.parse(localStorage.getItem('users')) || [];
-            const usersContainer = document.getElementById('admin-users-container');
-            usersContainer.innerHTML = users.map(user => `
-                <div class="ad-item" style="cursor: default;">
+            document.getElementById('admin-users-container').innerHTML = users.map(user => `
+                <div class="ad-item">
                     <div style="flex:1; display: flex; align-items: center; gap: 15px;">
                         <i class="fas fa-user-circle" style="font-size: 30px;"></i>
                         <span><strong>${user.name}</strong> (${user.email})</span>
@@ -1235,10 +1433,8 @@
                 </div>
             `).join('');
 
-            // Tüm ilanları listele (admin yönetimi için)
             const ads = JSON.parse(localStorage.getItem('ads')) || [];
-            const adsContainer = document.getElementById('admin-ads-container');
-            adsContainer.innerHTML = ads.map(ad => {
+            document.getElementById('admin-ads-container').innerHTML = ads.map(ad => {
                 const user = users.find(u => u.id === ad.userId) || { name: 'Bilinmeyen' };
                 return `
                     <div class="ad-item">
@@ -1260,19 +1456,18 @@
 
         function adminDeleteAd(id) {
             if (!loggedInUser?.isAdmin) return;
-            if (!confirm('Bu ilanı silmek istediğinize emin misiniz?')) return;
+            if (!confirm('Silmek istediğinize emin misiniz?')) return;
             
             let ads = JSON.parse(localStorage.getItem('ads')) || [];
             ads = ads.filter(ad => ad.id !== id);
             localStorage.setItem('ads', JSON.stringify(ads));
-            loadAdminPanel(); // paneli yenile
-            // Diğer sayfaları da güncelle
+            loadAdminPanel();
             if (!document.getElementById('home-page').classList.contains('hidden')) applyFilters();
             if (!document.getElementById('for-sale-page').classList.contains('hidden')) applyFilters();
             if (!document.getElementById('for-rent-page').classList.contains('hidden')) applyFilters();
         }
 
-        // Filtreleme (gelişmiş)
+        // Filtreleme
         function applyFilters() {
             currentFilters = {
                 priceMin: document.getElementById('filter-price-min').value,
@@ -1292,6 +1487,10 @@
                 displayFilteredAds('sale', 'for-sale-container');
             } else if (!document.getElementById('for-rent-page').classList.contains('hidden')) {
                 displayFilteredAds('rent', 'for-rent-container');
+            } else if (!document.getElementById('favorites-page').classList.contains('hidden')) {
+                displayFavorites(); // Favoriler zaten filtrelenmiş
+            } else if (!document.getElementById('myads-page').classList.contains('hidden')) {
+                displayMyAds();
             }
         }
 
@@ -1316,39 +1515,31 @@
                 if (currentFilters.district && !(ad.district && ad.district.includes(currentFilters.district))) return false;
                 if (currentFilters.type && ad.type !== currentFilters.type) return false;
                 
-                // Oda sayısı
-                if (currentFilters.rooms) {
-                    const roomMap = { '1': '1+0', '2': '2+1', '3': '3+1', '4': '4+2', '5': '5+' };
-                    if (ad.rooms !== roomMap[currentFilters.rooms]) return false;
-                }
+                if (currentFilters.rooms && ad.rooms !== currentFilters.rooms) return false;
                 
-                // Bina yaşı
                 if (currentFilters.buildingAge) {
                     const age = ad.buildingAge || 0;
-                    if (currentFilters.buildingAge === '0' && age !== 0) return false;
-                    if (currentFilters.buildingAge === '5' && (age < 0 || age > 5)) return false;
-                    if (currentFilters.buildingAge === '10' && (age < 5 || age > 10)) return false;
-                    if (currentFilters.buildingAge === '20' && (age < 10 || age > 20)) return false;
-                    if (currentFilters.buildingAge === '21' && age < 20) return false;
+                    if (currentFilters.buildingAge === '0' && age != 0) return false;
+                    if (currentFilters.buildingAge === '0-5' && (age < 0 || age > 5)) return false;
+                    if (currentFilters.buildingAge === '5-10' && (age < 5 || age > 10)) return false;
+                    if (currentFilters.buildingAge === '10-20' && (age < 10 || age > 20)) return false;
+                    if (currentFilters.buildingAge === '20+' && age < 20) return false;
                 }
                 
-                // Kat
                 if (currentFilters.floor) {
                     const floor = ad.floor || '0';
                     if (currentFilters.floor === 'ground' && !floor.includes('Zemin')) return false;
-                    if (currentFilters.floor === '1' && !(floor.includes('1') || floor.includes('2') || floor.includes('3'))) return false;
-                    if (currentFilters.floor === '4' && !(floor.includes('4') || floor.includes('5') || floor.includes('6') || floor.includes('7'))) return false;
-                    if (currentFilters.floor === '8' && !(floor.includes('8') || floor.includes('9') || floor.includes('10'))) return false;
+                    if (currentFilters.floor === '1-3' && !(floor.includes('1') || floor.includes('2') || floor.includes('3'))) return false;
+                    if (currentFilters.floor === '4-7' && !(floor.includes('4') || floor.includes('5') || floor.includes('6') || floor.includes('7'))) return false;
+                    if (currentFilters.floor === '8+' && !(floor.includes('8') || floor.includes('9') || floor.includes('10'))) return false;
                 }
                 
-                // Isıtma
                 if (currentFilters.heating && ad.heating !== currentFilters.heating) return false;
                 
                 return true;
             });
         }
 
-        // Ana sayfa
         function displayFilteredHome() {
             const allAds = JSON.parse(localStorage.getItem('ads')) || [];
             const filtered = filterAds(allAds);
@@ -1367,7 +1558,7 @@
         function displayMyAds() {
             if (!loggedInUser) {
                 showPage('home');
-                alert('Lütfen önce giriş yapın.');
+                alert('Lütfen giriş yapın.');
                 return;
             }
             const allAds = JSON.parse(localStorage.getItem('ads')) || [];
@@ -1399,6 +1590,12 @@
                     </div>
                 ` : '';
 
+                const favBtn = loggedInUser ? `
+                    <button class="favorite-btn ${isFavorite(ad.id) ? 'active' : ''}" onclick="toggleFavorite(${ad.id}); event.stopPropagation();">
+                        <i class="fa${isFavorite(ad.id) ? 's' : 'r'} fa-heart"></i>
+                    </button>
+                ` : '';
+
                 return `
                     <div class="ad-item" onclick="showDetail(${ad.id})">
                         <div class="ad-image-thumb" ${thumbStyle}>${thumbContent}</div>
@@ -1410,7 +1607,10 @@
                             <span class="ad-type">${typeText}</span>
                             <span class="ad-date"><i class="far fa-calendar-alt"></i> ${ad.date || ''}</span>
                         </div>
-                        ${actions}
+                        <div style="display: flex; gap: 5px;">
+                            ${favBtn}
+                            ${actions}
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -1426,18 +1626,12 @@
 
             imageUpload.addEventListener('change', function(e) {
                 const files = e.target.files;
-                previewContainer.innerHTML = '';
-                selectedImagesBase64 = [];
-
                 for (let file of files) {
                     if (file.type.startsWith('image/')) {
                         const reader = new FileReader();
                         reader.onload = function(ev) {
                             selectedImagesBase64.push(ev.target.result);
-                            const img = document.createElement('img');
-                            img.src = ev.target.result;
-                            img.className = 'preview-image';
-                            previewContainer.appendChild(img);
+                            displayPreviewImages();
                         };
                         reader.readAsDataURL(file);
                     }
@@ -1445,7 +1639,26 @@
             });
         });
 
-        // İlan kaydetme (gelişmiş)
+        function displayPreviewImages() {
+            const container = document.getElementById('image-preview-container');
+            container.innerHTML = '';
+            selectedImagesBase64.forEach((src, index) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'preview-image-wrapper';
+                wrapper.innerHTML = `
+                    <img src="${src}" class="preview-image">
+                    <span class="remove-photo" onclick="removePhoto(${index})">&times;</span>
+                `;
+                container.appendChild(wrapper);
+            });
+        }
+
+        function removePhoto(index) {
+            selectedImagesBase64.splice(index, 1);
+            displayPreviewImages();
+        }
+
+        // İlan kaydetme
         function saveAd() {
             if (!loggedInUser) {
                 alert('İlan eklemek için giriş yapmalısınız.');
@@ -1464,14 +1677,13 @@
             const phone = document.getElementById('adPhone').value;
             const email = document.getElementById('adEmail').value || loggedInUser.email;
             
-            // Gelişmiş alanlar
             const rooms = document.getElementById('adRooms').value;
             const buildingAge = document.getElementById('adBuildingAge').value;
             const floor = document.getElementById('adFloor').value;
             const heating = document.getElementById('adHeating').value;
 
             if (!title || !price || !description) {
-                alert(currentLanguage === 'tr' ? 'Lütfen zorunlu alanları doldurun!' : 'يرجى ملء الحقول الإلزامية!');
+                alert('Lütfen zorunlu alanları doldurun!');
                 return;
             }
 
@@ -1511,7 +1723,7 @@
             if (!document.getElementById('myads-page').classList.contains('hidden')) displayMyAds();
             if (!document.getElementById('admin-page').classList.contains('hidden') && loggedInUser?.isAdmin) loadAdminPanel();
 
-            alert(currentLanguage === 'tr' ? 'İlan kaydedildi!' : 'تم حفظ الإعلان!');
+            alert('İlan kaydedildi!');
         }
 
         function editAd(id) {
@@ -1531,29 +1743,20 @@
             document.getElementById('adContactName').value = ad.contactName || '';
             document.getElementById('adPhone').value = ad.phone || '';
             document.getElementById('adEmail').value = ad.email || '';
-            
-            // Gelişmiş alanlar
             document.getElementById('adRooms').value = ad.rooms || '2+1';
             document.getElementById('adBuildingAge').value = ad.buildingAge || '';
             document.getElementById('adFloor').value = ad.floor || '';
             document.getElementById('adHeating').value = ad.heating || 'central';
 
-            const previewContainer = document.getElementById('image-preview-container');
-            previewContainer.innerHTML = '';
             selectedImagesBase64 = ad.images ? [...ad.images] : [];
-            selectedImagesBase64.forEach(src => {
-                const img = document.createElement('img');
-                img.src = src;
-                img.className = 'preview-image';
-                previewContainer.appendChild(img);
-            });
+            displayPreviewImages();
 
             document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
         }
 
         function deleteAd(id) {
             if (!loggedInUser) return;
-            if (!confirm(currentLanguage === 'tr' ? 'Silmek istediğinize emin misiniz?' : 'هل أنت متأكد من الحذف؟')) return;
+            if (!confirm('Silmek istediğinize emin misiniz?')) return;
 
             let ads = JSON.parse(localStorage.getItem('ads')) || [];
             ads = ads.filter(ad => !(ad.id === id && (ad.userId === loggedInUser.id || loggedInUser.isAdmin)));
@@ -1563,6 +1766,7 @@
             if (!document.getElementById('for-sale-page').classList.contains('hidden')) applyFilters();
             if (!document.getElementById('for-rent-page').classList.contains('hidden')) applyFilters();
             if (!document.getElementById('myads-page').classList.contains('hidden')) displayMyAds();
+            if (!document.getElementById('favorites-page').classList.contains('hidden')) displayFavorites();
             if (!document.getElementById('admin-page').classList.contains('hidden') && loggedInUser?.isAdmin) loadAdminPanel();
         }
 
@@ -1583,15 +1787,17 @@
             document.getElementById('adFloor').value = '';
             document.getElementById('adHeating').value = 'central';
             document.getElementById('imageUpload').value = '';
-            document.getElementById('image-preview-container').innerHTML = '';
             selectedImagesBase64 = [];
+            document.getElementById('image-preview-container').innerHTML = '';
         }
 
-        // Detay modal (iletişim bilgileri dahil)
+        // Detay modal
         function showDetail(id) {
             const ads = JSON.parse(localStorage.getItem('ads')) || [];
             const ad = ads.find(a => a.id === id);
             if (!ad) return;
+
+            currentAdId = id;
 
             document.getElementById('modal-title').innerText = ad.title;
 
@@ -1623,7 +1829,6 @@
             `;
             document.getElementById('modal-info').innerHTML = info;
 
-            // İletişim bilgilerini göster (sadece giriş yapmış kullanıcılara)
             if (loggedInUser) {
                 document.getElementById('modal-contact').classList.remove('hidden');
                 document.getElementById('modal-contact-name').innerHTML = `<strong>İsim:</strong> ${ad.contactName || 'Belirtilmemiş'}`;
@@ -1633,16 +1838,42 @@
                 document.getElementById('modal-contact').classList.add('hidden');
             }
 
+            updateFavoriteButton();
+
+            // Harita
+            setTimeout(() => {
+                if (map) map.remove();
+                map = L.map('modal-map').setView([36.8065, 10.1815], 12);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+                L.marker([36.8065, 10.1815]).addTo(map)
+                    .bindPopup(ad.city || 'Tunus')
+                    .openPopup();
+            }, 100);
+
             document.getElementById('detail-modal').classList.add('show');
         }
 
         function closeModal() {
             document.getElementById('detail-modal').classList.remove('show');
+            if (map) map.remove();
+        }
+
+        // İletişim sayfası haritası
+        function initContactMap() {
+            if (map) map.remove();
+            map = L.map('contact-map').setView([36.8065, 10.1815], 12);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            L.marker([36.8065, 10.1815]).addTo(map)
+                .bindPopup('Akarat Tunisia Merkez')
+                .openPopup();
         }
 
         // Başlangıç
         window.onload = function() {
-            // Kullanıcılar tablosunu oluştur (admin kullanıcı ekle)
             if (!localStorage.getItem('users')) {
                 const defaultUsers = [
                     { id: 1, name: 'Admin', email: 'admin@example.com', password: 'admin123', isAdmin: true },
@@ -1651,19 +1882,17 @@
                 localStorage.setItem('users', JSON.stringify(defaultUsers));
             }
 
-            // İlanlara yeni alanlar ekle (eski uyumluluk)
             let ads = JSON.parse(localStorage.getItem('ads')) || [];
             let updated = false;
             ads = ads.map(ad => {
                 if (!ad.userId) {
-                    ad.userId = 2; // varsayılan kullanıcı
+                    ad.userId = 2;
                     updated = true;
                 }
                 if (!ad.type) {
                     ad.type = 'sale';
                     updated = true;
                 }
-                // Yeni alanlar
                 if (!ad.rooms) ad.rooms = '2+1';
                 if (!ad.buildingAge) ad.buildingAge = '';
                 if (!ad.floor) ad.floor = '';
@@ -1675,6 +1904,13 @@
             });
             if (updated) {
                 localStorage.setItem('ads', JSON.stringify(ads));
+            }
+
+            if (!localStorage.getItem('favorites')) {
+                localStorage.setItem('favorites', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('messages')) {
+                localStorage.setItem('messages', JSON.stringify([]));
             }
 
             showPage('home');
