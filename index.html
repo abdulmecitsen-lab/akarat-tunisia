@@ -11,7 +11,7 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Temel stiller - öncekiyle aynı, sadece eklemeler var */
+        /* Stiller aynen önceki gibi, sadece ufak eklemeler var */
         * {
             margin: 0;
             padding: 0;
@@ -125,8 +125,13 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            position: relative;
         }
-        #login-btn {
+        .auth-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .auth-buttons button {
             background: #2c3e50;
             color: white;
             border: none;
@@ -139,7 +144,11 @@
             align-items: center;
             gap: 6px;
         }
-        #login-btn i { font-size: 14px; }
+        .auth-buttons button:last-child {
+            background: white;
+            color: #2c3e50;
+            border: 1px solid #2c3e50;
+        }
         #user-info {
             display: flex;
             align-items: center;
@@ -148,6 +157,7 @@
             padding: 5px 12px 5px 8px;
             border-radius: 30px;
             font-size: 13px;
+            cursor: pointer;
         }
         #user-info i {
             font-size: 18px;
@@ -162,6 +172,41 @@
             font-size: 14px;
         }
         .hidden { display: none !important; }
+
+        /* Basit dropdown (kullanıcı menüsü için) */
+        .user-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 40px;
+            background: white;
+            min-width: 160px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            z-index: 10;
+            border: 1px solid #e9ecef;
+        }
+        body[dir="ltr"] .dropdown-content { left: auto; right: 0; }
+        .dropdown-content a {
+            color: #2c3e50;
+            padding: 10px 16px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .dropdown-content a:hover {
+            background: #f8fafc;
+        }
+        .user-dropdown:hover .dropdown-content {
+            display: block;
+        }
 
         /* Filtre paneli */
         .filter-panel {
@@ -347,7 +392,7 @@
         .ad-actions button:hover { color: #2c3e50; }
         .ad-actions .delete-btn:hover { color: #e74c3c; }
 
-        /* Modal (detay sayfası) */
+        /* Modal (detay) */
         .modal {
             display: none;
             position: fixed;
@@ -529,22 +574,28 @@
                     <button class="lang-btn" onclick="changeLanguage('tr')">🇹🇷</button>
                     <button class="lang-btn active" onclick="changeLanguage('ar')">🇸🇦</button>
                 </div>
-                <!-- Kullanıcı giriş alanı -->
+                <!-- Kullanıcı alanı -->
                 <div class="user-menu">
-                    <div id="login-section">
-                        <button id="login-btn" onclick="login()"><i class="fas fa-sign-in-alt"></i> Giriş Yap</button>
+                    <div id="auth-buttons" class="auth-buttons">
+                        <button onclick="showLoginModal()"><i class="fas fa-sign-in-alt"></i> Giriş</button>
+                        <button onclick="showRegisterModal()"><i class="fas fa-user-plus"></i> Kayıt</button>
                     </div>
-                    <div id="user-info" class="hidden">
+                    <div id="user-info" class="hidden user-dropdown">
                         <i class="fas fa-user-circle"></i>
                         <span id="username">Ahmet</span>
-                        <button id="logout-btn" onclick="logout()"><i class="fas fa-times-circle"></i></button>
+                        <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+                        <div class="dropdown-content">
+                            <a onclick="showPage('myads')"><i class="fas fa-list"></i> İlanlarım</a>
+                            <a onclick="showPage('profile')"><i class="fas fa-user-circle"></i> Profil</a>
+                            <a onclick="logout()"><i class="fas fa-sign-out-alt"></i> Çıkış</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </header>
 
-        <!-- Filtre Paneli (tüm sayfalarda görünür, ancak sadece home, for-sale, for-rent'te işlevsel) -->
-        <div class="filter-panel">
+        <!-- Filtre Paneli (Sadece ilan sayfalarında görünecek) -->
+        <div id="filter-panel" class="filter-panel">
             <div class="filter-group">
                 <label>Fiyat Min</label>
                 <input type="number" id="filter-price-min" placeholder="₺0">
@@ -618,27 +669,31 @@
             <div class="ads-list" id="for-rent-container"></div>
         </div>
 
-        <!-- Diğer sayfalar -->
+        <!-- Hakkımızda Sayfası -->
         <div id="about-page" class="page-section hidden">
             <div style="background: white; border-radius: 12px; padding: 40px; text-align: center;">
                 <h2>Hakkımızda</h2>
-                <p style="margin-top: 20px; color: #5f6b7a;">Akarat Tunisia, Tunus'ta emlak alım satım ve kiralama işlemleriniz için güvenilir bir platformdur.</p>
-            </div>
-        </div>
-        <div id="city-page" class="page-section hidden">
-            <div style="background: white; border-radius: 12px; padding: 40px; text-align: center;">
-                <h2>Şehir Tanıtımı</h2>
-                <p style="margin-top: 20px; color: #5f6b7a;">Tunus'un en güzel şehirleri ve semtleri hakkında bilgiler yakında burada olacak.</p>
-            </div>
-        </div>
-        <div id="contact-page" class="page-section hidden">
-            <div style="background: white; border-radius: 12px; padding: 40px; text-align: center;">
-                <h2>İletişim</h2>
-                <p style="margin-top: 20px; color: #5f6b7a;">info@akarattunisia.com</p>
+                <p style="margin-top: 20px; color: #5f6b7a;">Akarat Tunisia, Tunus'ta emlak alım satım ve kiralama işlemleriniz için güvenilir bir platformdur. 2026 yılında kurulan firmamız, müşterilerine en iyi hizmeti sunmayı hedeflemektedir.</p>
             </div>
         </div>
 
-        <!-- İlanlarım Sayfası (kullanıcıya özel) -->
+        <!-- Şehir Tanıtımı Sayfası -->
+        <div id="city-page" class="page-section hidden">
+            <div style="background: white; border-radius: 12px; padding: 40px; text-align: center;">
+                <h2>Şehir Tanıtımı</h2>
+                <p style="margin-top: 20px; color: #5f6b7a;">Tunus, Akdeniz'in incisi, tarihi ve kültürel zenginlikleriyle büyüleyici bir ülke. Başkent Tunus'tan sahillerdeki Sidi Bou Said'e kadar her şehirde size özel emlak seçenekleri sunuyoruz.</p>
+            </div>
+        </div>
+
+        <!-- İletişim Sayfası -->
+        <div id="contact-page" class="page-section hidden">
+            <div style="background: white; border-radius: 12px; padding: 40px; text-align: center;">
+                <h2>İletişim</h2>
+                <p style="margin-top: 20px; color: #5f6b7a;">📞 +216 12 345 67 89<br>📧 info@akarattunisia.com<br>📍 Tunus, Tunus</p>
+            </div>
+        </div>
+
+        <!-- İlanlarım Sayfası -->
         <div id="myads-page" class="page-section hidden">
             <div class="section-header">
                 <h2 class="section-title" id="myads-title">İlanlarım</h2>
@@ -652,8 +707,8 @@
                 <div style="width: 100px; height: 100px; border-radius: 50%; background: #eef2f6; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 40px;">
                     <i class="fas fa-user"></i>
                 </div>
-                <div style="font-size: 20px; font-weight: 600; margin-bottom: 5px;">Ahmet Kullanıcı</div>
-                <div style="color: #7c8b9a; margin-bottom: 20px;">ahmet@example.com</div>
+                <div style="font-size: 20px; font-weight: 600; margin-bottom: 5px;" id="profile-name">Ahmet Kullanıcı</div>
+                <div style="color: #7c8b9a; margin-bottom: 20px;" id="profile-email">ahmet@example.com</div>
                 <p style="color: #5f6b7a;">Kayıtlı <span id="user-ad-count">0</span> ilan</p>
                 <button class="btn btn-secondary" style="margin-top: 20px;" onclick="showPage('home')"><i class="fas fa-edit"></i> Profili Düzenle</button>
             </div>
@@ -745,6 +800,9 @@
             </div>
         </div>
 
+        <!-- Basit Giriş/Kayıt Modalı (isteğe bağlı, şimdilik prompt kullanacağız) -->
+        <!-- Aslında prompt kullanmak daha basit, ama modal daha profesyonel. Zaman kısıtı nedeniyle prompt ile yapalım. -->
+
         <footer class="footer">
             <p>© 2026 Akarat Tunisia - Tüm hakları saklıdır.</p>
         </footer>
@@ -777,7 +835,7 @@
 
         let currentLanguage = 'ar';
         let selectedImagesBase64 = [];
-        let loggedInUser = null; // null veya { name: "Ahmet", id: 1 }
+        let loggedInUser = null; // { id, name, email }
         let currentFilters = { priceMin: '', priceMax: '', city: '', district: '', type: '' };
 
         // Sayfa göster/gizle
@@ -790,8 +848,16 @@
             const activePage = document.getElementById(page + '-page');
             if (activePage) activePage.classList.remove('hidden');
 
+            // Filtre panelini sadece ilan sayfalarında göster
+            const filterPanel = document.getElementById('filter-panel');
+            if (['home', 'for-sale', 'for-rent', 'myads'].includes(page)) {
+                filterPanel.style.display = 'flex';
+            } else {
+                filterPanel.style.display = 'none';
+            }
+
             if (page === 'home') {
-                applyFilters(); // filtreleri uygula
+                applyFilters();
             } else if (page === 'for-sale') {
                 document.getElementById('filter-type').value = 'sale';
                 applyFilters();
@@ -801,7 +867,7 @@
             } else if (page === 'myads') {
                 displayMyAds();
             } else if (page === 'profile') {
-                document.getElementById('user-ad-count').innerText = (JSON.parse(localStorage.getItem('ads')) || []).filter(ad => ad.userId === loggedInUser?.id).length;
+                updateProfilePage();
             }
         }
 
@@ -855,27 +921,70 @@
             if (!document.getElementById('myads-page').classList.contains('hidden')) displayMyAds();
         }
 
-        // Kullanıcı giriş/çıkış
-        function login() {
-            loggedInUser = { name: "Ahmet", id: 1 };
-            document.getElementById('login-section').classList.add('hidden');
-            document.getElementById('user-info').classList.remove('hidden');
-            document.getElementById('username').innerText = loggedInUser.name;
-            // Sayfaları yenile (düzenleme butonları çıksın)
-            if (!document.getElementById('home-page').classList.contains('hidden')) applyFilters();
-            if (!document.getElementById('for-sale-page').classList.contains('hidden')) applyFilters();
-            if (!document.getElementById('for-rent-page').classList.contains('hidden')) applyFilters();
-            if (!document.getElementById('myads-page').classList.contains('hidden')) displayMyAds();
+        // Kullanıcı işlemleri
+        function showLoginModal() {
+            const email = prompt('E-posta adresinizi girin:');
+            if (!email) return;
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.email === email);
+            if (user) {
+                loggedInUser = user;
+                updateUserUI();
+                alert('Giriş başarılı!');
+            } else {
+                alert('Kullanıcı bulunamadı. Lütfen kayıt olun.');
+            }
         }
+
+        function showRegisterModal() {
+            const name = prompt('Adınız Soyadınız:');
+            if (!name) return;
+            const email = prompt('E-posta adresiniz:');
+            if (!email) return;
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            if (users.find(u => u.email === email)) {
+                alert('Bu e-posta zaten kayıtlı!');
+                return;
+            }
+            const newUser = {
+                id: Date.now(),
+                name: name,
+                email: email
+            };
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            loggedInUser = newUser;
+            updateUserUI();
+            alert('Kayıt başarılı! Hoş geldiniz.');
+        }
+
         function logout() {
             loggedInUser = null;
-            document.getElementById('login-section').classList.remove('hidden');
-            document.getElementById('user-info').classList.add('hidden');
-            // Sayfaları yenile
-            if (!document.getElementById('home-page').classList.contains('hidden')) applyFilters();
-            if (!document.getElementById('for-sale-page').classList.contains('hidden')) applyFilters();
-            if (!document.getElementById('for-rent-page').classList.contains('hidden')) applyFilters();
-            if (!document.getElementById('myads-page').classList.contains('hidden')) showPage('home'); // ilanlarım gizli kalır
+            updateUserUI();
+            showPage('home');
+            setActiveMenu('home');
+        }
+
+        function updateUserUI() {
+            if (loggedInUser) {
+                document.getElementById('auth-buttons').classList.add('hidden');
+                document.getElementById('user-info').classList.remove('hidden');
+                document.getElementById('username').innerText = loggedInUser.name;
+                document.getElementById('profile-name').innerText = loggedInUser.name;
+                document.getElementById('profile-email').innerText = loggedInUser.email;
+            } else {
+                document.getElementById('auth-buttons').classList.remove('hidden');
+                document.getElementById('user-info').classList.add('hidden');
+            }
+        }
+
+        function updateProfilePage() {
+            if (loggedInUser) {
+                document.getElementById('profile-name').innerText = loggedInUser.name;
+                document.getElementById('profile-email').innerText = loggedInUser.email;
+                const userAds = (JSON.parse(localStorage.getItem('ads')) || []).filter(ad => ad.userId === loggedInUser.id);
+                document.getElementById('user-ad-count').innerText = userAds.length;
+            }
         }
 
         // Filtreleme
@@ -887,7 +996,6 @@
                 district: document.getElementById('filter-district').value,
                 type: document.getElementById('filter-type').value
             };
-            // Hangi sayfa açıksa ona göre listeyi güncelle
             if (!document.getElementById('home-page').classList.contains('hidden')) {
                 displayFilteredHome();
             } else if (!document.getElementById('for-sale-page').classList.contains('hidden')) {
@@ -905,7 +1013,6 @@
             applyFilters();
         }
 
-        // Filtre fonksiyonu
         function filterAds(ads) {
             return ads.filter(ad => {
                 if (currentFilters.priceMin && ad.price < currentFilters.priceMin) return false;
@@ -917,16 +1024,15 @@
             });
         }
 
-        // Ana sayfa için özel ve son eklenenler
+        // Ana sayfa
         function displayFilteredHome() {
             const allAds = JSON.parse(localStorage.getItem('ads')) || [];
             const filtered = filterAds(allAds);
-            document.querySelector('#stats-active .stat-number').innerText = allAds.length; // toplam ilan
+            document.querySelector('#stats-active .stat-number').innerText = allAds.length;
             document.getElementById('featured-ads-container').innerHTML = renderAdList(filtered);
             document.getElementById('latest-ads-container').innerHTML = renderAdList(filtered.slice(0, 5));
         }
 
-        // Belirli tip için filtreli listeleme
         function displayFilteredAds(type, containerId) {
             const allAds = JSON.parse(localStorage.getItem('ads')) || [];
             const typeFiltered = allAds.filter(ad => ad.type === type);
@@ -934,7 +1040,6 @@
             document.getElementById(containerId).innerHTML = renderAdList(filtered);
         }
 
-        // İlanlarım
         function displayMyAds() {
             if (!loggedInUser) {
                 showPage('home');
@@ -946,7 +1051,6 @@
             document.getElementById('myads-container').innerHTML = renderAdList(myAds);
         }
 
-        // Liste render (düzenle/sil butonları eklendi)
         function renderAdList(ads) {
             if (ads.length === 0) {
                 return `<div style="padding: 30px; text-align: center; color: #9aa9b8;">
@@ -964,7 +1068,6 @@
                     ? (currentLanguage === 'tr' ? 'Satılık' : 'للبيع') 
                     : (currentLanguage === 'tr' ? 'Kiralık' : 'للإيجار');
 
-                // Düzenle/sil butonları sadece kendi ilanıysa ve giriş yapıldıysa
                 const actions = (loggedInUser && ad.userId === loggedInUser.id) ? `
                     <div class="ad-actions">
                         <button class="edit-btn" onclick="editAd(${ad.id}); event.stopPropagation();"><i class="fas fa-edit"></i></button>
@@ -1018,7 +1121,7 @@
             });
         });
 
-        // İlan kaydetme (düzenleme için)
+        // İlan kaydetme
         function saveAd() {
             if (!loggedInUser) {
                 alert('İlan eklemek için giriş yapmalısınız.');
@@ -1033,6 +1136,8 @@
             const price = document.getElementById('adPrice').value;
             const area = document.getElementById('adArea').value;
             const description = document.getElementById('adDescription').value;
+            const contactName = document.getElementById('adContactName').value;
+            const phone = document.getElementById('adPhone').value;
 
             if (!title || !price || !description) {
                 alert(currentLanguage === 'tr' ? 'Lütfen zorunlu alanları doldurun!' : 'يرجى ملء الحقول الإلزامية!');
@@ -1042,21 +1147,21 @@
             let ads = JSON.parse(localStorage.getItem('ads')) || [];
 
             if (editingId) {
-                // Düzenleme
                 const index = ads.findIndex(ad => ad.id == editingId);
                 if (index !== -1 && ads[index].userId === loggedInUser.id) {
                     ads[index] = {
                         ...ads[index],
                         type, title, city, district, price, area, description,
+                        contactName, phone,
                         images: selectedImagesBase64.length ? selectedImagesBase64 : ads[index].images
                     };
                 }
             } else {
-                // Yeni ilan
                 const newAd = {
                     id: Date.now(),
                     userId: loggedInUser.id,
                     type, title, city, district, price, area, description,
+                    contactName, phone,
                     images: selectedImagesBase64,
                     date: new Date().toLocaleDateString('tr-TR')
                 };
@@ -1067,7 +1172,6 @@
             clearForm();
             document.getElementById('editing-id').value = '';
 
-            // Sayfaları güncelle
             if (!document.getElementById('home-page').classList.contains('hidden')) applyFilters();
             if (!document.getElementById('for-sale-page').classList.contains('hidden')) applyFilters();
             if (!document.getElementById('for-rent-page').classList.contains('hidden')) applyFilters();
@@ -1076,7 +1180,6 @@
             alert(currentLanguage === 'tr' ? 'İlan kaydedildi!' : 'تم حفظ الإعلان!');
         }
 
-        // Düzenleme için formu doldur
         function editAd(id) {
             if (!loggedInUser) return;
             const ads = JSON.parse(localStorage.getItem('ads')) || [];
@@ -1094,7 +1197,6 @@
             document.getElementById('adContactName').value = ad.contactName || '';
             document.getElementById('adPhone').value = ad.phone || '';
 
-            // Fotoğrafları göster
             const previewContainer = document.getElementById('image-preview-container');
             previewContainer.innerHTML = '';
             selectedImagesBase64 = ad.images ? [...ad.images] : [];
@@ -1105,11 +1207,9 @@
                 previewContainer.appendChild(img);
             });
 
-            // Sayfayı form bölümüne kaydır
             document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Silme
         function deleteAd(id) {
             if (!loggedInUser) return;
             if (!confirm(currentLanguage === 'tr' ? 'Silmek istediğinize emin misiniz?' : 'هل أنت متأكد من الحذف؟')) return;
@@ -1118,11 +1218,26 @@
             ads = ads.filter(ad => !(ad.id === id && ad.userId === loggedInUser.id));
             localStorage.setItem('ads', JSON.stringify(ads));
 
-            // Sayfaları güncelle
             if (!document.getElementById('home-page').classList.contains('hidden')) applyFilters();
             if (!document.getElementById('for-sale-page').classList.contains('hidden')) applyFilters();
             if (!document.getElementById('for-rent-page').classList.contains('hidden')) applyFilters();
             if (!document.getElementById('myads-page').classList.contains('hidden')) displayMyAds();
+        }
+
+        function clearForm() {
+            document.getElementById('editing-id').value = '';
+            document.getElementById('adType').value = 'sale';
+            document.getElementById('adTitle').value = '';
+            document.getElementById('adCity').value = '';
+            document.getElementById('adDistrict').value = '';
+            document.getElementById('adPrice').value = '';
+            document.getElementById('adArea').value = '';
+            document.getElementById('adDescription').value = '';
+            document.getElementById('adContactName').value = '';
+            document.getElementById('adPhone').value = '';
+            document.getElementById('imageUpload').value = '';
+            document.getElementById('image-preview-container').innerHTML = '';
+            selectedImagesBase64 = [];
         }
 
         // Detay modal
@@ -1133,7 +1248,6 @@
 
             document.getElementById('modal-title').innerText = ad.title;
 
-            // Fotoğraflar
             const modalImages = document.getElementById('modal-images');
             modalImages.innerHTML = '';
             if (ad.images && ad.images.length) {
@@ -1146,7 +1260,6 @@
                 modalImages.innerHTML = '<p>Fotoğraf yok</p>';
             }
 
-            // Bilgiler
             const typeText = ad.type === 'sale' ? 'Satılık' : 'Kiralık';
             const info = `
                 <p><strong>Tip:</strong> ${typeText}</p>
@@ -1167,26 +1280,17 @@
             document.getElementById('detail-modal').classList.remove('show');
         }
 
-        // Form temizleme
-        function clearForm() {
-            document.getElementById('editing-id').value = '';
-            document.getElementById('adType').value = 'sale';
-            document.getElementById('adTitle').value = '';
-            document.getElementById('adCity').value = '';
-            document.getElementById('adDistrict').value = '';
-            document.getElementById('adPrice').value = '';
-            document.getElementById('adArea').value = '';
-            document.getElementById('adDescription').value = '';
-            document.getElementById('adContactName').value = '';
-            document.getElementById('adPhone').value = '';
-            document.getElementById('imageUpload').value = '';
-            document.getElementById('image-preview-container').innerHTML = '';
-            selectedImagesBase64 = [];
-        }
-
         // Başlangıç
         window.onload = function() {
-            // Eski ilanlara userId ekle (varsayılan kullanıcı 1 olsun, uyumluluk için)
+            // Kullanıcılar tablosunu oluştur (yoksa)
+            if (!localStorage.getItem('users')) {
+                const defaultUsers = [
+                    { id: 1, name: 'Ahmet Kullanıcı', email: 'ahmet@example.com' }
+                ];
+                localStorage.setItem('users', JSON.stringify(defaultUsers));
+            }
+
+            // İlanlara userId ekle (eski uyumluluk)
             let ads = JSON.parse(localStorage.getItem('ads')) || [];
             let updated = false;
             ads = ads.map(ad => {
@@ -1204,8 +1308,9 @@
                 localStorage.setItem('ads', JSON.stringify(ads));
             }
 
-            // Varsayılan olarak giriş yapalım (deneyim için)
-            login();
+            // Otomatik giriş yapma (ilk deneyim için)
+            // loggedInUser = { id: 1, name: 'Ahmet Kullanıcı', email: 'ahmet@example.com' };
+            // updateUserUI();
 
             showPage('home');
             setActiveMenu('home');
