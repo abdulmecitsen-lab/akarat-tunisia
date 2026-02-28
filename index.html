@@ -34,55 +34,67 @@
             padding: 0 15px;
         }
 
-        /* Header - Bursam Emlak tarzı sade header */
+        /* Header - yeni toolbar */
         .header {
             background: white;
-            border-radius: 8px;
-            padding: 12px 25px;
+            border-radius: 12px;
+            padding: 0 25px;
             margin-bottom: 25px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
+            height: 70px;
             border: 1px solid #e9ecef;
         }
 
-        .logo h1 {
-            font-size: 22px;
-            font-weight: 600;
-            color: #2c3e50;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             cursor: pointer;
         }
-        .logo p {
-            font-size: 12px;
-            color: #7c8b9a;
-            margin-top: 2px;
+        .logo i {
+            font-size: 28px;
+            color: #2c3e50;
+        }
+        .logo h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
         }
 
-        .nav-links {
+        /* Ana menü */
+        .main-menu {
             display: flex;
-            gap: 20px;
-            align-items: center;
+            gap: 25px;
+            list-style: none;
         }
-        .nav-links a {
+        .main-menu li a {
             text-decoration: none;
-            color: #2c3e50;
-            font-size: 14px;
+            color: #5f6b7a;
+            font-size: 15px;
             font-weight: 500;
-            padding: 6px 0;
+            padding: 8px 0;
             border-bottom: 2px solid transparent;
             transition: 0.2s;
             cursor: pointer;
         }
-        .nav-links a:hover {
-            color: #3498db;
-            border-bottom-color: #3498db;
+        .main-menu li a:hover {
+            color: #2c3e50;
+            border-bottom-color: #2c3e50;
         }
-        .nav-links a.active {
-            color: #3498db;
-            border-bottom-color: #3498db;
+        .main-menu li a.active {
+            color: #2c3e50;
+            border-bottom-color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* Sağ bölüm */
+        .right-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .lang-switcher {
@@ -98,6 +110,10 @@
             font-size: 13px;
             font-weight: 500;
             color: #2c3e50;
+            transition: 0.2s;
+        }
+        .lang-btn:hover {
+            background: #f0f4f8;
         }
         .lang-btn.active {
             background: #2c3e50;
@@ -105,12 +121,64 @@
             border-color: #2c3e50;
         }
 
-        /* İstatistik satırı - sade */
+        /* Kullanıcı dropdown menü */
+        .user-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .user-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #eef2f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            color: #5f6b7a;
+            transition: 0.2s;
+            border: 1px solid #dde4e9;
+        }
+        .user-icon:hover {
+            background: #e0e7ed;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 50px;
+            background: white;
+            min-width: 160px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            z-index: 10;
+            border: 1px solid #e9ecef;
+        }
+        body[dir="ltr"] .dropdown-content { left: auto; right: 0; }
+        .dropdown-content a {
+            color: #2c3e50;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            transition: 0.1s;
+        }
+        .dropdown-content a:hover {
+            background: #f8fafc;
+        }
+        .user-dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* İstatistik satırı */
         .stats-row {
             display: flex;
             gap: 25px;
             background: white;
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 15px 25px;
             margin-bottom: 25px;
             border: 1px solid #e9ecef;
@@ -130,7 +198,7 @@
             color: #7c8b9a;
         }
 
-        /* Bölüm başlıkları - bursamemlak tarzı */
+        /* Bölüm başlıkları */
         .section-header {
             display: flex;
             justify-content: space-between;
@@ -148,10 +216,10 @@
             text-decoration: none;
         }
 
-        /* İlan Listesi - bursamemlak'taki gibi liste görünümü */
+        /* İlan listesi */
         .ads-list {
             background: white;
-            border-radius: 8px;
+            border-radius: 12px;
             border: 1px solid #e9ecef;
             overflow: hidden;
         }
@@ -168,7 +236,7 @@
         .ad-image-thumb {
             width: 70px;
             height: 70px;
-            border-radius: 6px;
+            border-radius: 8px;
             background: #eef2f6;
             background-size: cover;
             background-position: center;
@@ -221,18 +289,14 @@
             white-space: nowrap;
         }
 
-        /* Sayfa bölümleri (ana sayfa, kullanıcı, ilanlarım) */
-        .page-section {
-            display: block;
-        }
-        .page-section.hidden {
-            display: none;
-        }
+        /* Sayfa bölümleri */
+        .page-section { display: block; }
+        .page-section.hidden { display: none; }
 
-        /* Kullanıcı profil kartı */
+        /* Profil kartı */
         .profile-card {
             background: white;
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 30px;
             border: 1px solid #e9ecef;
             text-align: center;
@@ -261,10 +325,10 @@
             margin-bottom: 20px;
         }
 
-        /* Form - sade */
+        /* Form */
         .form-section {
             background: white;
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 25px;
             margin-top: 40px;
             border: 1px solid #e9ecef;
@@ -286,7 +350,7 @@
             width: 100%;
             padding: 10px 14px;
             border: 1px solid #dde4e9;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 14px;
             background: #f9fbfd;
         }
@@ -299,7 +363,7 @@
 
         .photo-upload-area {
             border: 2px dashed #dde4e9;
-            border-radius: 6px;
+            border-radius: 8px;
             padding: 20px;
             text-align: center;
             background: #f9fbfd;
@@ -318,7 +382,7 @@
         .preview-image {
             width: 60px;
             height: 60px;
-            border-radius: 4px;
+            border-radius: 6px;
             object-fit: cover;
             border: 1px solid #dde4e9;
         }
@@ -326,7 +390,7 @@
         .btn {
             padding: 10px 24px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
@@ -356,6 +420,8 @@
         }
 
         @media (max-width: 768px) {
+            .header { flex-wrap: wrap; height: auto; padding: 15px; }
+            .main-menu { flex-wrap: wrap; justify-content: center; }
             .ad-item { flex-wrap: wrap; }
             .ad-details { gap: 10px; }
             .stats-row { flex-wrap: wrap; }
@@ -369,17 +435,36 @@
         <!-- Header -->
         <header class="header">
             <div class="logo" onclick="showPage('home')">
+                <i class="fas fa-home"></i>
                 <h1>Akarat Tunisia</h1>
-                <p id="hero-subtitle">في تونس</p>
             </div>
-            <div class="nav-links">
-                <a onclick="showPage('home')" id="nav-home" class="active">Ana Sayfa</a>
-                <a onclick="showPage('myads')" id="nav-myads">İlanlarım</a>
-                <a onclick="showPage('profile')" id="nav-profile">Kullanıcı</a>
-            </div>
-            <div class="lang-switcher">
-                <button class="lang-btn" onclick="changeLanguage('tr')">🇹🇷 Türkçe</button>
-                <button class="lang-btn active" onclick="changeLanguage('ar')">🇸🇦 العربية</button>
+
+            <!-- Ana Menü -->
+            <ul class="main-menu">
+                <li><a onclick="showPage('home'); setActiveMenu('home')" id="menu-home" class="active">Ana Sayfa</a></li>
+                <li><a onclick="showPage('for-sale'); setActiveMenu('for-sale')" id="menu-for-sale">Satılıklar</a></li>
+                <li><a onclick="showPage('for-rent'); setActiveMenu('for-rent')" id="menu-for-rent">Kiralıklar</a></li>
+                <li><a onclick="showPage('about'); setActiveMenu('about')" id="menu-about">Hakkımızda</a></li>
+                <li><a onclick="showPage('city'); setActiveMenu('city')" id="menu-city">Şehir Tanıtımı</a></li>
+                <li><a onclick="showPage('contact'); setActiveMenu('contact')" id="menu-contact">İletişim</a></li>
+            </ul>
+
+            <!-- Sağ Menü -->
+            <div class="right-menu">
+                <div class="lang-switcher">
+                    <button class="lang-btn" onclick="changeLanguage('tr')">🇹🇷</button>
+                    <button class="lang-btn active" onclick="changeLanguage('ar')">🇸🇦</button>
+                </div>
+                <!-- Kullanıcı Dropdown -->
+                <div class="user-dropdown">
+                    <div class="user-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="dropdown-content">
+                        <a onclick="showPage('myads')"><i class="fas fa-list"></i> İlanlarım</a>
+                        <a onclick="showPage('profile')"><i class="fas fa-user-circle"></i> Profil</a>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -426,15 +511,15 @@
                         <label class="form-label" id="basic-info-title">📋 Temel Bilgiler</label>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Başlık / العنوان</label>
+                        <label class="form-label">Başlık</label>
                         <input type="text" class="form-control" id="adTitle" placeholder="Örn: Merkezde 2+1 Daire">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Şehir / المدينة</label>
+                        <label class="form-label">Şehir</label>
                         <input type="text" class="form-control" id="adCity" placeholder="Örn: Tunus">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Semt / الحي</label>
+                        <label class="form-label">Semt</label>
                         <input type="text" class="form-control" id="adDistrict" placeholder="Örn: Kartaca">
                     </div>
 
@@ -442,11 +527,11 @@
                         <label class="form-label" id="price-area-title">💰 Fiyat ve Alan</label>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Fiyat / السعر</label>
+                        <label class="form-label">Fiyat</label>
                         <input type="number" class="form-control" id="adPrice" placeholder="Örn: 500000">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Alan (m²) / المساحة</label>
+                        <label class="form-label">Alan (m²)</label>
                         <input type="number" class="form-control" id="adArea" placeholder="Örn: 120">
                     </div>
 
@@ -471,11 +556,11 @@
                         <label class="form-label" id="contact-info-title">📞 İletişim Bilgileri</label>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">İsim / الاسم</label>
+                        <label class="form-label">İsim</label>
                         <input type="text" class="form-control" id="adContactName" placeholder="Adınız Soyadınız">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Telefon / الهاتف</label>
+                        <label class="form-label">Telefon</label>
                         <input type="tel" class="form-control" id="adPhone" placeholder="+216 ...">
                     </div>
 
@@ -485,6 +570,34 @@
                     </div>
                 </div>
             </section>
+        </div>
+
+        <!-- Diğer Sayfalar (Şimdilik boş, ileride doldurulacak) -->
+        <div id="for-sale-page" class="page-section hidden">
+            <div class="section-header"><h2 class="section-title">Satılık İlanlar</h2></div>
+            <div class="ads-list" id="for-sale-container"></div>
+        </div>
+        <div id="for-rent-page" class="page-section hidden">
+            <div class="section-header"><h2 class="section-title">Kiralık İlanlar</h2></div>
+            <div class="ads-list" id="for-rent-container"></div>
+        </div>
+        <div id="about-page" class="page-section hidden">
+            <div style="background: white; border-radius: 12px; padding: 40px; text-align: center;">
+                <h2>Hakkımızda</h2>
+                <p style="margin-top: 20px; color: #5f6b7a;">Akarat Tunisia, Tunus'ta emlak alım satım ve kiralama işlemleriniz için güvenilir bir platformdur.</p>
+            </div>
+        </div>
+        <div id="city-page" class="page-section hidden">
+            <div style="background: white; border-radius: 12px; padding: 40px; text-align: center;">
+                <h2>Şehir Tanıtımı</h2>
+                <p style="margin-top: 20px; color: #5f6b7a;">Tunus'un en güzel şehirleri ve semtleri hakkında bilgiler yakında burada olacak.</p>
+            </div>
+        </div>
+        <div id="contact-page" class="page-section hidden">
+            <div style="background: white; border-radius: 12px; padding: 40px; text-align: center;">
+                <h2>İletişim</h2>
+                <p style="margin-top: 20px; color: #5f6b7a;">info@akarattunisia.com</p>
+            </div>
         </div>
 
         <!-- İlanlarım Sayfası -->
@@ -521,24 +634,26 @@
         // Dil çevirileri
         const translations = {
             tr: {
-                heroSubtitle: "Tunus",
                 activeListing: "Aktif İlan", city: "Şehir", user: "Kullanıcı",
                 featuredTitle: "Özel İlanlar", latestTitle: "Son Eklenen İlanlar",
                 addAdText: "Yeni İlan Ekle", basicInfo: "Temel Bilgiler",
                 priceArea: "Fiyat ve Alan", description: "Açıklama",
                 photos: "Fotoğraflar", clickToAddPhotos: "Fotoğraf eklemek için tıkla",
                 contactInfo: "İletişim Bilgileri", myAdsTitle: "İlanlarım",
-                viewAll: "Tümünü Gör", navHome: "Ana Sayfa", navMyAds: "İlanlarım", navProfile: "Kullanıcı"
+                viewAll: "Tümünü Gör",
+                menuHome: "Ana Sayfa", menuForSale: "Satılıklar", menuForRent: "Kiralıklar",
+                menuAbout: "Hakkımızda", menuCity: "Şehir Tanıtımı", menuContact: "İletişim"
             },
             ar: {
-                heroSubtitle: "في تونس",
                 activeListing: "إعلان نشط", city: "مدينة", user: "مستخدم",
                 featuredTitle: "إعلانات مميزة", latestTitle: "أحدث الإعلانات",
                 addAdText: "إضافة إعلان جديد", basicInfo: "معلومات أساسية",
                 priceArea: "السعر والمساحة", description: "الوصف",
                 photos: "الصور", clickToAddPhotos: "انقر لإضافة الصور",
                 contactInfo: "معلومات التواصل", myAdsTitle: "إعلاناتي",
-                viewAll: "عرض الكل", navHome: "الرئيسية", navMyAds: "إعلاناتي", navProfile: "المستخدم"
+                viewAll: "عرض الكل",
+                menuHome: "الرئيسية", menuForSale: "للبيع", menuForRent: "للإيجار",
+                menuAbout: "من نحن", menuCity: "تعريف المدينة", menuContact: "اتصل بنا"
             }
         };
 
@@ -547,34 +662,62 @@
 
         // Sayfa göster/gizle
         function showPage(page) {
+            // Tüm sayfaları gizle
             document.getElementById('home-page').classList.add('hidden');
+            document.getElementById('for-sale-page').classList.add('hidden');
+            document.getElementById('for-rent-page').classList.add('hidden');
+            document.getElementById('about-page').classList.add('hidden');
+            document.getElementById('city-page').classList.add('hidden');
+            document.getElementById('contact-page').classList.add('hidden');
             document.getElementById('myads-page').classList.add('hidden');
             document.getElementById('profile-page').classList.add('hidden');
-            
-            document.getElementById('nav-home').classList.remove('active');
-            document.getElementById('nav-myads').classList.remove('active');
-            document.getElementById('nav-profile').classList.remove('active');
-            
+
+            // Seçilen sayfayı göster
             if (page === 'home') {
                 document.getElementById('home-page').classList.remove('hidden');
-                document.getElementById('nav-home').classList.add('active');
-                displayAds(); // Ana sayfadaki listeleri güncelle
+                displayAds(); // Ana sayfa listelerini güncelle
+            } else if (page === 'for-sale') {
+                document.getElementById('for-sale-page').classList.remove('hidden');
+                // İleride satılık ilanları filtrele
+                document.getElementById('for-sale-container').innerHTML = renderAdList(JSON.parse(localStorage.getItem('ads')) || []);
+            } else if (page === 'for-rent') {
+                document.getElementById('for-rent-page').classList.remove('hidden');
+                document.getElementById('for-rent-container').innerHTML = renderAdList(JSON.parse(localStorage.getItem('ads')) || []);
+            } else if (page === 'about') {
+                document.getElementById('about-page').classList.remove('hidden');
+            } else if (page === 'city') {
+                document.getElementById('city-page').classList.remove('hidden');
+            } else if (page === 'contact') {
+                document.getElementById('contact-page').classList.remove('hidden');
             } else if (page === 'myads') {
                 document.getElementById('myads-page').classList.remove('hidden');
-                document.getElementById('nav-myads').classList.add('active');
                 displayMyAds();
             } else if (page === 'profile') {
                 document.getElementById('profile-page').classList.remove('hidden');
-                document.getElementById('nav-profile').classList.add('active');
             }
+        }
+
+        // Menü aktif sınıfını güncelle
+        function setActiveMenu(menu) {
+            document.getElementById('menu-home').classList.remove('active');
+            document.getElementById('menu-for-sale').classList.remove('active');
+            document.getElementById('menu-for-rent').classList.remove('active');
+            document.getElementById('menu-about').classList.remove('active');
+            document.getElementById('menu-city').classList.remove('active');
+            document.getElementById('menu-contact').classList.remove('active');
+            if (menu === 'home') document.getElementById('menu-home').classList.add('active');
+            else if (menu === 'for-sale') document.getElementById('menu-for-sale').classList.add('active');
+            else if (menu === 'for-rent') document.getElementById('menu-for-rent').classList.add('active');
+            else if (menu === 'about') document.getElementById('menu-about').classList.add('active');
+            else if (menu === 'city') document.getElementById('menu-city').classList.add('active');
+            else if (menu === 'contact') document.getElementById('menu-contact').classList.add('active');
         }
 
         // Dil değiştirme
         function changeLanguage(lang) {
             currentLanguage = lang;
             const t = translations[lang];
-            
-            document.getElementById('hero-subtitle').innerText = t.heroSubtitle;
+
             document.querySelector('#stats-active .stat-label').innerText = t.activeListing;
             document.querySelector('#stats-city .stat-label').innerText = t.city;
             document.querySelector('#stats-user .stat-label').innerText = t.user;
@@ -589,15 +732,22 @@
             document.getElementById('contact-info-title').innerText = t.contactInfo;
             document.getElementById('myads-title').innerText = t.myAdsTitle;
             document.getElementById('view-all-link').innerText = t.viewAll;
-            document.getElementById('nav-home').innerText = t.navHome;
-            document.getElementById('nav-myads').innerText = t.navMyAds;
-            document.getElementById('nav-profile').innerText = t.navProfile;
 
+            // Menü öğelerini güncelle
+            document.getElementById('menu-home').innerText = t.menuHome;
+            document.getElementById('menu-for-sale').innerText = t.menuForSale;
+            document.getElementById('menu-for-rent').innerText = t.menuForRent;
+            document.getElementById('menu-about').innerText = t.menuAbout;
+            document.getElementById('menu-city').innerText = t.menuCity;
+            document.getElementById('menu-contact').innerText = t.menuContact;
+
+            // Dil butonları aktiflik
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
+
             document.documentElement.lang = lang;
             document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
-            
+
             // Sayfaları yenile
             displayAds();
             if (!document.getElementById('myads-page').classList.contains('hidden')) {
@@ -610,14 +760,14 @@
             const imageUpload = document.getElementById('imageUpload');
             const previewContainer = document.getElementById('image-preview-container');
             const uploadArea = document.getElementById('photo-upload-area');
-            
+
             uploadArea.addEventListener('click', () => imageUpload.click());
-            
+
             imageUpload.addEventListener('change', function(e) {
                 const files = e.target.files;
                 previewContainer.innerHTML = '';
                 selectedImagesBase64 = [];
-                
+
                 for (let file of files) {
                     if (file.type.startsWith('image/')) {
                         const reader = new FileReader();
@@ -658,13 +808,13 @@
             let ads = JSON.parse(localStorage.getItem('ads')) || [];
             ads.unshift(newAd);
             localStorage.setItem('ads', JSON.stringify(ads));
-            
+
             clearForm();
             displayAds();
             if (!document.getElementById('myads-page').classList.contains('hidden')) {
                 displayMyAds();
             }
-            
+
             alert(currentLanguage === 'tr' ? 'İlan eklendi!' : 'تم إضافة الإعلان!');
         }
 
@@ -687,20 +837,14 @@
             const ads = JSON.parse(localStorage.getItem('ads')) || [];
             document.querySelector('#stats-active .stat-number').innerText = ads.length;
 
-            // Özel ilanlar (tümü)
-            const featuredContainer = document.getElementById('featured-ads-container');
-            // Son eklenenler (ilk 5)
-            const latestContainer = document.getElementById('latest-ads-container');
-            
-            featuredContainer.innerHTML = renderAdList(ads);
-            latestContainer.innerHTML = renderAdList(ads.slice(0, 5));
+            document.getElementById('featured-ads-container').innerHTML = renderAdList(ads);
+            document.getElementById('latest-ads-container').innerHTML = renderAdList(ads.slice(0, 5));
         }
 
         // İlanlarım sayfası
         function displayMyAds() {
             const ads = JSON.parse(localStorage.getItem('ads')) || [];
-            const container = document.getElementById('myads-container');
-            container.innerHTML = renderAdList(ads);
+            document.getElementById('myads-container').innerHTML = renderAdList(ads);
         }
 
         // Ortak liste render fonksiyonu
@@ -717,7 +861,7 @@
                     ? `style="background-image: url('${ad.images[0]}');"` 
                     : '';
                 const thumbContent = ad.images?.length ? '' : '<i class="fas fa-image"></i>';
-                
+
                 return `
                     <div class="ad-item">
                         <div class="ad-image-thumb" ${thumbStyle}>${thumbContent}</div>
@@ -737,6 +881,7 @@
         window.onload = function() {
             displayAds();
             showPage('home');
+            setActiveMenu('home');
         };
     </script>
 </body>
