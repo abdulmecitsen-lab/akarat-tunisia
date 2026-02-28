@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Akarat Tunisia | Profesyonel Emlak Portalı</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root {
             --primary: #1e3a8a;
@@ -13,69 +14,75 @@
             --accent: #f59e0b;
             --bg: #f8fafc;
             --text: #1e293b;
+            --white: #ffffff;
             --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --border: #e2e8f0;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+        .hidden { display: none !important; }
 
-        /* HEADER & NAVIGATION */
-        header { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .nav-container { max-width: 1200px; margin: 0 auto; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 24px; font-weight: 800; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        /* HEADER */
+        header { background: var(--white); box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border); }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 22px; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 10px; cursor: pointer; text-decoration: none; }
         
-        .nav-menu { display: flex; list-style: none; gap: 20px; align-items: center; }
-        .nav-menu a { text-decoration: none; color: var(--text); font-weight: 600; font-size: 14px; transition: 0.3s; cursor: pointer; }
-        .nav-menu a:hover, .nav-menu a.active { color: var(--primary-light); }
+        .nav-menu { display: flex; list-style: none; gap: 20px; }
+        .nav-menu a { text-decoration: none; color: #64748b; font-weight: 600; font-size: 14px; transition: 0.3s; cursor: pointer; padding: 8px 0; border-bottom: 2px solid transparent; }
+        .nav-menu a:hover, .nav-menu a.active { color: var(--primary); border-bottom-color: var(--primary); }
 
-        .auth-btns { display: flex; gap: 10px; }
-        .btn { padding: 10px 18px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: 0.3s; font-size: 13px; }
+        .auth-section { display: flex; align-items: center; gap: 15px; }
+        .btn { padding: 10px 18px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: 0.3s; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-outline { background: white; border: 1.5px solid var(--primary); color: var(--primary); }
         .btn-primary:hover { background: var(--primary-light); }
 
-        /* HERO & FILTERS */
-        .hero { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200'); background-size: cover; background-position: center; padding: 100px 20px; text-align: center; color: white; }
-        .filter-box { max-width: 900px; margin: -50px auto 40px; background: white; padding: 25px; border-radius: 15px; box-shadow: var(--shadow); display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
-        .filter-group { display: flex; flex-direction: column; gap: 5px; text-align: left; }
+        /* FILTERS */
+        .filter-section { background: var(--white); padding: 30px 20px; border-bottom: 1px solid var(--border); }
+        .filter-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .filter-group { display: flex; flex-direction: column; gap: 5px; }
         .filter-group label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; }
-        .filter-group select, .filter-group input { padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; }
+        .filter-group input, .filter-group select { padding: 10px; border: 1px solid var(--border); border-radius: 8px; outline: none; font-size: 13px; background: #f9fbfd; }
 
-        /* PAGES */
-        .page { display: none; max-width: 1200px; margin: 0 auto; padding: 40px 20px; min-height: 70vh; }
-        .page.active { display: block; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* HERO STATS */
+        .stats-banner { max-width: 1200px; margin: 20px auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 0 20px; }
+        .stat-card { background: var(--white); padding: 20px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
+        .stat-card h3 { font-size: 24px; color: var(--primary); }
+        .stat-card p { font-size: 13px; color: #64748b; font-weight: 600; }
 
-        /* ADS GRID */
-        .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
-        .ad-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; position: relative; border: 1px solid #f1f5f9; }
-        .ad-card:hover { transform: translateY(-10px); box-shadow: var(--shadow); }
-        .ad-img { width: 100%; height: 210px; object-fit: cover; }
-        .ad-badge { position: absolute; top: 15px; left: 15px; background: var(--accent); color: white; padding: 4px 12px; border-radius: 5px; font-size: 12px; font-weight: 700; }
+        /* AD CARDS */
+        .main-content { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .ad-card { background: var(--white); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); transition: 0.3s; position: relative; cursor: pointer; }
+        .ad-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+        .ad-img { width: 100%; height: 200px; object-fit: cover; background: #eee; }
+        .ad-badge { position: absolute; top: 12px; left: 12px; background: var(--accent); color: white; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; }
         .ad-content { padding: 20px; }
-        .ad-price { font-size: 22px; font-weight: 800; color: var(--primary); margin-bottom: 10px; }
-        .ad-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; color: var(--text); }
-        .ad-meta { display: flex; gap: 15px; font-size: 13px; color: #64748b; margin-bottom: 15px; }
+        .ad-price { font-size: 20px; font-weight: 800; color: var(--primary); margin-bottom: 5px; }
+        .ad-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .ad-meta { display: flex; gap: 15px; font-size: 12px; color: #64748b; }
 
-        /* FORMS */
-        .form-card { background: white; padding: 40px; border-radius: 15px; box-shadow: var(--shadow); max-width: 700px; margin: 0 auto; }
+        /* FORM STYLES */
+        .form-container { background: var(--white); padding: 35px; border-radius: 15px; border: 1px solid var(--border); max-width: 800px; margin: 0 auto; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .full-width { grid-column: span 2; }
+        .photo-upload { border: 2px dashed var(--border); padding: 30px; text-align: center; border-radius: 10px; cursor: pointer; background: #f9fbfd; transition: 0.3s; }
+        .photo-upload:hover { border-color: var(--primary-light); background: #f0f7ff; }
 
-        /* ABOUT SECTION */
-        .about-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
-        .about-img img { width: 100%; border-radius: 20px; }
+        /* MODALS */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: var(--white); border-radius: 16px; width: 100%; max-width: 500px; padding: 30px; position: relative; }
+        .close-btn { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: #64748b; }
 
-        /* MOBILE MENU */
-        .menu-toggle { display: none; font-size: 24px; cursor: pointer; }
+        /* FOOTER */
+        footer { margin-top: 60px; padding: 40px 20px; background: var(--white); border-top: 1px solid var(--border); text-align: center; color: #64748b; font-size: 13px; }
 
         @media (max-width: 768px) {
-            .nav-menu { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; flex-direction: column; padding: 20px; border-top: 1px solid #eee; }
-            .nav-menu.mobile-active { display: flex; }
-            .menu-toggle { display: block; }
-            .about-wrap { grid-template-columns: 1fr; }
+            .nav-menu { display: none; }
             .form-grid { grid-template-columns: 1fr; }
             .full-width { grid-column: span 1; }
+            .stats-banner { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -84,125 +91,286 @@
 <header>
     <div class="nav-container">
         <div class="logo" onclick="showPage('home')"><i class="fas fa-city"></i> Akarat Tunisia</div>
-        <div class="menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
-        <ul class="nav-menu" id="navMenu">
-            <li><a onclick="showPage('home')" id="n-home" class="active">Ana Sayfa</a></li>
-            <li><a onclick="showPage('sale')" id="n-sale">Satılık</a></li>
-            <li><a onclick="showPage('rent')" id="n-rent">Kiralık</a></li>
-            <li><a onclick="showPage('about')" id="n-about">Hakkımızda</a></li>
-            <li><a onclick="showPage('add')" id="n-add"><i class="fas fa-plus-circle"></i> İlan Ekle</a></li>
-            <li><a onclick="showPage('contact')" id="n-contact">İletişim</a></li>
+        <ul class="nav-menu">
+            <li><a onclick="showPage('home')" id="menu-home" class="active">Ana Sayfa</a></li>
+            <li><a onclick="showPage('for-sale')">Satılık</a></li>
+            <li><a onclick="showPage('for-rent')">Kiralık</a></li>
+            <li><a onclick="showPage('about')">Hakkımızda</a></li>
+            <li><a onclick="showPage('contact')">İletişim</a></li>
         </ul>
-        <div class="auth-btns">
-            <button class="btn btn-outline" onclick="alert('Giriş Sistemi Aktif Edilecek')">Giriş</button>
+        <div class="auth-section">
+            <div id="auth-buttons">
+                <button class="btn btn-outline" onclick="showModal('login-modal')">Giriş</button>
+                <button class="btn btn-primary" onclick="showModal('register-modal')">Kayıt Ol</button>
+            </div>
+            <div id="user-info" class="hidden">
+                <span id="username" style="font-weight: 600; font-size: 14px;"></span>
+                <button class="btn btn-outline" style="padding: 6px 12px;" onclick="logout()">Çıkış</button>
+            </div>
         </div>
     </div>
 </header>
 
-<div id="home" class="page active">
-    <div class="hero">
-        <h1 style="font-size: 3rem; margin-bottom: 15px;">Tunus'taki Yeni Evinizi Keşfedin</h1>
-        <p style="font-size: 1.2rem; opacity: 0.9;">Binlerce güncel ilan arasında size en uygun olanı bulun.</p>
-    </div>
-    
-    <div class="filter-box">
-        <div class="filter-group"><label>Şehir</label><input type="text" id="f-city" placeholder="Örn: Tunus" oninput="filterAds()"></div>
+<div id="filter-panel" class="filter-section">
+    <div class="filter-grid">
+        <div class="filter-group"><label>Min Fiyat</label><input type="number" id="filter-price-min"></div>
+        <div class="filter-group"><label>Max Fiyat</label><input type="number" id="filter-price-max"></div>
+        <div class="filter-group"><label>Şehir</label><input type="text" id="filter-city"></div>
         <div class="filter-group">
-            <label>İşlem</label>
-            <select id="f-type" onchange="filterAds()">
-                <option value="all">Tümü</option>
+            <label>İlan Tipi</label>
+            <select id="filter-type">
+                <option value="">Tümü</option>
                 <option value="sale">Satılık</option>
                 <option value="rent">Kiralık</option>
             </select>
         </div>
-        <div class="filter-group"><label>Maks. Fiyat</label><input type="number" id="f-price" placeholder="Limit yok" oninput="filterAds()"></div>
-        <div class="filter-group"><label>&nbsp;</label><button class="btn btn-primary" onclick="filterAds()">Ara</button></div>
+        <div class="filter-group"><label>&nbsp;</label><button class="btn btn-primary" onclick="applyFilters()">Ara</button></div>
+    </div>
+</div>
+
+<main class="main-content">
+    
+    <div id="home-page" class="page-section">
+        <div class="stats-banner">
+            <div class="stat-card"><h3 id="stat-count">0</h3><p>Aktif İlan</p></div>
+            <div class="stat-card"><h3>Tunus</h3><p>Hizmet Bölgesi</p></div>
+            <div class="stat-card"><h3>1200+</h3><p>Mutlu Müşteri</p></div>
+        </div>
+        <h2 style="margin: 30px 0;">Öne Çıkan İlanlar</h2>
+        <div class="ads-grid" id="ads-container"></div>
     </div>
 
-    <h2 style="margin-bottom: 30px;">Öne Çıkan İlanlar</h2>
-    <div class="ads-grid" id="ads-container"></div>
-</div>
-
-<div id="sale" class="page">
-    <h1 style="margin-bottom: 30px;">Satılık Gayrimenkuller</h1>
-    <div class="ads-grid" id="sale-container"></div>
-</div>
-
-<div id="rent" class="page">
-    <h1 style="margin-bottom: 30px;">Kiralık Gayrimenkuller</h1>
-    <div class="ads-grid" id="rent-container"></div>
-</div>
-
-<div id="add" class="page">
-    <div class="form-card">
-        <h2 style="margin-bottom: 25px;"><i class="fas fa-plus-circle"></i> Yeni İlan Oluştur</h2>
-        <div class="form-grid">
-            <div class="filter-group full-width"><label>İlan Başlığı</label><input type="text" id="add-title" placeholder="Örn: Havuzlu Modern Villa"></div>
-            <div class="filter-group"><label>Tür</label><select id="add-type"><option value="sale">Satılık</option><option value="rent">Kiralık</option></select></div>
-            <div class="filter-group"><label>Fiyat (TND)</label><input type="number" id="add-price"></div>
-            <div class="filter-group"><label>Şehir</label><input type="text" id="add-city"></div>
-            <div class="filter-group"><label>Oda Sayısı</label><input type="text" id="add-rooms" placeholder="3+1"></div>
-            <div class="filter-group full-width"><label>Fotoğraf URL</label><input type="text" id="add-img" placeholder="https://images.unsplash.com/..."></div>
-            <div class="full-width"><button class="btn btn-primary" style="width: 100%; padding: 15px;" onclick="createNewAd()">İlanı Yayınla</button></div>
+    <div id="about-page" class="page-section hidden">
+        <div class="form-container" style="text-align: center;">
+            <h2 style="color: var(--primary); margin-bottom: 20px;">Hakkımızda</h2>
+            <p>Akarat Tunisia, Tunus emlak piyasasında şeffaflık ve güveni temsil eder. 20 yılı aşkın tecrübemizle size en doğru yatırımı sunuyoruz.</p>
         </div>
     </div>
-</div>
 
-<div id="about" class="page">
-    <div class="about-wrap">
-        <div class="about-img"><img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800"></div>
-        <div class="about-text">
-            <h1 style="color: var(--primary); margin-bottom: 20px;">Hakkımızda</h1>
-            <p>Akarat Tunisia, 20 yılı aşkın tecrübesiyle Tunus emlak piyasasının öncü kuruluşlarından biridir. Bursam Emlak kalitesini ve güvenini Tunus'a taşıyan vizyonumuzla, binlerce aileyi ev sahibi yaptık.</p>
-            <br>
-            <p><strong>Neden Biz?</strong><br> - %100 Şeffaf Fiyat Politikası<br> - Uzman Hukuki Destek<br> - Geniş Portföy Ağı</p>
+    <div id="contact-page" class="page-section hidden">
+        <div class="form-container">
+            <h2 style="margin-bottom: 20px; text-align: center;">İletişime Geçin</h2>
+            <div id="contact-map" style="height: 300px; border-radius: 12px; margin-bottom: 20px;"></div>
+            <p style="text-align: center;">📞 +216 71 000 000 | 📧 info@akarattunisia.com</p>
         </div>
+    </div>
+
+    <div id="ad-form-section" class="page-section" style="margin-top: 50px;">
+        <div class="form-container">
+            <h2 style="margin-bottom: 25px;"><i class="fas fa-plus-circle"></i> Yeni İlan Ekle</h2>
+            <div class="form-grid">
+                <div class="filter-group full-width"><label>Başlık</label><input type="text" id="adTitle"></div>
+                <div class="filter-group">
+                    <label>İlan Tipi</label>
+                    <select id="adType"><option value="sale">Satılık</option><option value="rent">Kiralık</option></select>
+                </div>
+                <div class="filter-group"><label>Fiyat (TND)</label><input type="number" id="adPrice"></div>
+                <div class="filter-group"><label>Şehir</label><input type="text" id="adCity"></div>
+                <div class="filter-group"><label>Oda Sayısı</label><input type="text" id="adRooms" placeholder="2+1"></div>
+                <div class="filter-group full-width">
+                    <label>Resim Yükle</label>
+                    <div class="photo-upload" onclick="document.getElementById('imageUpload').click()">
+                        <i class="fas fa-camera fa-2x" style="color: var(--primary);"></i><br>
+                        <span>Tıklayın veya resimleri sürükleyin</span>
+                        <input type="file" id="imageUpload" accept="image/*" multiple style="display:none;" onchange="handleImageUpload(event)">
+                    </div>
+                    <div id="image-preview" style="display:flex; gap:10px; margin-top:10px;"></div>
+                </div>
+                <div class="full-width"><button class="btn btn-primary" style="width:100%; padding:15px;" onclick="saveAd()">İlanı Yayınla</button></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div id="login-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('login-modal')">&times;</span>
+        <h2 style="margin-bottom: 20px;">Giriş Yap</h2>
+        <div class="filter-group" style="margin-bottom: 15px;"><label>E-posta</label><input type="email" id="login-email"></div>
+        <div class="filter-group" style="margin-bottom: 20px;"><label>Şifre</label><input type="password" id="login-password"></div>
+        <button class="btn btn-primary" style="width: 100%" onclick="login()">Giriş Yap</button>
     </div>
 </div>
 
-<div id="contact" class="page">
-    <div class="form-card" style="text-align: center;">
-        <h2>İletişime Geçin</h2>
-        <p style="color: #64748b; margin-bottom: 30px;">Bize 7/24 ulaşabilirsiniz.</p>
-        <div style="display: grid; gap: 20px;">
-            <p><i class="fas fa-phone-alt"></i> +216 71 000 000</p>
-            <p><i class="fas fa-envelope"></i> info@akarat-tunisia.com</p>
-            <p><i class="fas fa-map-marker-alt"></i> Tunis City Center, Tunisia</p>
-        </div>
+<div id="register-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('register-modal')">&times;</span>
+        <h2 style="margin-bottom: 20px;">Kayıt Ol</h2>
+        <div class="filter-group" style="margin-bottom: 15px;"><label>Ad Soyad</label><input type="text" id="register-name"></div>
+        <div class="filter-group" style="margin-bottom: 15px;"><label>E-posta</label><input type="email" id="register-email"></div>
+        <div class="filter-group" style="margin-bottom: 20px;"><label>Şifre</label><input type="password" id="register-password"></div>
+        <button class="btn btn-primary" style="width: 100%" onclick="register()">Kayıt Ol</button>
     </div>
 </div>
 
+<footer>
+    <p>© 2026 Akarat Tunisia - Tüm hakları saklıdır.</p>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    // DATA MANAGEMENT
-    let ads = JSON.parse(localStorage.getItem('myAds')) || [
-        { id: 1, title: "Lüks Havuzlu Villa", price: 850000, city: "Tunus", type: "sale", rooms: "5+1", img: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=500" },
-        { id: 2, title: "Sahil Kenarı Rezidans", price: 2500, city: "Sousse", type: "rent", rooms: "2+1", img: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=500" },
-        { id: 3, title: "Modern Ofis Katı", price: 450000, city: "Tunis Center", type: "sale", rooms: "3 Oda", img: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=500" }
+    // CORE DATA FROM ORIGINAL CODE
+    let ads = JSON.parse(localStorage.getItem('ads')) || [
+        { id: 1, title: "Modern Deniz Manzaralı Villa", price: 750000, city: "Sousse", type: "sale", rooms: "4+1", images: [] },
+        { id: 2, title: "Şehir Merkezinde Lüks Daire", price: 1500, city: "Tunis", type: "rent", rooms: "2+1", images: [] }
     ];
+    let selectedImagesBase64 = [];
+    let loggedInUser = JSON.parse(localStorage.getItem('loggedInUser')) || null;
 
-    // NAVIGATION
+    // NAVIGATION SYSTEM
     function showPage(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
+        document.querySelectorAll('.page-section').forEach(p => p.classList.add('hidden'));
+        document.getElementById(pageId + '-page').classList.remove('hidden');
         
+        // Toolbar aktiflik durumu
         document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
-        document.getElementById('n-' + pageId).classList.add('active');
-        
-        document.getElementById('navMenu').classList.remove('mobile-active');
+        if(document.getElementById('menu-' + pageId)) document.getElementById('menu-' + pageId).classList.add('active');
+
+        // Sayfa özel işlemler
+        if(pageId === 'home') {
+            document.getElementById('filter-panel').classList.remove('hidden');
+            document.getElementById('ad-form-section').classList.remove('hidden');
+            renderAds(ads);
+        } else if(pageId === 'for-sale') {
+            document.getElementById('home-page').classList.remove('hidden');
+            document.getElementById('filter-type').value = 'sale';
+            applyFilters();
+        } else if(pageId === 'for-rent') {
+            document.getElementById('home-page').classList.remove('hidden');
+            document.getElementById('filter-type').value = 'rent';
+            applyFilters();
+        } else {
+            document.getElementById('filter-panel').classList.add('hidden');
+            document.getElementById('ad-form-section').classList.add('hidden');
+        }
+
+        if(pageId === 'contact') initMap();
         window.scrollTo(0,0);
-        
-        if(pageId === 'home' || pageId === 'sale' || pageId === 'rent') renderAll();
     }
 
-    function toggleMenu() {
-        document.getElementById('navMenu').classList.toggle('mobile-active');
-    }
-
-    // RENDERING
-    function renderAds(data, containerId) {
-        const container = document.getElementById(containerId);
-        if(!container) return;
+    // AD MANAGEMENT (Original Logic)
+    function renderAds(data) {
+        const container = document.getElementById('ads-container');
         container.innerHTML = '';
-        
         data.forEach(ad => {
-            container.innerHTML +=
+            const imgSrc = ad.images && ad.images.length > 0 ? ad.images[0] : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=500';
+            container.innerHTML += `
+                <div class="ad-card">
+                    <div class="ad-badge">${ad.type === 'sale' ? 'SATILIK' : 'KİRALIK'}</div>
+                    <img src="${imgSrc}" class="ad-img">
+                    <div class="ad-content">
+                        <div class="ad-price">${Number(ad.price).toLocaleString()} TND</div>
+                        <div class="ad-title">${ad.title}</div>
+                        <div class="ad-meta">
+                            <span><i class="fas fa-bed"></i> ${ad.rooms}</span>
+                            <span><i class="fas fa-map-marker-alt"></i> ${ad.city}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        document.getElementById('stat-count').innerText = data.length;
+    }
+
+    function handleImageUpload(event) {
+        const files = event.target.files;
+        const preview = document.getElementById('image-preview');
+        preview.innerHTML = '';
+        selectedImagesBase64 = [];
+
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                selectedImagesBase64.push(e.target.result);
+                preview.innerHTML += `<img src="${e.target.result}" style="width:60px; height:60px; border-radius:5px; object-fit:cover;">`;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function saveAd() {
+        const title = document.getElementById('adTitle').value;
+        const price = document.getElementById('adPrice').value;
+        const city = document.getElementById('adCity').value;
+        const rooms = document.getElementById('adRooms').value;
+        const type = document.getElementById('adType').value;
+
+        if(!title || !price) return alert("Lütfen başlık ve fiyat giriniz!");
+
+        const newAd = {
+            id: Date.now(),
+            title, price, city, rooms, type,
+            images: selectedImagesBase64
+        };
+
+        ads.unshift(newAd);
+        localStorage.setItem('ads', JSON.stringify(ads));
+        alert("İlanınız başarıyla eklendi!");
+        location.reload();
+    }
+
+    // FILTER SYSTEM
+    function applyFilters() {
+        const min = Number(document.getElementById('filter-price-min').value) || 0;
+        const max = Number(document.getElementById('filter-price-max').value) || Infinity;
+        const city = document.getElementById('filter-city').value.toLowerCase();
+        const type = document.getElementById('filter-type').value;
+
+        const filtered = ads.filter(ad => {
+            return ad.price >= min && ad.price <= max && 
+                   (city === '' || ad.city.toLowerCase().includes(city)) &&
+                   (type === '' || ad.type === type);
+        });
+        renderAds(filtered);
+    }
+
+    // AUTH SYSTEM
+    function showModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function register() {
+        const name = document.getElementById('register-name').value;
+        const email = document.getElementById('register-email').value;
+        if(!name || !email) return alert("Bilgileri doldurun!");
+        alert("Kayıt başarılı! Giriş yapabilirsiniz.");
+        closeModal('register-modal');
+    }
+
+    function login() {
+        const email = document.getElementById('login-email').value;
+        if(!email) return alert("E-posta giriniz!");
+        loggedInUser = { name: email.split('@')[0], email: email };
+        localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+        updateAuthUI();
+        closeModal('login-modal');
+    }
+
+    function logout() {
+        localStorage.removeItem('loggedInUser');
+        location.reload();
+    }
+
+    function updateAuthUI() {
+        if(loggedInUser) {
+            document.getElementById('auth-buttons').classList.add('hidden');
+            document.getElementById('user-info').classList.remove('hidden');
+            document.getElementById('username').innerText = "Merhaba, " + loggedInUser.name;
+        }
+    }
+
+    // MAP INIT
+    function initMap() {
+        if(document.getElementById('contact-map').innerHTML !== "") return;
+        const map = L.map('contact-map').setView([36.8065, 10.1815], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.marker([36.8065, 10.1815]).addTo(map).bindPopup('Akarat Tunisia Ofis').openPopup();
+    }
+
+    window.onload = () => {
+        renderAds(ads);
+        updateAuthUI();
+    };
+</script>
+
+</body>
+</html>
