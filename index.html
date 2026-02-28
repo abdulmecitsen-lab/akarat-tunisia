@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="tr" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Akarat Tunisia | Emlak İlanları</title>
     <!-- Google Fonts - Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +23,7 @@
         body {
             background: #f5f7fa;
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
             color: #2c3e50;
         }
 
@@ -33,53 +33,56 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 15px;
+            padding: 0 10px;
         }
 
         /* Header */
         .header {
             background: white;
             border-radius: 12px;
-            padding: 0 25px;
-            margin-bottom: 25px;
+            padding: 10px 15px;
+            margin-bottom: 15px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 70px;
+            flex-wrap: wrap;
+            gap: 10px;
             border: 1px solid #e9ecef;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             cursor: pointer;
         }
         .logo i {
-            font-size: 28px;
+            font-size: 24px;
             color: #2c3e50;
         }
         .logo h1 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
             color: #2c3e50;
         }
 
         .main-menu {
             display: flex;
-            gap: 25px;
+            gap: 15px;
             list-style: none;
+            flex-wrap: wrap;
         }
         .main-menu li a {
             text-decoration: none;
             color: #5f6b7a;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 500;
-            padding: 8px 0;
+            padding: 5px 0;
             border-bottom: 2px solid transparent;
             transition: 0.2s;
             cursor: pointer;
+            white-space: nowrap;
         }
         .main-menu li a:hover {
             color: #2c3e50;
@@ -94,20 +97,21 @@
         .right-menu {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .lang-switcher {
             display: flex;
-            gap: 5px;
+            gap: 3px;
         }
         .lang-btn {
             background: none;
             border: 1px solid #e0e7ed;
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
             color: #2c3e50;
             transition: 0.2s;
@@ -125,25 +129,26 @@
         .user-menu {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             position: relative;
         }
         .auth-buttons {
             display: flex;
-            gap: 8px;
+            gap: 5px;
         }
         .auth-buttons button {
             background: #2c3e50;
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 6px 12px;
             border-radius: 30px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
+            white-space: nowrap;
         }
         .auth-buttons button:last-child {
             background: white;
@@ -153,15 +158,15 @@
         #user-info {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             background: #eef2f6;
-            padding: 5px 12px 5px 8px;
+            padding: 4px 10px 4px 6px;
             border-radius: 30px;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
         }
         #user-info i {
-            font-size: 18px;
+            font-size: 16px;
             color: #2c3e50;
         }
         .hidden { display: none !important; }
@@ -169,8 +174,8 @@
         .admin-badge {
             background: #f1c40f;
             color: #2c3e50;
-            font-size: 11px;
-            padding: 2px 6px;
+            font-size: 10px;
+            padding: 2px 5px;
             border-radius: 20px;
             margin-left: 5px;
         }
@@ -183,9 +188,9 @@
             display: none;
             position: absolute;
             left: 0;
-            top: 40px;
+            top: 35px;
             background: white;
-            min-width: 180px;
+            min-width: 160px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             border-radius: 8px;
             z-index: 10;
@@ -194,12 +199,12 @@
         body[dir="ltr"] .dropdown-content { left: auto; right: 0; }
         .dropdown-content a {
             color: #2c3e50;
-            padding: 12px 16px;
+            padding: 10px 14px;
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 14px;
+            gap: 8px;
+            font-size: 13px;
             cursor: pointer;
         }
         .dropdown-content a:hover {
@@ -213,43 +218,43 @@
         .filter-panel {
             background: white;
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
+            padding: 15px;
+            margin-bottom: 20px;
             border: 1px solid #e9ecef;
         }
         .filter-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
         }
         .filter-group {
             display: flex;
             flex-direction: column;
         }
         .filter-group label {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: #5f6b7a;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
         .filter-group input, .filter-group select {
             width: 100%;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border: 1px solid #dde4e9;
-            border-radius: 8px;
-            font-size: 13px;
+            border-radius: 6px;
+            font-size: 12px;
         }
         .filter-actions {
             display: flex;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 8px;
+            margin-top: 12px;
             justify-content: flex-end;
         }
         .filter-actions button {
-            padding: 8px 20px;
+            padding: 6px 16px;
             border: none;
-            border-radius: 8px;
-            font-size: 13px;
+            border-radius: 6px;
+            font-size: 12px;
             cursor: pointer;
             background: #2c3e50;
             color: white;
@@ -262,25 +267,26 @@
         /* İstatistik satırı */
         .stats-row {
             display: flex;
-            gap: 25px;
+            gap: 15px;
             background: white;
             border-radius: 12px;
-            padding: 15px 25px;
-            margin-bottom: 25px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
             border: 1px solid #e9ecef;
+            flex-wrap: wrap;
         }
         .stat-item {
             display: flex;
             align-items: baseline;
-            gap: 8px;
+            gap: 5px;
         }
         .stat-number {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
             color: #2c3e50;
         }
         .stat-label {
-            font-size: 14px;
+            font-size: 13px;
             color: #7c8b9a;
         }
 
@@ -289,10 +295,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 30px 0 15px;
+            margin: 25px 0 12px;
         }
         .section-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
             color: #2c3e50;
         }
@@ -307,19 +313,20 @@
         .ad-item {
             display: flex;
             align-items: center;
-            padding: 15px 20px;
+            padding: 12px 15px;
             border-bottom: 1px solid #eef2f6;
-            gap: 15px;
+            gap: 12px;
             cursor: pointer;
             transition: 0.2s;
             position: relative;
+            flex-wrap: wrap;
         }
         .ad-item:hover { background: #fafbfc; }
         .ad-item:last-child { border-bottom: none; }
 
         .ad-image-thumb {
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             border-radius: 8px;
             background: #eef2f6;
             background-size: cover;
@@ -329,7 +336,7 @@
             align-items: center;
             justify-content: center;
             color: #a0b8cc;
-            font-size: 24px;
+            font-size: 20px;
         }
 
         .ad-details {
@@ -337,57 +344,57 @@
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 20px;
+            gap: 12px;
         }
         .ad-title {
             font-weight: 600;
             color: #2c3e50;
-            min-width: 180px;
+            min-width: 150px;
+            font-size: 14px;
         }
         .ad-location {
             color: #5f6b7a;
-            font-size: 14px;
+            font-size: 13px;
             display: flex;
             align-items: center;
-            gap: 5px;
-            min-width: 140px;
+            gap: 4px;
+            min-width: 120px;
         }
         .ad-area {
             color: #5f6b7a;
-            font-size: 14px;
+            font-size: 13px;
             display: flex;
             align-items: center;
-            gap: 5px;
-            min-width: 70px;
+            gap: 4px;
+            min-width: 60px;
         }
         .ad-price {
             font-weight: 700;
             color: #2c3e50;
-            font-size: 18px;
-            min-width: 120px;
+            font-size: 16px;
+            min-width: 100px;
         }
         .ad-type {
             background: #eef2f6;
-            padding: 4px 8px;
+            padding: 3px 6px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             color: #2c3e50;
         }
         .ad-date {
             color: #9aa9b8;
-            font-size: 13px;
+            font-size: 12px;
             margin-left: auto;
             white-space: nowrap;
         }
         .ad-actions {
             display: flex;
-            gap: 8px;
-            margin-left: 10px;
+            gap: 5px;
         }
         .ad-actions button {
             background: none;
             border: none;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
             color: #7c8b9a;
             padding: 4px;
@@ -397,7 +404,7 @@
         .favorite-btn {
             background: none;
             border: none;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
             color: #7c8b9a;
         }
@@ -423,53 +430,53 @@
             background: white;
             border-radius: 16px;
             max-width: 700px;
-            width: 90%;
-            max-height: 80vh;
+            width: 95%;
+            max-height: 85vh;
             overflow-y: auto;
-            padding: 30px;
+            padding: 25px;
             position: relative;
         }
         .close-modal {
             position: absolute;
-            left: 20px;
-            top: 20px;
-            font-size: 28px;
+            left: 15px;
+            top: 15px;
+            font-size: 26px;
             cursor: pointer;
             color: #7c8b9a;
         }
         .modal-image-gallery {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin: 20px 0;
+            gap: 8px;
+            margin: 15px 0;
         }
         .modal-image-gallery img {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             object-fit: cover;
-            border-radius: 8px;
+            border-radius: 6px;
             border: 1px solid #e9ecef;
         }
         .modal-info p {
-            margin: 8px 0;
-            font-size: 15px;
+            margin: 6px 0;
+            font-size: 14px;
         }
         .modal-info strong {
             color: #2c3e50;
-            min-width: 120px;
+            min-width: 100px;
             display: inline-block;
         }
         .contact-info {
             background: #f8fafc;
-            padding: 15px;
+            padding: 12px;
             border-radius: 8px;
-            margin-top: 15px;
+            margin-top: 12px;
             border: 1px solid #e9ecef;
         }
 
         /* Harita */
-        #map {
-            height: 200px;
+        #map, #modal-map, #contact-map {
+            height: 150px;
             border-radius: 8px;
             margin-top: 10px;
         }
@@ -478,67 +485,59 @@
         .form-section {
             background: white;
             border-radius: 12px;
-            padding: 25px;
-            margin: 40px 0 20px;
+            padding: 20px;
+            margin: 30px 0 15px;
             border: 1px solid #e9ecef;
         }
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
         .form-group.full-width { grid-column: span 2; }
         .form-label {
             display: block;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
             color: #2c3e50;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
         .form-control {
             width: 100%;
-            padding: 10px 14px;
+            padding: 8px 12px;
             border: 1px solid #dde4e9;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 13px;
             background: #f9fbfd;
         }
-        .form-control:focus {
-            outline: none;
-            border-color: #3498db;
-            background: white;
-        }
-        textarea.form-control { min-height: 80px; }
-        select.form-control { appearance: none; }
+        textarea.form-control { min-height: 70px; }
 
         .photo-upload-area {
             border: 2px dashed #dde4e9;
-            border-radius: 8px;
-            padding: 20px;
+            border-radius: 6px;
+            padding: 15px;
             text-align: center;
             background: #f9fbfd;
             cursor: pointer;
         }
-        .photo-upload-area:hover { border-color: #3498db; }
-        .photo-upload-area i { font-size: 32px; color: #3498db; }
-        .photo-upload-area span { font-size: 13px; color: #5f6b7a; }
+        .photo-upload-area i { font-size: 28px; color: #3498db; }
+        .photo-upload-area span { font-size: 12px; color: #5f6b7a; }
 
         .image-preview-container {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-top: 10px;
-        }
-        .preview-image {
-            width: 60px;
-            height: 60px;
-            border-radius: 6px;
-            object-fit: cover;
-            border: 1px solid #dde4e9;
-            position: relative;
+            margin-top: 8px;
         }
         .preview-image-wrapper {
             position: relative;
+        }
+        .preview-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 4px;
+            object-fit: cover;
+            border: 1px solid #dde4e9;
         }
         .remove-photo {
             position: absolute;
@@ -547,8 +546,8 @@
             background: #e74c3c;
             color: white;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -557,15 +556,15 @@
         }
 
         .btn {
-            padding: 10px 24px;
+            padding: 8px 18px;
             border: none;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 13px;
             font-weight: 500;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
         .btn-primary {
             background: #2c3e50;
@@ -577,28 +576,43 @@
             color: #2c3e50;
             border: 1px solid #dde4e9;
         }
-        .btn-secondary:hover { background: #f0f4f8; }
-        .btn-danger {
-            background: #e74c3c;
-            color: white;
-        }
 
         .footer {
-            margin-top: 50px;
+            margin-top: 40px;
             text-align: center;
             color: #9aa9b8;
-            font-size: 13px;
-            padding: 20px;
+            font-size: 12px;
+            padding: 15px;
             border-top: 1px solid #e9ecef;
         }
 
+        /* Responsive düzenlemeler */
         @media (max-width: 768px) {
-            .header { flex-wrap: wrap; height: auto; padding: 15px; }
-            .main-menu { flex-wrap: wrap; justify-content: center; }
-            .ad-item { flex-wrap: wrap; }
-            .ad-details { gap: 10px; }
-            .stats-row { flex-wrap: wrap; }
-            .form-grid { grid-template-columns: 1fr; }
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .logo { justify-content: center; }
+            .main-menu { justify-content: center; }
+            .right-menu { justify-content: center; }
+            
+            .ad-item { 
+                flex-direction: column; 
+                align-items: flex-start;
+            }
+            .ad-details { 
+                width: 100%;
+                gap: 8px;
+            }
+            .ad-actions { 
+                margin-left: auto; 
+            }
+            .filter-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
             .form-group.full-width { grid-column: span 1; }
         }
     </style>
@@ -622,8 +636,8 @@
             </ul>
             <div class="right-menu">
                 <div class="lang-switcher">
-                    <button class="lang-btn" onclick="changeLanguage('tr')">🇹🇷</button>
-                    <button class="lang-btn active" onclick="changeLanguage('ar')">🇸🇦</button>
+                    <button class="lang-btn active" onclick="changeLanguage('tr')">🇹🇷</button>
+                    <button class="lang-btn" onclick="changeLanguage('ar')">🇸🇦</button>
                 </div>
                 <!-- Kullanıcı alanı -->
                 <div class="user-menu">
@@ -649,7 +663,7 @@
             </div>
         </header>
 
-        <!-- Filtre Paneli (Sadece ilan sayfalarında görünür) -->
+        <!-- Filtre Paneli -->
         <div id="filter-panel" class="filter-panel">
             <div class="filter-grid">
                 <div class="filter-group">
@@ -752,7 +766,7 @@
             <div class="ads-list" id="latest-ads-container"></div>
         </div>
 
-        <!-- Satılıklar Sayfası -->
+        <!-- Satılıklar -->
         <div id="for-sale-page" class="page-section hidden">
             <div class="section-header">
                 <h2 class="section-title">Satılık İlanlar</h2>
@@ -760,7 +774,7 @@
             <div class="ads-list" id="for-sale-container"></div>
         </div>
 
-        <!-- Kiralıklar Sayfası -->
+        <!-- Kiralıklar -->
         <div id="for-rent-page" class="page-section hidden">
             <div class="section-header">
                 <h2 class="section-title">Kiralık İlanlar</h2>
@@ -768,7 +782,7 @@
             <div class="ads-list" id="for-rent-container"></div>
         </div>
 
-        <!-- Favoriler Sayfası -->
+        <!-- Favoriler -->
         <div id="favorites-page" class="page-section hidden">
             <div class="section-header">
                 <h2 class="section-title">Favori İlanlarım</h2>
@@ -778,22 +792,22 @@
 
         <!-- Hakkımızda -->
         <div id="about-page" class="page-section hidden">
-            <div style="background: white; border-radius: 12px; padding: 40px; text-align: center;">
+            <div style="background: white; border-radius: 12px; padding: 30px 20px; text-align: center;">
                 <h2>Hakkımızda</h2>
-                <p style="margin-top: 20px; color: #5f6b7a;">Akarat Tunisia, Tunus'ta emlak alım satım ve kiralama işlemleriniz için güvenilir bir platformdur. 2026 yılında kurulan firmamız, müşterilerine en iyi hizmeti sunmayı hedeflemektedir.</p>
+                <p style="margin-top: 15px; color: #5f6b7a;">Akarat Tunisia, Tunus'ta emlak alım satım ve kiralama işlemleriniz için güvenilir bir platformdur. 2026 yılında kurulan firmamız, müşterilerine en iyi hizmeti sunmayı hedeflemektedir.</p>
             </div>
         </div>
 
         <!-- İletişim -->
         <div id="contact-page" class="page-section hidden">
-            <div style="background: white; border-radius: 12px; padding: 40px; text-align: center;">
+            <div style="background: white; border-radius: 12px; padding: 30px 20px; text-align: center;">
                 <h2>İletişim</h2>
-                <p style="margin-top: 20px; color: #5f6b7a;">📞 +216 12 345 67 89<br>📧 info@akarattunisia.com<br>📍 Tunus, Tunus</p>
+                <p style="margin-top: 15px; color: #5f6b7a;">📞 +216 12 345 67 89<br>📧 info@akarattunisia.com<br>📍 Tunus, Tunus</p>
                 <div id="contact-map" style="height: 200px; margin-top: 20px;"></div>
             </div>
         </div>
 
-        <!-- İlanlarım Sayfası -->
+        <!-- İlanlarım -->
         <div id="myads-page" class="page-section hidden">
             <div class="section-header">
                 <h2 class="section-title" id="myads-title">İlanlarım</h2>
@@ -801,7 +815,7 @@
             <div class="ads-list" id="myads-container"></div>
         </div>
 
-        <!-- Mesajlar Sayfası -->
+        <!-- Mesajlar -->
         <div id="messages-page" class="page-section hidden">
             <div class="section-header">
                 <h2 class="section-title">Mesajlarım</h2>
@@ -809,17 +823,16 @@
             <div class="ads-list" id="messages-container"></div>
         </div>
 
-        <!-- Profil Sayfası -->
+        <!-- Profil -->
         <div id="profile-page" class="page-section hidden">
-            <div class="profile-card" style="background: white; border-radius: 12px; padding: 30px; text-align: center; max-width: 400px; margin: 30px auto;">
-                <div style="width: 100px; height: 100px; border-radius: 50%; background: #eef2f6; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 40px;">
+            <div class="profile-card" style="background: white; border-radius: 12px; padding: 25px; text-align: center; max-width: 400px; margin: 20px auto;">
+                <div style="width: 80px; height: 80px; border-radius: 50%; background: #eef2f6; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 36px;">
                     <i class="fas fa-user"></i>
                 </div>
-                <div style="font-size: 20px; font-weight: 600; margin-bottom: 5px;" id="profile-name">Ahmet Kullanıcı</div>
-                <div style="color: #7c8b9a; margin-bottom: 5px;" id="profile-email">ahmet@example.com</div>
-                <div style="color: #7c8b9a; margin-bottom: 20px;" id="profile-role">Kullanıcı</div>
+                <div style="font-size: 18px; font-weight: 600;" id="profile-name">Ahmet Kullanıcı</div>
+                <div style="color: #7c8b9a; margin: 5px 0;" id="profile-email">ahmet@example.com</div>
+                <div style="color: #7c8b9a; margin-bottom: 15px;" id="profile-role">Kullanıcı</div>
                 <p style="color: #5f6b7a;">Kayıtlı <span id="user-ad-count">0</span> ilan</p>
-                <button class="btn btn-secondary" style="margin-top: 20px;" onclick="showPage('home')"><i class="fas fa-edit"></i> Profili Düzenle</button>
             </div>
         </div>
 
@@ -833,12 +846,12 @@
                 <div class="ads-list" id="admin-users-container"></div>
             </div>
             <div style="background: white; border-radius: 12px; padding: 20px;">
-                <h3 style="margin-bottom: 15px;">Tüm İlanlar (Yönetim)</h3>
+                <h3 style="margin-bottom: 15px;">Tüm İlanlar</h3>
                 <div class="ads-list" id="admin-ads-container"></div>
             </div>
         </div>
 
-        <!-- İlan Ekleme/Düzenleme Formu (Sadece ilgili sayfalarda görünecek) -->
+        <!-- İlan Ekleme Formu -->
         <section id="ad-form-section" class="form-section">
             <h2 class="section-title" id="add-ad-text">Yeni İlan Ekle</h2>
             <input type="hidden" id="editing-id" value="">
@@ -950,7 +963,7 @@
             </div>
         </section>
 
-        <!-- Detay Modalı -->
+        <!-- Detay Modal -->
         <div id="detail-modal" class="modal">
             <div class="modal-content">
                 <span class="close-modal" onclick="closeModal()">&times;</span>
@@ -969,11 +982,11 @@
                 <div style="margin-top: 20px;">
                     <button class="btn btn-primary" onclick="showMessageModal()"><i class="fas fa-envelope"></i> Mesaj Gönder</button>
                 </div>
-                <div id="modal-map" style="height: 200px; margin-top: 20px;"></div>
+                <div id="modal-map" style="height: 150px; margin-top: 15px;"></div>
             </div>
         </div>
 
-        <!-- Mesaj Gönderme Modalı -->
+        <!-- Mesaj Modal -->
         <div id="message-modal" class="modal">
             <div class="modal-content" style="max-width: 400px;">
                 <span class="close-modal" onclick="closeMessageModal()">&times;</span>
@@ -1067,17 +1080,15 @@
             }
         };
 
-        let currentLanguage = 'ar';
+        let currentLanguage = 'tr'; // Varsayılan Türkçe
         let selectedImagesBase64 = [];
         let loggedInUser = null;
         let currentFilters = { 
             priceMin: '', priceMax: '', city: '', district: '', type: '',
             rooms: '', buildingAge: '', floor: '', heating: '' 
         };
-        let currentAdId = null; // Detayda gösterilen ilanın ID'si
+        let currentAdId = null;
         let map = null;
-        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-        let messages = JSON.parse(localStorage.getItem('messages')) || [];
 
         // Sayfa göster/gizle
         function showPage(page) {
@@ -1089,7 +1100,6 @@
             const activePage = document.getElementById(page + '-page');
             if (activePage) activePage.classList.remove('hidden');
 
-            // Filtre panelini sadece ilan sayfalarında göster
             const filterPanel = document.getElementById('filter-panel');
             const adForm = document.getElementById('ad-form-section');
             
@@ -1125,14 +1135,12 @@
                     alert('Bu sayfaya erişim yetkiniz yok.');
                 }
             } else if (page === 'contact') {
-                setTimeout(() => initContactMap(), 100); // Haritayı başlat
+                setTimeout(() => initContactMap(), 100);
             }
 
-            // Menü aktifliğini güncelle
             if (page !== 'admin' && page !== 'myads' && page !== 'messages' && page !== 'profile' && page !== 'favorites') {
                 setActiveMenu(page);
             } else {
-                // Favoriler için menü aktifliği
                 if (page === 'favorites') setActiveMenu('favorites');
             }
         }
@@ -1180,7 +1188,6 @@
             document.documentElement.lang = lang;
             document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
-            // Sayfaları yenile
             if (!document.getElementById('home-page').classList.contains('hidden')) applyFilters();
             if (!document.getElementById('for-sale-page').classList.contains('hidden')) applyFilters();
             if (!document.getElementById('for-rent-page').classList.contains('hidden')) applyFilters();
@@ -1205,6 +1212,10 @@
         function login() {
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
+            if (!email || !password) {
+                alert('E-posta ve şifre giriniz.');
+                return;
+            }
             const users = JSON.parse(localStorage.getItem('users')) || [];
             const user = users.find(u => u.email === email && u.password === password);
             if (user) {
@@ -1220,18 +1231,21 @@
         }
 
         function register() {
-            const name = document.getElementById('register-name').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
+            const name = document.getElementById('register-name').value.trim();
+            const email = document.getElementById('register-email').value.trim();
+            const password = document.getElementById('register-password').value.trim();
+            
             if (!name || !email || !password) {
                 alert('Tüm alanları doldurun.');
                 return;
             }
+            
             const users = JSON.parse(localStorage.getItem('users')) || [];
             if (users.find(u => u.email === email)) {
                 alert('Bu e-posta zaten kayıtlı!');
                 return;
             }
+            
             const isAdmin = users.length === 0;
             const newUser = {
                 id: Date.now(),
@@ -1305,11 +1319,9 @@
                 favorites.splice(index, 1);
             }
             localStorage.setItem('favorites', JSON.stringify(favorites));
-            // Detay modalında favori butonunu güncelle
             if (currentAdId === adId) {
                 updateFavoriteButton();
             }
-            // Sayfayı yenile
             if (!document.getElementById('favorites-page').classList.contains('hidden')) {
                 displayFavorites();
             }
@@ -1360,8 +1372,8 @@
         }
 
         function sendMessage() {
-            const text = document.getElementById('message-text').value;
-            if (!text.trim()) {
+            const text = document.getElementById('message-text').value.trim();
+            if (!text) {
                 alert('Mesaj boş olamaz.');
                 return;
             }
@@ -1488,7 +1500,7 @@
             } else if (!document.getElementById('for-rent-page').classList.contains('hidden')) {
                 displayFilteredAds('rent', 'for-rent-container');
             } else if (!document.getElementById('favorites-page').classList.contains('hidden')) {
-                displayFavorites(); // Favoriler zaten filtrelenmiş
+                displayFavorites();
             } else if (!document.getElementById('myads-page').classList.contains('hidden')) {
                 displayMyAds();
             }
@@ -1840,7 +1852,6 @@
 
             updateFavoriteButton();
 
-            // Harita
             setTimeout(() => {
                 if (map) map.remove();
                 map = L.map('modal-map').setView([36.8065, 10.1815], 12);
@@ -1860,7 +1871,6 @@
             if (map) map.remove();
         }
 
-        // İletişim sayfası haritası
         function initContactMap() {
             if (map) map.remove();
             map = L.map('contact-map').setView([36.8065, 10.1815], 12);
@@ -1913,6 +1923,13 @@
                 localStorage.setItem('messages', JSON.stringify([]));
             }
 
+            // Varsayılan olarak Türkçe ve ana sayfa
+            currentLanguage = 'tr';
+            document.documentElement.lang = 'tr';
+            document.body.dir = 'ltr';
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.lang-btn[onclick="changeLanguage(\'tr\')"]').classList.add('active');
+            
             showPage('home');
             setActiveMenu('home');
             applyFilters();
