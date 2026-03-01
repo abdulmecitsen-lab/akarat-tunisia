@@ -4,510 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AKARAT TUNISIA | Lüks Gayrimenkul</title>
-    <!-- FIREBASE SDK (güncel) -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-storage-compat.js"></script>
-
-    <!-- ŞIK TASARIM (AYNEN KORUNDU) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: #ffffff;
-            color: #1a2a3a;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* HERO */
-        .hero {
-            position: relative;
-            height: 100vh;
-            min-height: 700px;
-            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), 
-                        url('https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-        }
-
-        .hero-content {
-            max-width: 900px;
-            padding: 0 20px;
-        }
-
-        .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 5rem;
-            font-weight: 600;
-            letter-spacing: 4px;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 20px rgba(0,0,0,0.3);
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            font-weight: 300;
-            letter-spacing: 2px;
-            margin-bottom: 30px;
-            text-shadow: 1px 1px 10px rgba(0,0,0,0.5);
-        }
-
-        .hero-line {
-            width: 100px;
-            height: 2px;
-            background: #c9a86c;
-            margin: 20px auto;
-        }
-
-        /* NAVBAR */
-        .navbar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 30px 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-            z-index: 10;
-        }
-
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            font-weight: 600;
-            letter-spacing: 2px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 40px;
-            font-weight: 300;
-            letter-spacing: 1px;
-            font-size: 0.9rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            transition: opacity 0.3s;
-        }
-
-        .nav-links a:hover {
-            opacity: 0.7;
-        }
-
-        .auth-buttons {
-            display: flex;
-            gap: 15px;
-        }
-
-        .auth-buttons button {
-            background: transparent;
-            border: 1px solid white;
-            color: white;
-            padding: 8px 20px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: 'Montserrat', sans-serif;
-            letter-spacing: 1px;
-        }
-
-        .auth-buttons button:hover {
-            background: white;
-            color: #1e2e3e;
-        }
-
-        /* İSTATİSTİKLER */
-        .stats-section {
-            padding: 80px 20px;
-            background: #faf9f7;
-            text-align: center;
-        }
-
-        .stats-grid {
-            display: flex;
-            justify-content: center;
-            gap: 80px;
-            flex-wrap: wrap;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .stat-item {
-            flex: 1 1 200px;
-        }
-
-        .stat-number {
-            font-family: 'Playfair Display', serif;
-            font-size: 4rem;
-            font-weight: 600;
-            color: #1e2e3e;
-            line-height: 1.2;
-        }
-
-        .stat-label {
-            font-size: 1rem;
-            letter-spacing: 2px;
-            color: #8a9aa8;
-            text-transform: uppercase;
-        }
-
-        .stat-line {
-            width: 40px;
-            height: 1px;
-            background: #c9a86c;
-            margin: 15px auto;
-        }
-
-        /* BÖLÜM BAŞLIKLARI */
-        .section-header {
-            text-align: center;
-            margin: 60px 0 40px;
-        }
-
-        .section-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.8rem;
-            font-weight: 500;
-            color: #1e2e3e;
-            margin-bottom: 10px;
-        }
-
-        .section-header .subtitle {
-            font-size: 1rem;
-            letter-spacing: 3px;
-            color: #c9a86c;
-            text-transform: uppercase;
-        }
-
-        /* İLAN KARTLARI */
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 0 30px;
-        }
-
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 40px;
-            margin: 50px 0;
-        }
-
-        .card {
-            background: white;
-            box-shadow: 0 20px 40px -10px rgba(0,20,30,0.1);
-            transition: all 0.4s ease;
-            cursor: pointer;
-        }
-
-        .card:hover {
-            transform: translateY(-15px);
-            box-shadow: 0 30px 50px -15px rgba(0,0,0,0.2);
-        }
-
-        .card-image {
-            height: 280px;
-            overflow: hidden;
-        }
-
-        .card-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.8s;
-        }
-
-        .card:hover .card-image img {
-            transform: scale(1.05);
-        }
-
-        .card-content {
-            padding: 25px 20px 20px;
-        }
-
-        .card-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.6rem;
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
-
-        .card-location {
-            font-size: 0.9rem;
-            color: #c9a86c;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-        }
-
-        .card-details {
-            display: flex;
-            gap: 15px;
-            color: #4a5a68;
-            font-size: 0.9rem;
-            margin: 10px 0;
-        }
-
-        .card-price {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #1e2e3e;
-            border-top: 1px solid #e5e5e5;
-            padding-top: 15px;
-            margin-top: 15px;
-        }
-
-        .card-price span {
-            font-size: 1rem;
-            font-weight: 300;
-            color: #8a9aa8;
-        }
-
-        /* İLAN EKLE BUTONU */
-        .add-listing-container {
-            text-align: center;
-            margin: 30px 0 70px;
-        }
-
-        .btn-add-listing {
-            background: #1e2e3e;
-            color: white;
-            border: none;
-            padding: 18px 60px;
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 500;
-            border-radius: 0;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        .btn-add-listing:hover {
-            background: #c9a86c;
-        }
-
-        /* MODAL PENCERELER (ÜYELİK VE İLAN EKLEME) */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 40px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-            position: relative;
-            animation: slideDown 0.3s ease;
-        }
-
-        /* İLAN EKLEME FORMU BOYUT KÜÇÜLTME */
-        .modal-content.small-form {
-            max-width: 400px;
-            padding: 20px;
-        }
-
-        .modal-content.small-form input,
-        .modal-content.small-form select,
-        .modal-content.small-form textarea {
-            padding: 10px;
-            margin-bottom: 12px;
-            font-size: 0.9rem;
-        }
-
-        .modal-content.small-form button {
-            padding: 12px;
-            font-size: 1rem;
-        }
-
-        .modal-content.small-form h2 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-        }
-
-        @keyframes slideDown {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 2rem;
-            cursor: pointer;
-            color: #8a9aa8;
-            transition: color 0.3s;
-        }
-
-        .close-modal:hover {
-            color: #1e2e3e;
-        }
-
-        .modal h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            margin-bottom: 25px;
-            color: #1e2e3e;
-        }
-
-        .modal-form input,
-        .modal-form textarea,
-        .modal-form select {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid #e0e0e0;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1rem;
-            background: #f9f9f9;
-        }
-
-        .modal-form button {
-            background: #1e2e3e;
-            color: white;
-            border: none;
-            padding: 16px;
-            width: 100%;
-            font-size: 1.1rem;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .modal-form button:hover {
-            background: #c9a86c;
-        }
-
-        .modal-footer {
-            margin-top: 20px;
-            text-align: center;
-            color: #4a5a68;
-        }
-
-        .modal-footer a {
-            color: #c9a86c;
-            text-decoration: none;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        /* İLETİŞİM BÖLÜMÜ */
-        .contact-section {
-            background: #f0eeea;
-            padding: 100px 0;
-            margin-top: 80px;
-        }
-
-        .contact-container {
-            display: flex;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 30px;
-            gap: 60px;
-            flex-wrap: wrap;
-        }
-
-        .contact-info {
-            flex: 1;
-            min-width: 300px;
-        }
-
-        .contact-info h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.2rem;
-            font-weight: 500;
-            margin-bottom: 20px;
-        }
-
-        .contact-detail {
-            margin: 30px 0;
-            font-size: 1.1rem;
-            color: #2a3a48;
-        }
-
-        .contact-detail p {
-            margin: 5px 0;
-        }
-
-        .contact-form {
-            flex: 1;
-            min-width: 300px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .contact-form input,
-        .contact-form textarea {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            background: white;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1rem;
-        }
-
-        .contact-form textarea {
-            min-height: 120px;
-        }
-
-        .btn {
-            background: #1e2e3e;
-            color: white;
-            border: none;
-            padding: 16px 40px;
-            font-size: 1rem;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-weight: 500;
-            border-radius: 0;
-        }
-
-        .btn:hover {
-            background: #c9a86c;
-        }
-
-        footer {
-            background: #11181f;
-            color: #8a9aa8;
-            text-align: center;
-            padding: 40px 0;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-        }
-
-        /* MOBİL */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background: #fff; color: #1a2a3a; line-height: 1.6; }
+        .hero { position: relative; height: 100vh; min-height: 700px; background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
+        .hero-content { max-width: 900px; padding: 0 20px; }
+        .hero h1 { font-family: 'Playfair Display', serif; font-size: 5rem; font-weight: 600; letter-spacing: 4px; margin-bottom: 15px; text-shadow: 2px 2px 20px rgba(0,0,0,0.3); }
+        .hero p { font-size: 1.3rem; font-weight: 300; letter-spacing: 2px; margin-bottom: 30px; text-shadow: 1px 1px 10px rgba(0,0,0,0.5); }
+        .hero-line { width: 100px; height: 2px; background: #c9a86c; margin: 20px auto; }
+        .navbar { position: absolute; top: 0; left: 0; width: 100%; padding: 30px 50px; display: flex; justify-content: space-between; align-items: center; color: white; z-index: 10; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 600; letter-spacing: 2px; cursor: pointer; }
+        .nav-links { display: flex; gap: 40px; font-weight: 300; letter-spacing: 1px; font-size: 0.9rem; align-items: center; }
+        .nav-links a { color: white; text-decoration: none; transition: opacity 0.3s; cursor: pointer; }
+        .nav-links a:hover { opacity: 0.7; }
+        .auth-buttons { display: flex; gap: 15px; }
+        .auth-buttons button { background: transparent; border: 1px solid white; color: white; padding: 8px 20px; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; font-family: 'Montserrat', sans-serif; letter-spacing: 1px; }
+        .auth-buttons button:hover { background: white; color: #1e2e3e; }
+        .stats-section { padding: 80px 20px; background: #faf9f7; text-align: center; }
+        .stats-grid { display: flex; justify-content: center; gap: 80px; flex-wrap: wrap; max-width: 1200px; margin: 0 auto; }
+        .stat-item { flex: 1 1 200px; }
+        .stat-number { font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 600; color: #1e2e3e; line-height: 1.2; }
+        .stat-label { font-size: 1rem; letter-spacing: 2px; color: #8a9aa8; text-transform: uppercase; }
+        .stat-line { width: 40px; height: 1px; background: #c9a86c; margin: 15px auto; }
+        .section-header { text-align: center; margin: 60px 0 40px; }
+        .section-header h2 { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 500; color: #1e2e3e; margin-bottom: 10px; }
+        .section-header .subtitle { font-size: 1rem; letter-spacing: 3px; color: #c9a86c; text-transform: uppercase; }
+        .container { max-width: 1300px; margin: 0 auto; padding: 0 30px; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; margin: 50px 0; }
+        .card { background: white; box-shadow: 0 20px 40px -10px rgba(0,20,30,0.1); transition: all 0.4s ease; cursor: pointer; }
+        .card:hover { transform: translateY(-15px); box-shadow: 0 30px 50px -15px rgba(0,0,0,0.2); }
+        .card-image { height: 280px; overflow: hidden; }
+        .card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s; }
+        .card:hover .card-image img { transform: scale(1.05); }
+        .card-content { padding: 25px 20px 20px; }
+        .card-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 500; margin-bottom: 5px; }
+        .card-location { font-size: 0.9rem; color: #c9a86c; letter-spacing: 1px; margin-bottom: 12px; text-transform: uppercase; }
+        .card-details { display: flex; gap: 15px; color: #4a5a68; font-size: 0.9rem; margin: 10px 0; }
+        .card-price { font-size: 2rem; font-weight: 600; color: #1e2e3e; border-top: 1px solid #e5e5e5; padding-top: 15px; margin-top: 15px; }
+        .card-price span { font-size: 1rem; font-weight: 300; color: #8a9aa8; }
+        .add-listing-container { text-align: center; margin: 30px 0 70px; }
+        .btn-add-listing { background: #1e2e3e; color: white; border: none; padding: 18px 60px; font-size: 1.2rem; letter-spacing: 2px; cursor: pointer; transition: background 0.3s; font-family: 'Montserrat', sans-serif; font-weight: 500; border-radius: 0; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .btn-add-listing:hover { background: #c9a86c; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 40px; max-width: 500px; width: 90%; box-shadow: 0 30px 60px rgba(0,0,0,0.3); position: relative; animation: slideDown 0.3s ease; }
+        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: #8a9aa8; transition: color 0.3s; }
+        .close-modal:hover { color: #1e2e3e; }
+        .modal h2 { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 25px; color: #1e2e3e; }
+        .modal-form input, .modal-form textarea, .modal-form select { width: 100%; padding: 15px; margin-bottom: 20px; border: 1px solid #e0e0e0; font-family: 'Montserrat', sans-serif; font-size: 1rem; background: #f9f9f9; }
+        .modal-form button { background: #1e2e3e; color: white; border: none; padding: 16px; width: 100%; font-size: 1.1rem; letter-spacing: 1px; cursor: pointer; transition: background 0.3s; }
+        .modal-form button:hover { background: #c9a86c; }
+        .modal-footer { margin-top: 20px; text-align: center; color: #4a5a68; }
+        .modal-footer a { color: #c9a86c; text-decoration: none; font-weight: 600; cursor: pointer; }
+        .contact-section { background: #f0eeea; padding: 100px 0; margin-top: 80px; }
+        .contact-container { display: flex; max-width: 1200px; margin: 0 auto; padding: 0 30px; gap: 60px; flex-wrap: wrap; }
+        .contact-info { flex: 1; min-width: 300px; }
+        .contact-info h3 { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 500; margin-bottom: 20px; }
+        .contact-detail { margin: 30px 0; font-size: 1.1rem; color: #2a3a48; }
+        .contact-detail p { margin: 5px 0; }
+        .contact-form { flex: 1; min-width: 300px; }
+        .form-group { margin-bottom: 20px; }
+        .contact-form input, .contact-form textarea { width: 100%; padding: 15px; border: none; background: white; font-family: 'Montserrat', sans-serif; font-size: 1rem; }
+        .contact-form textarea { min-height: 120px; }
+        .btn { background: #1e2e3e; color: white; border: none; padding: 16px 40px; font-size: 1rem; letter-spacing: 2px; cursor: pointer; transition: background 0.3s; font-weight: 500; border-radius: 0; }
+        .btn:hover { background: #c9a86c; }
+        footer { background: #11181f; color: #8a9aa8; text-align: center; padding: 40px 0; font-size: 0.9rem; letter-spacing: 1px; }
         @media (max-width: 700px) {
             .hero h1 { font-size: 3rem; }
             .navbar { padding: 20px; flex-direction: column; gap: 15px; }
@@ -521,15 +84,13 @@
 
     <!-- NAVBAR -->
     <div class="navbar">
-        <div class="logo">AKARAT</div>
+        <div class="logo" onclick="scrollToTop()">AKARAT</div>
         <div class="nav-links">
-            <a href="#">ANA SAYFA</a>
-            <a href="#">İLANLAR</a>
-            <a href="#">HİZMETLER</a>
-            <a href="#">İLETİŞİM</a>
-            <div class="auth-buttons" id="authButtons">
-                <!-- butonlar javascript ile doldurulacak -->
-            </div>
+            <a onclick="scrollToTop()">ANA SAYFA</a>
+            <a onclick="document.getElementById('allListings').scrollIntoView({behavior: 'smooth'})">İLANLAR</a>
+            <a onclick="alert('Hizmetler sayfası çok yakında!')">HİZMETLER</a>
+            <a onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">İLETİŞİM</a>
+            <div class="auth-buttons" id="authButtons"></div>
         </div>
     </div>
 
@@ -557,21 +118,21 @@
                 <div class="stat-label">MUTLU SAHİP</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number" id="listingCount">3</div>
+                <div class="stat-number" id="listingCount">0</div>
                 <div class="stat-line"></div>
                 <div class="stat-label">AKTİF İLAN</div>
             </div>
         </div>
     </section>
 
-    <!-- İLANLAR (FIREBASE'DEN DOLACAK) -->
+    <!-- İLANLAR BÖLÜMÜ -->
     <div class="container">
         <div class="section-header">
             <div class="subtitle">KOLEKSİYON</div>
             <h2>Öne Çıkan İlanlar</h2>
         </div>
         <div class="card-grid" id="featuredListings">
-            <!-- ilanlar javascript ile doldurulacak -->
+            <!-- İlanlar buraya gelecek -->
         </div>
 
         <div class="section-header">
@@ -579,17 +140,17 @@
             <h2>Satılık Gayrimenkuller</h2>
         </div>
         <div class="card-grid" id="allListings">
-            <!-- ilanlar javascript ile doldurulacak -->
+            <!-- İlanlar buraya gelecek -->
         </div>
 
-        <!-- İLAN EKLE BUTONU (SADECE GİRİŞ YAPANLAR GÖRÜR) -->
+        <!-- İLAN EKLE BUTONU (SADECE GİRİŞ YAPMIŞLARA GÖSTERİLİR) -->
         <div class="add-listing-container" id="addListingContainer" style="display: none;">
             <button class="btn-add-listing" id="addListingBtn">+ İLAN EKLE</button>
         </div>
     </div>
 
-    <!-- İLETİŞİM -->
-    <section class="contact-section">
+    <!-- İLETİŞİM BÖLÜMÜ -->
+    <section class="contact-section" id="contact">
         <div class="contact-container">
             <div class="contact-info">
                 <h3>Bize Ulaşın</h3>
@@ -617,13 +178,13 @@
 
     <!-- FOOTER -->
     <footer>
-        <div class="logo" style="color:white; margin-bottom:20px;">AKARAT TUNISIA</div>
+        <div class="logo" style="color:white; margin-bottom:20px; cursor:default;">AKARAT TUNISIA</div>
         <p>© 2025 Tüm hakları saklıdır. Lüks gayrimenkul danışmanlığı.</p>
-        <p style="margin-top:10px; font-size:0.8rem;">Firebase ile güçlendirilmiştir.</p>
+        <p style="margin-top:10px; font-size:0.8rem;">Supabase ile güçlendirilmiştir.</p>
     </footer>
 
     <!-- ========== MODALLAR ========== -->
-    <!-- ÜYE OL MODALİ -->
+    <!-- Üye Ol Modal -->
     <div id="signupModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" id="closeSignup">&times;</span>
@@ -634,13 +195,11 @@
                 <input type="password" id="signupPassword" placeholder="Şifre" required>
                 <button type="submit">KAYIT OL</button>
             </form>
-            <div class="modal-footer">
-                Zaten üye misiniz? <a id="goToLogin">Giriş Yap</a>
-            </div>
+            <div class="modal-footer">Zaten üye misiniz? <a id="goToLogin">Giriş Yap</a></div>
         </div>
     </div>
 
-    <!-- GİRİŞ YAP MODALİ -->
+    <!-- Giriş Yap Modal -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" id="closeLogin">&times;</span>
@@ -650,66 +209,46 @@
                 <input type="password" id="loginPassword" placeholder="Şifre" required>
                 <button type="submit">GİRİŞ</button>
             </form>
-            <div class="modal-footer">
-                Hesabınız yok mu? <a id="goToSignup">Üye Ol</a>
-            </div>
+            <div class="modal-footer">Hesabınız yok mu? <a id="goToSignup">Üye Ol</a></div>
         </div>
     </div>
 
-    <!-- İLAN EKLE MODALİ (KÜÇÜK BOYUT) -->
+    <!-- İlan Ekle Modal -->
     <div id="addListingModal" class="modal">
-        <div class="modal-content small-form">
+        <div class="modal-content">
             <span class="close-modal" id="closeAddListing">&times;</span>
             <h2>İlan Ekle</h2>
             <form class="modal-form" id="addListingForm">
                 <input type="text" id="listingTitle" placeholder="İlan Başlığı" required>
-                <select id="listingCategory" required>
-                    <option value="">Kategori Seçin</option>
-                    <option value="villa">Satılık Villa</option>
-                    <option value="daire">Satılık Daire</option>
-                    <option value="mustakil">Satılık Müstakil</option>
-                </select>
                 <input type="text" id="listingLocation" placeholder="Konum (şehir, mahalle)" required>
                 <input type="number" id="listingPrice" placeholder="Fiyat (€)" required>
                 <input type="number" id="listingArea" placeholder="Alan (m²)" required>
                 <input type="text" id="listingRooms" placeholder="Oda Sayısı (örn: 3+1)" required>
-                <textarea id="listingDescription" placeholder="İlan Açıklaması" rows="3" required></textarea>
-                <input type="file" id="listingPhotos" accept="image/*" multiple required>
-                <small style="display:block; margin-bottom:15px; color:#6c757d;">En az bir fotoğraf seçin</small>
+                <textarea id="listingDescription" placeholder="İlan Açıklaması" rows="4" required></textarea>
+                <input type="url" id="listingImage" placeholder="Resim URL'si (zorunlu değil)">
+                <small style="display:block; margin-bottom:15px; color:#6c757d;">Geçerli bir resim linki girin (isteğe bağlı)</small>
                 <button type="submit">İLANI YAYINLA</button>
             </form>
         </div>
     </div>
 
-    <!-- ========== FIREBASE YAPILANDIRMASI (SİZİN BİLGİLERİNİZ) ========== -->
-    <script>
-        // FIREBASE YAPILANDIRMASI (SİZİN PROJENİZE ÖZEL)
-        const firebaseConfig = {
-            apiKey: "AIzaSyBHQCM9-JYn6q9H9enKOMlNG7Q8u4oDD9g",
-            authDomain: "akarat-tunisia-a8b7b.firebaseapp.com",
-            projectId: "akarat-tunisia-a8b7b",
-            storageBucket: "akarat-tunisia-a8b7b.firebasestorage.app",
-            messagingSenderId: "975091144074",
-            appId: "1:975091144074:web:3d8ed3d09f6feefebca473"
-        };
-
-        // Firebase'i başlat
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const storage = firebase.storage();
-    </script>
-
-    <!-- ========== UYGULAMA JAVASCRİPTİ (ÜYELİK, İLAN EKLEME, LİSTELEME) ========== -->
+    <!-- ========== SUPABASE BAĞLANTI VE TÜM FONKSİYONLAR ========== -->
     <script>
         (function() {
-            // DOM elementleri
-            const authButtonsDiv = document.getElementById('authButtons');
+            // ---------- SENİN DOĞRU BİLGİLERİN ----------
+            const SUPABASE_URL = 'https://sbubvjeguxuqgiklrajk.supabase.co';
+            const SUPABASE_ANON_KEY = 'sb_publishable_Ic1qJb5_ljG05NTafWt9ww_2UGX6Xqa';
+            // -------------------------------------------
+
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            window.scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Modal elementleri
             const signupModal = document.getElementById('signupModal');
             const loginModal = document.getElementById('loginModal');
             const addListingModal = document.getElementById('addListingModal');
             const addListingContainer = document.getElementById('addListingContainer');
-            
             const closeSignup = document.getElementById('closeSignup');
             const closeLogin = document.getElementById('closeLogin');
             const closeAddListing = document.getElementById('closeAddListing');
@@ -717,23 +256,19 @@
             const goToSignup = document.getElementById('goToSignup');
             const addListingBtn = document.getElementById('addListingBtn');
 
-            // Modal aç/kapat fonksiyonları
-            function openModal(modal) { modal.style.display = 'flex'; }
-            function closeModal(modal) { modal.style.display = 'none'; }
+            const openModal = (modal) => modal.style.display = 'flex';
+            const closeModal = (modal) => modal.style.display = 'none';
 
-            // Modal dışına tıklayınca kapat
             window.addEventListener('click', (e) => {
                 if (e.target === signupModal) closeModal(signupModal);
                 if (e.target === loginModal) closeModal(loginModal);
                 if (e.target === addListingModal) closeModal(addListingModal);
             });
 
-            // Kapatma butonları
             closeSignup.addEventListener('click', () => closeModal(signupModal));
             closeLogin.addEventListener('click', () => closeModal(loginModal));
             closeAddListing.addEventListener('click', () => closeModal(addListingModal));
 
-            // Modal içi linkler
             goToLogin.addEventListener('click', (e) => {
                 e.preventDefault();
                 closeModal(signupModal);
@@ -746,17 +281,17 @@
                 openModal(signupModal);
             });
 
-            // Kullanıcı durumunu izle
-            auth.onAuthStateChanged((user) => {
+            // Auth durumu izle
+            supabase.auth.onAuthStateChange((event, session) => {
+                const user = session?.user;
+                const authButtonsDiv = document.getElementById('authButtons');
+
                 if (user) {
                     authButtonsDiv.innerHTML = `
                         <span style="color:white; margin-right:10px;">Merhaba, ${user.email}</span>
                         <button id="logoutBtn">ÇIKIŞ</button>
                     `;
-                    document.getElementById('logoutBtn').addEventListener('click', () => {
-                        auth.signOut();
-                        window.location.reload();
-                    });
+                    document.getElementById('logoutBtn').addEventListener('click', () => supabase.auth.signOut());
                     addListingContainer.style.display = 'block';
                 } else {
                     authButtonsDiv.innerHTML = `
@@ -769,162 +304,139 @@
                 }
             });
 
-            // Üye Ol formu
-            document.getElementById('signupForm').addEventListener('submit', (e) => {
+            // Üye ol
+            document.getElementById('signupForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const name = document.getElementById('signupName').value;
                 const email = document.getElementById('signupEmail').value;
                 const password = document.getElementById('signupPassword').value;
+                const name = document.getElementById('signupName').value;
 
-                auth.createUserWithEmailAndPassword(email, password)
-                    .then((userCredential) => userCredential.user.updateProfile({ displayName: name }))
-                    .then(() => {
-                        alert('Üyelik oluşturuldu!');
-                        closeModal(signupModal);
-                    })
-                    .catch((error) => alert('Hata: ' + error.message));
+                const { error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: { data: { full_name: name } }
+                });
+
+                if (error) alert('Hata: ' + error.message);
+                else {
+                    alert('Kayıt başarılı! E-postanızı onaylayın.');
+                    closeModal(signupModal);
+                }
             });
 
-            // Giriş Yap formu
-            document.getElementById('loginForm').addEventListener('submit', (e) => {
+            // Giriş yap
+            document.getElementById('loginForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const email = document.getElementById('loginEmail').value;
                 const password = document.getElementById('loginPassword').value;
 
-                auth.signInWithEmailAndPassword(email, password)
-                    .then(() => {
-                        alert('Giriş başarılı!');
-                        closeModal(loginModal);
-                    })
-                    .catch((error) => alert('Hata: ' + error.message));
+                const { error } = await supabase.auth.signInWithPassword({ email, password });
+                if (error) alert('Hata: ' + error.message);
+                else {
+                    alert('Giriş başarılı!');
+                    closeModal(loginModal);
+                }
             });
 
-            // İLAN EKLEME İŞLEMLERİ
-            if (addListingBtn) {
-                addListingBtn.addEventListener('click', () => openModal(addListingModal));
-            }
+            // İlan ekle
+            addListingBtn.addEventListener('click', () => openModal(addListingModal));
 
             document.getElementById('addListingForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
-
-                const user = auth.currentUser;
+                
+                const { data: { user } } = await supabase.auth.getUser();
                 if (!user) {
-                    alert('İlan eklemek için giriş yapmalısınız!');
+                    alert('Önce giriş yapmalısınız!');
                     closeModal(addListingModal);
                     return;
                 }
 
-                // Form verilerini al
                 const title = document.getElementById('listingTitle').value;
-                const category = document.getElementById('listingCategory').value;
                 const location = document.getElementById('listingLocation').value;
-                const price = parseFloat(document.getElementById('listingPrice').value);
-                const area = parseInt(document.getElementById('listingArea').value);
+                const price = document.getElementById('listingPrice').value;
+                const area = document.getElementById('listingArea').value;
                 const rooms = document.getElementById('listingRooms').value;
                 const description = document.getElementById('listingDescription').value;
-                const photoFiles = document.getElementById('listingPhotos').files;
+                const imageUrl = document.getElementById('listingImage').value || 'https://via.placeholder.com/400x250';
 
-                if (!title || !category || !location || !price || !area || !rooms || !description) {
-                    alert('Lütfen tüm alanları doldurun!');
-                    return;
-                }
-
-                if (photoFiles.length === 0) {
-                    alert('En az bir fotoğraf seçin!');
-                    return;
-                }
-
-                try {
-                    // Fotoğrafları Storage'e yükle
-                    const photoURLs = [];
-                    for (let i = 0; i < photoFiles.length; i++) {
-                        const file = photoFiles[i];
-                        const storageRef = storage.ref(`listings/${user.uid}/${Date.now()}_${file.name}`);
-                        await storageRef.put(file);
-                        const url = await storageRef.getDownloadURL();
-                        photoURLs.push(url);
+                // Sütun adları tablodakiyle birebir aynı olmalı
+                const { error } = await supabase.from('ilanlar').insert([
+                    { 
+                        baslik: title,
+                        fiyat: price + ' €',
+                        aciklama: description,
+                        resim_url: imageUrl,
+                        konum: location,
+                        alan: area,          // Bu sütun tabloda olmalı
+                        oda: rooms,           // Bu sütun tabloda olmalı
+                        user_id: user.id
                     }
+                ]);
 
-                    // İlanı Firestore'a kaydet
-                    await db.collection('listings').add({
-                        title,
-                        category,
-                        location,
-                        price,
-                        area,
-                        rooms,
-                        description,
-                        photoURLs,
-                        userId: user.uid,
-                        userEmail: user.email,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-
-                    alert('İlan başarıyla eklendi!');
+                if (error) {
+                    alert('Hata: ' + error.message);
+                    console.error('Detay:', error);
+                } else {
+                    alert('İlan eklendi!');
                     closeModal(addListingModal);
                     document.getElementById('addListingForm').reset();
-                    // Sayfayı yenile (listeyi güncellemek için)
-                    window.location.reload();
-
-                } catch (error) {
-                    console.error('İlan ekleme hatası:', error);
-                    alert('Hata: ' + error.message);
+                    loadListings();
                 }
             });
 
             // İlanları listele
             async function loadListings() {
+                const { data: ilanlar, error } = await supabase
+                    .from('ilanlar')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('İlanlar yüklenemedi:', error);
+                    return;
+                }
+
+                document.getElementById('listingCount').textContent = ilanlar.length;
+
                 const featuredGrid = document.getElementById('featuredListings');
                 const allGrid = document.getElementById('allListings');
-                const listingCountSpan = document.getElementById('listingCount');
 
-                try {
-                    const snapshot = await db.collection('listings').orderBy('createdAt', 'desc').get();
-                    const listings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                    if (listingCountSpan) listingCountSpan.textContent = listings.length;
-
-                    if (listings.length === 0) {
-                        featuredGrid.innerHTML = '<p style="text-align:center; grid-column:1/-1;">Henüz ilan bulunmuyor.</p>';
-                        allGrid.innerHTML = '';
-                        return;
-                    }
-
-                    function renderCard(listing) {
-                        return `
-                            <div class="card">
-                                <div class="card-image">
-                                    <img src="${listing.photoURLs?.[0] || 'https://via.placeholder.com/400x250'}" alt="${listing.title}">
-                                </div>
-                                <div class="card-content">
-                                    <div class="card-title">${listing.title}</div>
-                                    <div class="card-location">${listing.location}</div>
-                                    <div class="card-details">
-                                        <span>${listing.area} m²</span>
-                                        <span>${listing.rooms}</span>
-                                    </div>
-                                    <div class="card-price">${listing.price.toLocaleString('tr-TR')} €</div>
-                                </div>
-                            </div>
-                        `;
-                    }
-
-                    allGrid.innerHTML = listings.map(renderCard).join('');
-                    featuredGrid.innerHTML = listings.slice(0, 3).map(renderCard).join('');
-
-                } catch (error) {
-                    console.error('Listeleme hatası:', error);
+                if (ilanlar.length === 0) {
+                    featuredGrid.innerHTML = '<p style="text-align:center;">Henüz ilan bulunmuyor.</p>';
+                    allGrid.innerHTML = '';
+                    return;
                 }
+
+                function renderCard(item) {
+                    return `
+                        <div class="card">
+                            <div class="card-image">
+                                <img src="${item.resim_url || 'https://via.placeholder.com/400x250'}" alt="${item.baslik}">
+                            </div>
+                            <div class="card-content">
+                                <div class="card-title">${item.baslik}</div>
+                                <div class="card-location">${item.konum || 'Konum belirtilmemiş'}</div>
+                                <div class="card-details">
+                                    <span>${item.alan || '?'} m²</span>
+                                    <span>${item.oda || '?'}</span>
+                                </div>
+                                <div class="card-price">${item.fiyat} <span>EUR</span></div>
+                                <p style="margin-top:10px; color:#4a5a68;">${item.aciklama.substring(0,60)}...</p>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                allGrid.innerHTML = ilanlar.map(renderCard).join('');
+                featuredGrid.innerHTML = ilanlar.slice(0, 3).map(renderCard).join('');
             }
 
-            // Sayfa yüklendiğinde ilanları getir
             loadListings();
 
-            // İletişim butonu simülasyonu
+            // İletişim butonu (simülasyon)
             document.getElementById('contactBtn').addEventListener('click', () => {
                 alert('Mesajınız iletilmiştir (simülasyon).');
             });
-
         })();
     </script>
 </body>
