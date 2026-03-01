@@ -3,512 +3,315 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İstegelsin | Alışveriş ve İlan Platformu</title>
+    <title>İstegelsin | Alışverişin keyfi</title>
+    <!-- Supabase Kütüphanesi -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Font Awesome (Sosyal Medya İkonları İçin) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ========== TEMEL STİL ========== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* ========== MODERN TASARIM ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #f5f5f5; color: #333; line-height: 1.6; }
+        
+        /* Top Toolbar */
+        .toolbar { background: #2c3e50; color: white; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .logo { font-size: 1.8rem; font-weight: 700; cursor: pointer; color: #fff; text-decoration: none; }
+        .logo:hover { opacity: 0.8; }
+        .search-box { display: flex; flex: 0 1 500px; }
+        .search-box input { width: 100%; padding: 10px 15px; border: none; border-radius: 30px 0 0 30px; outline: none; font-size: 1rem; }
+        .search-box button { padding: 10px 25px; border: none; background: #e67e22; color: white; border-radius: 0 30px 30px 0; cursor: pointer; font-weight: 600; transition: background 0.3s; }
+        .search-box button:hover { background: #d35400; }
+        .auth-buttons { display: flex; gap: 15px; }
+        .auth-buttons button { background: transparent; border: 1px solid #fff; color: #fff; padding: 8px 20px; border-radius: 20px; cursor: pointer; transition: all 0.3s; font-weight: 500; }
+        .auth-buttons button:hover { background: #e67e22; border-color: #e67e22; }
+        .auth-buttons span { color: #fff; margin-right: 10px; display: flex; align-items: center; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
-        }
+        /* Ana İçerik (Sidebar + İlanlar) */
+        .main-content { display: flex; max-width: 1400px; margin: 30px auto; padding: 0 20px; gap: 30px; }
+        
+        /* Sol Sidebar - Kategoriler */
+        .sidebar { flex: 0 0 280px; background: white; border-radius: 12px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); height: fit-content; }
+        .sidebar h3 { font-size: 1.2rem; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e67e22; color: #2c3e50; }
+        .category-list { list-style: none; }
+        .category-item { margin-bottom: 5px; }
+        .category-main { font-weight: 600; padding: 12px 15px; background: #f8f9fa; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s; }
+        .category-main:hover { background: #e9ecef; }
+        .category-main i { transition: transform 0.3s; }
+        .subcategory-list { list-style: none; padding-left: 15px; margin: 5px 0 15px 0; display: none; }
+        .subcategory-list.active { display: block; }
+        .subcategory-item { padding: 8px 15px; cursor: pointer; border-radius: 6px; transition: background 0.3s; font-size: 0.95rem; color: #555; }
+        .subcategory-item:hover { background: #f0f0f0; color: #e67e22; }
 
-        /* ========== TOPBAR ========== */
-        .topbar {
-            background: #2c3e50;
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+        /* Sağ Taraf - İlanlar */
+        .listings-area { flex: 1; }
+        .filter-tabs { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+        .filter-tab { padding: 8px 25px; background: white; border-radius: 30px; cursor: pointer; transition: all 0.3s; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .filter-tab:hover, .filter-tab.active { background: #e67e22; color: white; }
+        .stats-bar { background: white; padding: 15px 25px; border-radius: 12px; margin-bottom: 25px; display: flex; gap: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .stat-item { text-align: center; }
+        .stat-number { font-size: 2rem; font-weight: 700; color: #2c3e50; }
+        .stat-label { color: #777; font-size: 0.9rem; text-transform: uppercase; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s, box-shadow 0.3s; cursor: pointer; position: relative; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .category-tag { position: absolute; top: 10px; right: 10px; background: #e67e22; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; z-index: 2; }
+        .card-image { height: 200px; overflow: hidden; }
+        .card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .card:hover .card-image img { transform: scale(1.05); }
+        .card-content { padding: 15px; }
+        .card-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 5px; color: #2c3e50; }
+        .card-location { color: #e67e22; font-size: 0.85rem; margin-bottom: 8px; }
+        .card-details { color: #666; font-size: 0.9rem; margin: 8px 0; }
+        .card-price { font-size: 1.5rem; font-weight: 700; color: #2c3e50; border-top: 1px solid #eee; padding-top: 10px; margin-top: 10px; }
+        .card-price span { font-size: 0.9rem; font-weight: 400; color: #999; }
+        .add-listing-container { text-align: center; margin: 30px 0; }
+        .btn-add-listing { background: #e67e22; color: white; border: none; padding: 15px 50px; font-size: 1.2rem; border-radius: 50px; cursor: pointer; font-weight: 600; box-shadow: 0 5px 15px rgba(230, 126, 34, 0.3); transition: background 0.3s; }
+        .btn-add-listing:hover { background: #d35400; }
 
-        .logo {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            cursor: pointer;
-            background: linear-gradient(135deg, #fff, #f1c40f);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        /* Modal Stilleri */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 30px; max-width: 500px; width: 90%; border-radius: 12px; max-height: 80vh; overflow-y: auto; }
+        .modal-content h2 { margin-bottom: 20px; color: #2c3e50; }
+        .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        .modal-content button { background: #e67e22; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 1.1rem; cursor: pointer; }
+        .modal-content button:hover { background: #d35400; }
+        .close-modal { float: right; font-size: 1.5rem; cursor: pointer; }
+        .modal-footer { margin-top: 15px; text-align: center; }
+        .modal-footer a { color: #e67e22; cursor: pointer; }
 
-        .search-bar {
-            flex: 1;
-            max-width: 600px;
-            margin: 0 30px;
-            display: flex;
-        }
+        /* Footer */
+        .footer { background: #2c3e50; color: #fff; margin-top: 60px; padding: 40px 20px 20px; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+        .footer-col h4 { font-size: 1.2rem; margin-bottom: 20px; position: relative; padding-bottom: 10px; }
+        .footer-col h4::after { content: ''; position: absolute; left: 0; bottom: 0; width: 50px; height: 2px; background: #e67e22; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: #ccc; text-decoration: none; transition: color 0.3s; cursor: pointer; }
+        .footer-col ul li a:hover { color: #e67e22; }
+        .social-links { display: flex; gap: 15px; }
+        .social-links a { color: #fff; background: #3a4a5a; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.3s; text-decoration: none; }
+        .social-links a:hover { background: #e67e22; }
+        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #3a4a5a; color: #aaa; }
 
-        .search-bar input {
-            width: 100%;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 30px 0 0 30px;
-            font-size: 16px;
-            outline: none;
+        @media (max-width: 900px) {
+            .main-content { flex-direction: column; }
+            .sidebar { flex: auto; }
+            .toolbar { flex-direction: column; gap: 15px; }
+            .search-box { width: 100%; }
+            .footer-container { grid-template-columns: repeat(2, 1fr); }
         }
-
-        .search-bar button {
-            background: #f1c40f;
-            color: #2c3e50;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 0 30px 30px 0;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s;
-        }
-
-        .search-bar button:hover {
-            background: #d4ac0d;
-        }
-
-        .auth-buttons {
-            display: flex;
-            gap: 15px;
-        }
-
-        .auth-buttons button {
-            background: transparent;
-            border: 2px solid #f1c40f;
-            color: #f1c40f;
-            padding: 8px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .auth-buttons button:hover {
-            background: #f1c40f;
-            color: #2c3e50;
-        }
-
-        /* ========== ANA İÇERİK (SOL MENÜ + SAĞ İLANLAR) ========== */
-        .main-content {
-            display: flex;
-            min-height: calc(100vh - 80px);
-        }
-
-        /* SOL KATEGORİ MENÜSÜ */
-        .sidebar {
-            width: 280px;
-            background: white;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
-            padding: 20px 0;
-            overflow-y: auto;
-            height: calc(100vh - 80px);
-            position: sticky;
-            top: 80px;
-        }
-
-        .category-section {
-            margin-bottom: 15px;
-        }
-
-        .category-main {
-            padding: 12px 20px;
-            background: #f8f9fa;
-            font-weight: 700;
-            font-size: 16px;
-            color: #2c3e50;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 4px solid #f1c40f;
-            transition: background 0.3s;
-        }
-
-        .category-main:hover {
-            background: #e9ecef;
-        }
-
-        .category-main .arrow {
-            font-size: 12px;
-            transition: transform 0.3s;
-        }
-
-        .category-main.open .arrow {
-            transform: rotate(90deg);
-        }
-
-        .subcategory-list {
-            list-style: none;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-            background: #fff;
-        }
-
-        .subcategory-list.show {
-            max-height: 500px; /* Yeterli olacak kadar büyük */
-            transition: max-height 0.5s ease-in;
-        }
-
-        .subcategory-item {
-            padding: 10px 20px 10px 40px;
-            font-size: 14px;
-            color: #555;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-bottom: 1px solid #f1f1f1;
-        }
-
-        .subcategory-item:hover {
-            background: #f1c40f20;
-            color: #2c3e50;
-            padding-left: 45px;
-        }
-
-        .subcategory-item.active {
-            background: #f1c40f30;
-            color: #2c3e50;
-            font-weight: 600;
-            border-left: 3px solid #f1c40f;
-        }
-
-        /* SAĞ İÇERİK (İLANLAR) */
-        .content {
-            flex: 1;
-            padding: 30px;
-            background: #f5f5f5;
-        }
-
-        .filter-buttons {
-            margin-bottom: 30px;
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .filter-buttons button {
-            background: white;
-            border: 1px solid #ddd;
-            padding: 10px 25px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-
-        .filter-buttons button:hover {
-            background: #f1c40f;
-            color: #2c3e50;
-            border-color: #f1c40f;
-        }
-
-        .filter-buttons button.active {
-            background: #2c3e50;
-            color: white;
-            border-color: #2c3e50;
-        }
-
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 20px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-        }
-
-        .category-tag {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #f1c40f;
-            color: #2c3e50;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            z-index: 2;
-        }
-
-        .card-image {
-            height: 200px;
-            overflow: hidden;
-        }
-
-        .card-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s;
-        }
-
-        .card:hover .card-image img {
-            transform: scale(1.05);
-        }
-
-        .card-content {
-            padding: 20px;
-        }
-
-        .card-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #2c3e50;
-        }
-
-        .card-location {
-            font-size: 14px;
-            color: #7f8c8d;
-            margin-bottom: 10px;
-        }
-
-        .card-details {
-            font-size: 14px;
-            color: #34495e;
-            margin: 10px 0;
-        }
-
-        .card-price {
-            font-size: 22px;
-            font-weight: 700;
-            color: #27ae60;
-            border-top: 1px solid #ecf0f1;
-            padding-top: 15px;
-            margin-top: 15px;
-        }
-
-        .card-price span {
-            font-size: 14px;
-            font-weight: 400;
-            color: #7f8c8d;
-        }
-
-        .no-listing {
-            text-align: center;
-            padding: 60px;
-            font-size: 18px;
-            color: #95a5a6;
-            grid-column: 1 / -1;
-        }
-
-        .btn-add-listing {
-            background: #2c3e50;
-            color: white;
-            border: none;
-            padding: 16px 40px;
-            font-size: 18px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s;
-            box-shadow: 0 5px 15px rgba(44,62,80,0.3);
-            margin: 30px auto;
-            display: inline-block;
-        }
-
-        .btn-add-listing:hover {
-            background: #f1c40f;
-            color: #2c3e50;
-        }
-
-        /* ========== MODAL STİLLERİ ========== */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.6);
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 40px;
-            max-width: 550px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            border-radius: 15px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-            position: relative;
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 30px;
-            cursor: pointer;
-            color: #95a5a6;
-            transition: color 0.3s;
-        }
-
-        .close-modal:hover {
-            color: #2c3e50;
-        }
-
-        .modal h2 {
-            font-size: 28px;
-            margin-bottom: 30px;
-            color: #2c3e50;
-        }
-
-        .modal-form input,
-        .modal-form select,
-        .modal-form textarea {
-            width: 100%;
-            padding: 12px 15px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-
-        .modal-form button {
-            background: #2c3e50;
-            color: white;
-            border: none;
-            padding: 15px;
-            width: 100%;
-            font-size: 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s;
-        }
-
-        .modal-form button:hover {
-            background: #f1c40f;
-            color: #2c3e50;
-        }
-
-        .modal-footer {
-            margin-top: 25px;
-            text-align: center;
-            color: #7f8c8d;
-        }
-
-        .modal-footer a {
-            color: #f1c40f;
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        /* ========== FOOTER ========== */
-        footer {
-            background: #2c3e50;
-            color: #bdc3c7;
-            text-align: center;
-            padding: 25px;
-            font-size: 14px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .main-content {
-                flex-direction: column;
-            }
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                top: 0;
-            }
-            .topbar {
-                flex-wrap: wrap;
-                gap: 15px;
-            }
-            .search-bar {
-                order: 3;
-                max-width: 100%;
-                margin: 10px 0 0;
-            }
+        @media (max-width: 500px) {
+            .footer-container { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <!-- TOPBAR -->
-    <div class="topbar">
-        <div class="logo" onclick="anasayfa()">İstegelsin</div>
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Ne aramıştınız? (Başlık veya açıklama)">
-            <button id="searchBtn">ARA</button>
+    <!-- TOP TOOLBAR -->
+    <div class="toolbar">
+        <div class="logo" onclick="window.location.href='/'">İstegelsin</div>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Ne aramıştınız? (örn. araba, telefon, ev...)">
+            <button onclick="searchListings()">Ara</button>
         </div>
         <div class="auth-buttons" id="authButtons"></div>
     </div>
 
-    <!-- ANA İÇERİK (SOL MENÜ + SAĞ İLANLAR) -->
+    <!-- ANA İÇERİK (SİDEBAR + İLANLAR) -->
     <div class="main-content">
-        <!-- SOL KATEGORİ MENÜSÜ -->
-        <div class="sidebar" id="sidebar">
-            <!-- Kategoriler JavaScript ile dinamik olarak oluşturulacak -->
+        <!-- SOL SİDEBAR - KATEGORİLER -->
+        <div class="sidebar">
+            <h3>Kategoriler</h3>
+            <ul class="category-list">
+                <!-- Emlak Kategorisi -->
+                <li class="category-item">
+                    <div class="category-main" onclick="toggleSubcategory('emlak')">
+                        Emlak <i class="fas fa-chevron-down" id="icon-emlak"></i>
+                    </div>
+                    <ul class="subcategory-list" id="sub-emlak">
+                        <li class="subcategory-item" onclick="kategoriSec('emlak','Konut')">Konut</li>
+                        <li class="subcategory-item" onclick="kategoriSec('emlak','İş Yeri')">İş Yeri</li>
+                        <li class="subcategory-item" onclick="kategoriSec('emlak','Arsa')">Arsa</li>
+                        <li class="subcategory-item" onclick="kategoriSec('emlak','Konut Projeleri')">Konut Projeleri</li>
+                        <li class="subcategory-item" onclick="kategoriSec('emlak','Bina')">Bina</li>
+                        <li class="subcategory-item" onclick="kategoriSec('emlak','Devre Mülk')">Devre Mülk</li>
+                        <li class="subcategory-item" onclick="kategoriSec('emlak','Turistik Tesis')">Turistik Tesis</li>
+                    </ul>
+                </li>
+                <!-- Vasıta Kategorisi -->
+                <li class="category-item">
+                    <div class="category-main" onclick="toggleSubcategory('vasita')">
+                        Vasıta <i class="fas fa-chevron-down" id="icon-vasita"></i>
+                    </div>
+                    <ul class="subcategory-list" id="sub-vasita">
+                        <li class="subcategory-item" onclick="kategoriSec('vasita','Otomobil')">Otomobil</li>
+                        <li class="subcategory-item" onclick="kategoriSec('vasita','Arazi, SUV & Pickup')">Arazi, SUV & Pickup</li>
+                        <li class="subcategory-item" onclick="kategoriSec('vasita','Elektrikli Araçlar')">Elektrikli Araçlar</li>
+                        <li class="subcategory-item" onclick="kategoriSec('vasita','Motosiklet')">Motosiklet</li>
+                        <li class="subcategory-item" onclick="kategoriSec('vasita','Minivan & Panelvan')">Minivan & Panelvan</li>
+                        <li class="subcategory-item" onclick="kategoriSec('vasita','Ticari Araçlar')">Ticari Araçlar</li>
+                        <li class="subcategory-item" onclick="kategoriSec('vasita','Kiralık Araçlar')">Kiralık Araçlar</li>
+                        <li class="subcategory-item" onclick="kategoriSec('vasita','Deniz Araçları')">Deniz Araçları</li>
+                        <li class="subcategory-item" onclick="kategoriSec('vasita','Hasarlı Araçlar')">Hasarlı Araçlar</li>
+                    </ul>
+                </li>
+                <!-- Diğer ana kategoriler aynı mantıkla devam eder -->
+                <li class="category-item">
+                    <div class="category-main" onclick="toggleSubcategory('ikinciel')">
+                        İkinci El ve Sıfır <i class="fas fa-chevron-down" id="icon-ikinciel"></i>
+                    </div>
+                    <ul class="subcategory-list" id="sub-ikinciel">
+                        <li class="subcategory-item" onclick="kategoriSec('ikinciel','Bilgisayar')">Bilgisayar</li>
+                        <li class="subcategory-item" onclick="kategoriSec('ikinciel','Telefon')">Telefon</li>
+                        <li class="subcategory-item" onclick="kategoriSec('ikinciel','Beyaz Eşya')">Beyaz Eşya</li>
+                        <li class="subcategory-item" onclick="kategoriSec('ikinciel','Mobilya')">Mobilya</li>
+                    </ul>
+                </li>
+                <li class="category-item">
+                    <div class="category-main" onclick="toggleSubcategory('alisveris')">
+                        Alışveriş <i class="fas fa-chevron-down" id="icon-alisveris"></i>
+                    </div>
+                    <ul class="subcategory-list" id="sub-alisveris">
+                        <li class="subcategory-item" onclick="kategoriSec('alisveris','Giyim')">Giyim</li>
+                        <li class="subcategory-item" onclick="kategoriSec('alisveris','Ayakkabı')">Ayakkabı</li>
+                        <li class="subcategory-item" onclick="kategoriSec('alisveris','Aksesuar')">Aksesuar</li>
+                        <li class="subcategory-item" onclick="kategoriSec('alisveris','Kozmetik')">Kozmetik</li>
+                    </ul>
+                </li>
+                <li class="category-item">
+                    <div class="category-main" onclick="toggleSubcategory('endustri')">
+                        Endüstri <i class="fas fa-chevron-down" id="icon-endustri"></i>
+                    </div>
+                    <ul class="subcategory-list" id="sub-endustri">
+                        <li class="subcategory-item" onclick="kategoriSec('endustri','Makine')">Makine</li>
+                        <li class="subcategory-item" onclick="kategoriSec('endustri','İnşaat')">İnşaat</li>
+                        <li class="subcategory-item" onclick="kategoriSec('endustri','Elektrik')">Elektrik</li>
+                    </ul>
+                </li>
+                <li class="category-item">
+                    <div class="category-main" onclick="toggleSubcategory('hizmetler')">
+                        Hizmetler <i class="fas fa-chevron-down" id="icon-hizmetler"></i>
+                    </div>
+                    <ul class="subcategory-list" id="sub-hizmetler">
+                        <li class="subcategory-item" onclick="kategoriSec('hizmetler','Tamir')">Tamir</li>
+                        <li class="subcategory-item" onclick="kategoriSec('hizmetler','Temizlik')">Temizlik</li>
+                        <li class="subcategory-item" onclick="kategoriSec('hizmetler','Nakliyat')">Nakliyat</li>
+                    </ul>
+                </li>
+                <li class="category-item">
+                    <div class="category-main" onclick="toggleSubcategory('ustalar')">
+                        Ustalar ve Özel Ders <i class="fas fa-chevron-down" id="icon-ustalar"></i>
+                    </div>
+                    <ul class="subcategory-list" id="sub-ustalar">
+                        <li class="subcategory-item" onclick="kategoriSec('ustalar','Elektrikçi')">Elektrikçi</li>
+                        <li class="subcategory-item" onclick="kategoriSec('ustalar','Tesisatçı')">Tesisatçı</li>
+                        <li class="subcategory-item" onclick="kategoriSec('ustalar','Matematik Dersi')">Matematik Dersi</li>
+                    </ul>
+                </li>
+                <li class="category-item">
+                    <div class="category-main" onclick="toggleSubcategory('isilanlari')">
+                        İş İlanları <i class="fas fa-chevron-down" id="icon-isilanlari"></i>
+                    </div>
+                    <ul class="subcategory-list" id="sub-isilanlari">
+                        <li class="subcategory-item" onclick="kategoriSec('isilanlari','Satış')">Satış</li>
+                        <li class="subcategory-item" onclick="kategoriSec('isilanlari','Yazılım')">Yazılım</li>
+                        <li class="subcategory-item" onclick="kategoriSec('isilanlari','Muhasebe')">Muhasebe</li>
+                    </ul>
+                </li>
+            </ul>
         </div>
 
-        <!-- SAĞ İÇERİK (İLANLAR) -->
-        <div class="content">
-            <div class="filter-buttons">
-                <button onclick="filtrele('tumu')" id="filterAll">Tümü</button>
-                <button onclick="filtrele('emlak')" id="filterEmlak">Emlak</button>
-                <button onclick="filtrele('vasita')" id="filterVasita">Vasıta</button>
-                <button onclick="filtrele('ikinciel')" id="filterIkinciEl">İkinci El</button>
-                <button onclick="filtrele('sifir')" id="filterSifir">Sıfır</button>
-                <button onclick="filtrele('alisveris')" id="filterAlisveris">Alışveriş</button>
-                <button onclick="filtrele('endustri')" id="filterEndustri">Endüstri</button>
-                <button onclick="filtrele('hizmetler')" id="filterHizmetler">Hizmetler</button>
-                <button onclick="filtrele('ustalar')" id="filterUstalar">Ustalar</button>
-                <button onclick="filtrele('ders')" id="filterDers">Özel Ders</button>
-                <button onclick="filtrele('is')" id="filterIs">İş İlanları</button>
+        <!-- SAĞ TARAF (İLANLAR) -->
+        <div class="listings-area">
+            <!-- Filtre Sekmeleri -->
+            <div class="filter-tabs">
+                <span class="filter-tab active" onclick="filtrele('tumu')">Tüm İlanlar</span>
+                <span class="filter-tab" onclick="filtrele('emlak')">Emlak</span>
+                <span class="filter-tab" onclick="filtrele('vasita')">Vasıta</span>
+                <span class="filter-tab" onclick="filtrele('ikinciel')">İkinci El</span>
+                <span class="filter-tab" onclick="filtrele('alisveris')">Alışveriş</span>
+                <span class="filter-tab" onclick="filtrele('endustri')">Endüstri</span>
+                <span class="filter-tab" onclick="filtrele('hizmetler')">Hizmetler</span>
+                <span class="filter-tab" onclick="filtrele('ustalar')">Ustalar</span>
+                <span class="filter-tab" onclick="filtrele('isilanlari')">İş</span>
             </div>
 
-            <div id="listingCount" style="margin-bottom: 20px; font-weight: 600; color: #2c3e50;">0 ilan bulundu.</div>
+            <!-- İstatistikler -->
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-number">24</div>
+                    <div class="stat-label">Bölge</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="userCount">1200+</div>
+                    <div class="stat-label">Üye</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="listingCount">0</div>
+                    <div class="stat-label">İlan</div>
+                </div>
+            </div>
 
+            <!-- İlan Grid -->
             <div class="card-grid" id="allListings">
-                <!-- İlanlar buraya gelecek -->
+                <!-- İlanlar JavaScript ile doldurulacak -->
             </div>
 
-            <!-- İLAN EKLE BUTONU (SADECE GİRİŞ YAPMIŞLARA GÖSTERİLİR) -->
-            <div class="add-listing-container" id="addListingContainer" style="display: none; text-align: center;">
-                <button class="btn-add-listing" id="addListingBtn">+ YENİ İLAN EKLE</button>
+            <!-- İlan Ekle Butonu (Sadece Giriş Yapanlara) -->
+            <div class="add-listing-container" id="addListingContainer" style="display: none;">
+                <button class="btn-add-listing" id="addListingBtn">+ İLAN VER</button>
             </div>
         </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer>
-        <p>© 2025 İstegelsin - Tüm hakları saklıdır.</p>
-        <p style="margin-top: 10px; font-size: 12px;">Supabase ile güçlendirilmiştir.</p>
+    <!-- FOOTER (YENİ) -->
+    <footer class="footer">
+        <div class="footer-container">
+            <!-- Kurumsal -->
+            <div class="footer-col">
+                <h4>Kurumsal</h4>
+                <ul>
+                    <li><a onclick="alert('Hakkımızda sayfası hazırlanıyor.')">Hakkımızda</a></li>
+                    <li><a onclick="alert('İletişim bilgileri: info@istegelsin.com')">İletişim</a></li>
+                    <li><a onclick="alert('Kariyer fırsatları için kariyer@istegelsin.com')">Kariyer</a></li>
+                    <li><a onclick="alert('Reklam seçenekleri için reklam@istegelsin.com')">Reklam</a></li>
+                </ul>
+            </div>
+            <!-- Gizlilik ve Kullanım -->
+            <div class="footer-col">
+                <h4>Gizlilik ve Kullanım</h4>
+                <ul>
+                    <li><a onclick="alert('Gizlilik politikamız: Kişisel verileriniz korunmaktadır.')">Gizlilik Politikası</a></li>
+                    <li><a onclick="alert('Kullanım şartları: Siteyi kullanarak şartları kabul etmiş sayılırsınız.')">Kullanım Şartları</a></li>
+                    <li><a onclick="alert('Çerez politikamız hakkında detaylı bilgi.')">Çerez Politikası</a></li>
+                    <li><a onclick="alert('KVKK kapsamında haklarınız.')">KVKK</a></li>
+                </ul>
+            </div>
+            <!-- Bizi Takip Edin -->
+            <div class="footer-col">
+                <h4>Bizi Takip Edin</h4>
+                <div class="social-links">
+                    <a href="#" onclick="alert('Facebook sayfamız yakında!')"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" onclick="alert('Twitter hesabımız yakında!')"><i class="fab fa-twitter"></i></a>
+                    <a href="#" onclick="alert('Instagram sayfamız yakında!')"><i class="fab fa-instagram"></i></a>
+                    <a href="#" onclick="alert('LinkedIn sayfamız yakında!')"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" onclick="alert('YouTube kanalımız yakında!')"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <!-- İletişim Kısa Bilgi -->
+            <div class="footer-col">
+                <h4>İstegelsin</h4>
+                <p style="color: #ccc; margin-bottom: 10px;">Alışverişin keyfi artık cebinizde.</p>
+                <p style="color: #ccc;"><i class="fas fa-envelope"></i> info@istegelsin.com</p>
+                <p style="color: #ccc;"><i class="fas fa-phone"></i> +90 (212) 123 45 67</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2025 İstegelsin. Tüm hakları saklıdır.
+        </div>
     </footer>
 
-    <!-- ========== MODALLAR ========== -->
+    <!-- MODALLAR (Üye Ol, Giriş, İlan Ekle) -->
     <!-- Üye Ol Modal -->
     <div id="signupModal" class="modal">
         <div class="modal-content">
@@ -538,38 +341,35 @@
         </div>
     </div>
 
-    <!-- İlan Ekle Modal (Dinamik kategori seçimi) -->
+    <!-- İlan Ekle Modal -->
     <div id="addListingModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" id="closeAddListing">&times;</span>
-            <h2>İlan Ekle</h2>
+            <h2>İlan Ver</h2>
             <form class="modal-form" id="addListingForm">
-                <!-- Kategori Seçimi (ana kategori + alt kategori) -->
-                <select id="mainCategory" required onchange="altKategorileriGuncelle()">
+                <select id="listingMainCategory" required onchange="altKategoriYukle()">
                     <option value="">Ana Kategori Seçin</option>
                     <option value="emlak">Emlak</option>
                     <option value="vasita">Vasıta</option>
-                    <option value="ikinciel">İkinci El</option>
-                    <option value="sifir">Sıfır</option>
+                    <option value="ikinciel">İkinci El ve Sıfır</option>
                     <option value="alisveris">Alışveriş</option>
-                    <option value="endustri">Endüstri</option>
+                    <option value="endustri">Endüstri Gereçleri</option>
                     <option value="hizmetler">Hizmetler</option>
-                    <option value="ustalar">Ustalar</option>
-                    <option value="ders">Özel Ders</option>
-                    <option value="is">İş İlanları</option>
+                    <option value="ustalar">Ustalar ve Özel Ders</option>
+                    <option value="isilanlari">İş İlanları</option>
                 </select>
 
-                <select id="subCategory" required style="display: none;">
+                <select id="listingSubCategory" required style="display:none;">
                     <option value="">Alt Kategori Seçin</option>
                 </select>
 
                 <input type="text" id="listingTitle" placeholder="İlan Başlığı" required>
-                <input type="text" id="listingLocation" placeholder="Konum (şehir, mahalle)" required>
-                <input type="number" id="listingPrice" placeholder="Fiyat (€)" required>
-                <textarea id="listingDescription" placeholder="İlan Açıklaması" rows="3" required></textarea>
-                <input type="url" id="listingImage" placeholder="Resim URL'si (isteğe bağlı)">
+                <input type="text" id="listingLocation" placeholder="Konum" required>
+                <input type="number" id="listingPrice" placeholder="Fiyat (TL)" required>
+                <textarea id="listingDescription" placeholder="Açıklama" rows="3" required></textarea>
+                <input type="url" id="listingImage" placeholder="Resim URL (opsiyonel)">
 
-                <!-- Kategoriye özel alanlar (dinamik) -->
+                <!-- Özel alanlar (JavaScript ile gösterilecek) -->
                 <div id="ozelAlanlar"></div>
 
                 <button type="submit">İLANI YAYINLA</button>
@@ -577,479 +377,381 @@
         </div>
     </div>
 
-    <!-- ========== SUPABASE BAĞLANTI VE TÜM FONKSİYONLAR ========== -->
+    <!-- Supabase ve Uygulama JavaScript -->
     <script>
-        (function() {
-            // ---------- SENİN SUPABASE BİLGİLERİN ----------
-            const SUPABASE_URL = 'https://sbubvjeguxuqgiklrajk.supabase.co';
-            const SUPABASE_ANON_KEY = 'sb_publishable_Ic1qJb5_ljG05NTafWt9ww_2UGX6Xqa';
-            // -----------------------------------------------
+        // ---------- SUPABASE BAĞLANTI ----------
+        const SUPABASE_URL = 'https://sbubvjeguxuqgiklrajk.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_Ic1qJb5_ljG05NTafWt9ww_2UGX6Xqa';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Global değişkenler
+        let currentUser = null;
+        let currentFilter = 'tumu';
+        let currentMainCat = '';
+        let currentSubCat = '';
 
-            // ========== KATEGORİ VERİLERİ ==========
-            const kategoriYapisi = {
-                emlak: {
-                    ad: 'Emlak',
-                    altKategoriler: ['Konut', 'İş Yeri', 'Arsa', 'Konut Projeleri', 'Bina', 'Devre Mülk', 'Turistik Tesis']
-                },
-                vasita: {
-                    ad: 'Vasıta',
-                    altKategoriler: ['Otomobil', 'Arazi, SUV & Pickup', 'Elektrikli Araçlar', 'Motosiklet', 'Minivan & Panelvan', 'Ticari Araçlar', 'Kiralık Araçlar', 'Deniz Araçları', 'Hasarlı Araçlar']
-                },
-                ikinciel: {
-                    ad: 'İkinci El',
-                    altKategoriler: ['Elektronik', 'Ev Eşyası', 'Giyim', 'Kitap', 'Spor', 'Müzik', 'Diğer']
-                },
-                sifir: {
-                    ad: 'Sıfır',
-                    altKategoriler: ['Elektronik', 'Ev Eşyası', 'Giyim', 'Aksesuar', 'Hobi', 'Diğer']
-                },
-                alisveris: {
-                    ad: 'Alışveriş',
-                    altKategoriler: ['Gıda', 'Kişisel Bakım', 'Ev Temizlik', 'Pet Shop', 'Bebek', 'Diğer']
-                },
-                endustri: {
-                    ad: 'Endüstri',
-                    altKategoriler: ['İnşaat', 'Makina', 'Elektrik', 'Hırdavat', 'Güvenlik', 'İş Makineleri', 'Diğer']
-                },
-                hizmetler: {
-                    ad: 'Hizmetler',
-                    altKategoriler: ['Tamir', 'Bakım', 'Nakliye', 'Temizlik', 'Organizasyon', 'Sağlık', 'Güzellik', 'Diğer']
-                },
-                ustalar: {
-                    ad: 'Ustalar',
-                    altKategoriler: ['Elektrikçi', 'Tesisatçı', 'Marangoz', 'Boyacı', 'Kaynakçı', 'Oto Tamir', 'Diğer']
-                },
-                ders: {
-                    ad: 'Özel Ders',
-                    altKategoriler: ['Matematik', 'Fizik', 'Kimya', 'Biyoloji', 'İngilizce', 'Müzik', 'Resim', 'Diğer']
-                },
-                is: {
-                    ad: 'İş İlanları',
-                    altKategoriler: ['Satış', 'Pazarlama', 'Mühendislik', 'İdari İşler', 'İnşaat', 'Hizmet', 'Eğitim', 'Sağlık', 'Diğer']
-                }
-            };
+        // Alt kategori listeleri
+        const subCategories = {
+            emlak: ['Konut', 'İş Yeri', 'Arsa', 'Konut Projeleri', 'Bina', 'Devre Mülk', 'Turistik Tesis'],
+            vasita: ['Otomobil', 'Arazi, SUV & Pickup', 'Elektrikli Araçlar', 'Motosiklet', 'Minivan & Panelvan', 'Ticari Araçlar', 'Kiralık Araçlar', 'Deniz Araçları', 'Hasarlı Araçlar'],
+            ikinciel: ['Bilgisayar', 'Telefon', 'Beyaz Eşya', 'Mobilya', 'Giyim', 'Ayakkabı', 'Kitap', 'Müzik'],
+            alisveris: ['Giyim', 'Ayakkabı', 'Aksesuar', 'Kozmetik', 'Saat', 'Gözlük', 'Çanta'],
+            endustri: ['Makine', 'İnşaat', 'Elektrik', 'Hırdavat', 'İş Makineleri', 'Sanayi'],
+            hizmetler: ['Tamir', 'Temizlik', 'Nakliyat', 'Bakım', 'Montaj', 'Tadilat'],
+            ustalar: ['Elektrikçi', 'Tesisatçı', 'Marangoz', 'Boya', 'Özel Ders', 'Müzik Dersi'],
+            isilanlari: ['Satış', 'Yazılım', 'Muhasebe', 'Pazarlama', 'Mühendislik', 'Eğitim']
+        };
 
-            // ========== SOL MENÜYÜ OLUŞTUR ==========
-            function sidebarOlustur() {
-                const sidebar = document.getElementById('sidebar');
-                sidebar.innerHTML = '';
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', function() {
+            initAuth();
+            loadListings();
+            setupModals();
+        });
 
-                for (const [key, kategori] of Object.entries(kategoriYapisi)) {
-                    const section = document.createElement('div');
-                    section.className = 'category-section';
-
-                    const mainDiv = document.createElement('div');
-                    mainDiv.className = 'category-main';
-                    mainDiv.setAttribute('data-kategori', key);
-                    mainDiv.innerHTML = `${kategori.ad} <span class="arrow">▶</span>`;
-
-                    const subUl = document.createElement('ul');
-                    subUl.className = 'subcategory-list';
-
-                    kategori.altKategoriler.forEach(alt => {
-                        const li = document.createElement('li');
-                        li.className = 'subcategory-item';
-                        li.setAttribute('data-alt', alt);
-                        li.textContent = alt;
-                        li.onclick = (e) => {
-                            e.stopPropagation();
-                            // Aktif sınıfını kaldır
-                            document.querySelectorAll('.subcategory-item').forEach(el => el.classList.remove('active'));
-                            li.classList.add('active');
-                            // Alt kategoriye göre filtrele
-                            filtreleAlt(key, alt);
-                        };
-                        subUl.appendChild(li);
-                    });
-
-                    mainDiv.onclick = () => {
-                        mainDiv.classList.toggle('open');
-                        subUl.classList.toggle('show');
-                    };
-
-                    section.appendChild(mainDiv);
-                    section.appendChild(subUl);
-                    sidebar.appendChild(section);
-                }
+        // ========== KATEGORİ FONKSİYONLARI ==========
+        window.toggleSubcategory = function(cat) {
+            const sub = document.getElementById('sub-' + cat);
+            const icon = document.getElementById('icon-' + cat);
+            if (sub) {
+                sub.classList.toggle('active');
+                if (icon) icon.style.transform = sub.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0)';
             }
-            sidebarOlustur();
+        };
 
-            // ========== ANA SAYFA FONKSİYONU ==========
-            window.anasayfa = function() {
-                // Tüm aktif sınıflarını kaldır
-                document.querySelectorAll('.subcategory-item').forEach(el => el.classList.remove('active'));
-                // Tüm ilanları getir
-                loadListings();
-            };
+        window.kategoriSec = function(mainCat, subCat) {
+            currentMainCat = mainCat;
+            currentSubCat = subCat;
+            // Filtreleme yap
+            filtrele(mainCat, subCat);
+        };
 
-            // ========== ALT KATEGORİ FİLTRELE ==========
-            async function filtreleAlt(anaKategori, altKategori) {
-                const { data: ilanlar, error } = await supabase
-                    .from('ilanlar')
-                    .select('*')
-                    .eq('kategori', `${anaKategori}_${altKategori}`)
-                    .order('created_at', { ascending: false });
+        // Alt kategori yükleme (ilan ekleme modalı için)
+        window.altKategoriYukle = function() {
+            const mainCat = document.getElementById('listingMainCategory').value;
+            const subSelect = document.getElementById('listingSubCategory');
+            const ozelAlanlar = document.getElementById('ozelAlanlar');
 
-                if (error) {
-                    console.error('İlanlar yüklenemedi:', error);
-                    return;
-                }
-
-                // İlanları göster
-                ilanlariGoster(ilanlar);
-                document.getElementById('listingCount').textContent = `${ilanlar.length} ilan bulundu.`;
+            if (!mainCat) {
+                subSelect.style.display = 'none';
+                ozelAlanlar.innerHTML = '';
+                return;
             }
 
-            // ========== FİLTRELEME (ANA KATEGORİ) ==========
-            window.filtrele = function(anaKategori) {
-                if (anaKategori === 'tumu') {
-                    loadListings();
-                } else {
-                    filtreleAna(anaKategori);
-                }
-            };
+            // Alt kategorileri doldur
+            const subs = subCategories[mainCat] || [];
+            subSelect.innerHTML = '<option value="">Alt Kategori Seçin</option>' + 
+                subs.map(s => `<option value="${s}">${s}</option>`).join('');
+            subSelect.style.display = 'block';
 
-            async function filtreleAna(anaKategori) {
-                const { data: ilanlar, error } = await supabase
-                    .from('ilanlar')
-                    .select('*')
-                    .ilike('kategori', `${anaKategori}%`)
-                    .order('created_at', { ascending: false });
+            // Özel alanları temizle
+            ozelAlanlar.innerHTML = '';
 
-                if (error) {
-                    console.error('İlanlar yüklenemedi:', error);
-                    return;
-                }
+            // Ana kategoriye göre özel alanları ekle
+            if (mainCat === 'emlak') {
+                ozelAlanlar.innerHTML = `
+                    <input type="number" id="emlakAlan" placeholder="Alan (m²)">
+                    <input type="text" id="emlakOda" placeholder="Oda Sayısı">
+                    <input type="number" id="emlakBinaYasi" placeholder="Bina Yaşı">
+                `;
+            } else if (mainCat === 'vasita') {
+                ozelAlanlar.innerHTML = `
+                    <input type="text" id="vasitaMarka" placeholder="Marka">
+                    <input type="text" id="vasitaModel" placeholder="Model">
+                    <input type="number" id="vasitaYil" placeholder="Yıl">
+                    <input type="number" id="vasitaKm" placeholder="Kilometre">
+                    <select id="vasitaYakit">
+                        <option value="">Yakıt Türü</option>
+                        <option value="benzin">Benzin</option>
+                        <option value="dizel">Dizel</option>
+                        <option value="lpg">LPG</option>
+                        <option value="elektrik">Elektrik</option>
+                        <option value="hibrit">Hibrit</option>
+                    </select>
+                `;
+            } else if (mainCat === 'ikinciel') {
+                ozelAlanlar.innerHTML = `
+                    <select id="ikincielDurum">
+                        <option value="">Durum</option>
+                        <option value="sifir">Sıfır</option>
+                        <option value="ikinciel">İkinci El</option>
+                    </select>
+                `;
+            }
+        };
 
-                ilanlariGoster(ilanlar);
-                document.getElementById('listingCount').textContent = `${ilanlar.length} ilan bulundu.`;
+        // ========== ARAMA FONKSİYONU ==========
+        window.searchListings = function() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            loadListings(query);
+        };
+
+        // ========== FİLTRELEME ==========
+        window.filtrele = function(cat, subCat = '') {
+            currentFilter = cat;
+            currentMainCat = cat;
+            currentSubCat = subCat;
+
+            // Aktif sekmeyi güncelle
+            document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            loadListings('', cat, subCat);
+        };
+
+        // ========== İLANLARI LİSTELE ==========
+        async function loadListings(searchQuery = '', mainCat = '', subCat = '') {
+            let query = supabase.from('ilanlar').select('*');
+
+            if (searchQuery) {
+                query = query.ilike('baslik', `%${searchQuery}%`);
             }
 
-            // ========== İLANLARI GÖSTER ==========
-            function ilanlariGoster(ilanlar) {
-                const allGrid = document.getElementById('allListings');
-
-                if (ilanlar.length === 0) {
-                    allGrid.innerHTML = '<div class="no-listing">Bu kategoride henüz ilan bulunmuyor.</div>';
-                    return;
+            if (mainCat && mainCat !== 'tumu') {
+                query = query.eq('ana_kategori', mainCat);
+                if (subCat) {
+                    query = query.eq('alt_kategori', subCat);
                 }
-
-                function renderCard(item) {
-                    // Kategori adını güzel göster
-                    let kategoriAdi = item.kategori;
-                    if (item.kategori.includes('_')) {
-                        const [ana, alt] = item.kategori.split('_');
-                        kategoriAdi = `${kategoriYapisi[ana]?.ad || ana} / ${alt}`;
-                    }
-
-                    // Özellikleri göster (ozellikler JSON'dan)
-                    let ozellikHtml = '';
-                    if (item.ozellikler) {
-                        if (item.kategori.startsWith('emlak')) {
-                            ozellikHtml = `<p>${item.ozellikler.alan || '?'} m², ${item.ozellikler.oda || '?'} oda</p>`;
-                        } else if (item.kategori.startsWith('vasita')) {
-                            ozellikHtml = `<p>${item.ozellikler.marka || ''} ${item.ozellikler.model || ''} ${item.ozellikler.yil || ''} - ${item.ozellikler.km || '?'} km, ${item.ozellikler.yakit || ''}</p>`;
-                        } else if (item.kategori.startsWith('ikinciel') || item.kategori.startsWith('sifir')) {
-                            ozellikHtml = `<p>${item.ozellikler.durum || ''} ${item.ozellikler.marka || ''}</p>`;
-                        }
-                        // Diğer kategoriler için benzer eklemeler yapılabilir
-                    }
-
-                    return `
-                        <div class="card">
-                            <div class="category-tag">${kategoriAdi}</div>
-                            <div class="card-image">
-                                <img src="${item.resim_url || 'https://via.placeholder.com/400x200?text=Görsel+Yok'}" alt="${item.baslik}">
-                            </div>
-                            <div class="card-content">
-                                <div class="card-title">${item.baslik}</div>
-                                <div class="card-location">📍 ${item.konum || 'Konum belirtilmemiş'}</div>
-                                ${ozellikHtml}
-                                <div class="card-price">${item.fiyat} <span>EUR</span></div>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                allGrid.innerHTML = ilanlar.map(renderCard).join('');
             }
 
-            // ========== TÜM İLANLARI GETİR ==========
-            async function loadListings() {
-                const { data: ilanlar, error } = await supabase
-                    .from('ilanlar')
-                    .select('*')
-                    .order('created_at', { ascending: false });
+            const { data: ilanlar, error } = await query.order('created_at', { ascending: false });
 
-                if (error) {
-                    console.error('İlanlar yüklenemedi:', error);
-                    return;
-                }
-
-                ilanlariGoster(ilanlar);
-                document.getElementById('listingCount').textContent = `${ilanlar.length} ilan bulundu.`;
+            if (error) {
+                console.error('İlanlar yüklenemedi:', error);
+                return;
             }
 
-            // ========== ARAMA FONKSİYONU ==========
-            document.getElementById('searchBtn').addEventListener('click', async () => {
-                const searchTerm = document.getElementById('searchInput').value.trim();
-                if (!searchTerm) {
-                    loadListings();
-                    return;
+            document.getElementById('listingCount').textContent = ilanlar.length;
+
+            const grid = document.getElementById('allListings');
+            if (ilanlar.length === 0) {
+                grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:50px;">İlan bulunamadı.</p>';
+                return;
+            }
+
+            grid.innerHTML = ilanlar.map(ilan => renderCard(ilan)).join('');
+        }
+
+        function renderCard(ilan) {
+            // Kategori etiketi
+            const kategoriMetin = ilan.alt_kategori || ilan.ana_kategori;
+
+            // Özellikleri göster
+            let ozellikHtml = '';
+            if (ilan.ozellikler) {
+                if (ilan.ana_kategori === 'emlak') {
+                    ozellikHtml = `<p>${ilan.ozellikler.alan || ''} m², ${ilan.ozellikler.oda || ''} oda, ${ilan.ozellikler.binaYasi || ''} yaşında</p>`;
+                } else if (ilan.ana_kategori === 'vasita') {
+                    ozellikHtml = `<p>${ilan.ozellikler.marka || ''} ${ilan.ozellikler.model || ''} ${ilan.ozellikler.yil || ''} - ${ilan.ozellikler.km || ''} km, ${ilan.ozellikler.yakit || ''}</p>`;
                 }
+            }
 
-                const { data: ilanlar, error } = await supabase
-                    .from('ilanlar')
-                    .select('*')
-                    .or(`baslik.ilike.%${searchTerm}%,aciklama.ilike.%${searchTerm}%`)
-                    .order('created_at', { ascending: false });
+            return `
+                <div class="card" onclick="ilanDetay('${ilan.id}')">
+                    <div class="category-tag">${kategoriMetin}</div>
+                    <div class="card-image">
+                        <img src="${ilan.resim_url || 'https://via.placeholder.com/300x200'}" alt="${ilan.baslik}">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">${ilan.baslik}</div>
+                        <div class="card-location">${ilan.konum || 'Konum belirtilmemiş'}</div>
+                        ${ozellikHtml}
+                        <div class="card-price">${ilan.fiyat} <span>TL</span></div>
+                    </div>
+                </div>
+            `;
+        }
 
-                if (error) {
-                    console.error('Arama hatası:', error);
-                    return;
-                }
+        // ========== AUTH İŞLEMLERİ ==========
+        async function initAuth() {
+            const { data: { user } } = await supabase.auth.getUser();
+            currentUser = user;
+            updateAuthUI();
 
-                ilanlariGoster(ilanlar);
-                document.getElementById('listingCount').textContent = `${ilanlar.length} ilan bulundu.`;
+            supabase.auth.onAuthStateChange((event, session) => {
+                currentUser = session?.user || null;
+                updateAuthUI();
             });
+        }
 
-            // ========== MODAL İŞLEMLERİ ==========
+        function updateAuthUI() {
+            const authDiv = document.getElementById('authButtons');
+            const addContainer = document.getElementById('addListingContainer');
+
+            if (currentUser) {
+                authDiv.innerHTML = `
+                    <span>Merhaba, ${currentUser.email}</span>
+                    <button id="logoutBtn">Çıkış</button>
+                `;
+                document.getElementById('logoutBtn').addEventListener('click', () => supabase.auth.signOut());
+                if (addContainer) addContainer.style.display = 'block';
+            } else {
+                authDiv.innerHTML = `
+                    <button id="loginBtn">Giriş</button>
+                    <button id="signupBtn">Üye Ol</button>
+                `;
+                document.getElementById('loginBtn').addEventListener('click', () => openModal('login'));
+                document.getElementById('signupBtn').addEventListener('click', () => openModal('signup'));
+                if (addContainer) addContainer.style.display = 'none';
+            }
+        }
+
+        // ========== MODAL İŞLEMLERİ ==========
+        function setupModals() {
+            // Modal elementleri
             const signupModal = document.getElementById('signupModal');
             const loginModal = document.getElementById('loginModal');
-            const addListingModal = document.getElementById('addListingModal');
-            const addListingContainer = document.getElementById('addListingContainer');
-            const closeSignup = document.getElementById('closeSignup');
-            const closeLogin = document.getElementById('closeLogin');
-            const closeAddListing = document.getElementById('closeAddListing');
-            const goToLogin = document.getElementById('goToLogin');
-            const goToSignup = document.getElementById('goToSignup');
-            const addListingBtn = document.getElementById('addListingBtn');
+            const addModal = document.getElementById('addListingModal');
 
-            const openModal = (modal) => modal.style.display = 'flex';
-            const closeModal = (modal) => modal.style.display = 'none';
+            // Kapatma butonları
+            document.getElementById('closeSignup').onclick = () => closeModal('signup');
+            document.getElementById('closeLogin').onclick = () => closeModal('login');
+            document.getElementById('closeAddListing').onclick = () => closeModal('add');
 
-            window.addEventListener('click', (e) => {
-                if (e.target === signupModal) closeModal(signupModal);
-                if (e.target === loginModal) closeModal(loginModal);
-                if (e.target === addListingModal) closeModal(addListingModal);
-            });
-
-            closeSignup.addEventListener('click', () => closeModal(signupModal));
-            closeLogin.addEventListener('click', () => closeModal(loginModal));
-            closeAddListing.addEventListener('click', () => closeModal(addListingModal));
-
-            goToLogin.addEventListener('click', (e) => {
+            // Modal geçişleri
+            document.getElementById('goToLogin').onclick = (e) => {
                 e.preventDefault();
-                closeModal(signupModal);
-                openModal(loginModal);
-            });
-
-            goToSignup.addEventListener('click', (e) => {
+                closeModal('signup');
+                openModal('login');
+            };
+            document.getElementById('goToSignup').onclick = (e) => {
                 e.preventDefault();
-                closeModal(loginModal);
-                openModal(signupModal);
-            });
-
-            // ========== AUTH DURUMU ==========
-            supabase.auth.onAuthStateChange((event, session) => {
-                const user = session?.user;
-                const authButtonsDiv = document.getElementById('authButtons');
-
-                if (user) {
-                    authButtonsDiv.innerHTML = `
-                        <span style="color:white; margin-right:10px;">Merhaba, ${user.email}</span>
-                        <button id="logoutBtn">ÇIKIŞ</button>
-                    `;
-                    document.getElementById('logoutBtn').addEventListener('click', () => supabase.auth.signOut());
-                    addListingContainer.style.display = 'block';
-                } else {
-                    authButtonsDiv.innerHTML = `
-                        <button id="loginBtn">GİRİŞ</button>
-                        <button id="signupBtn">ÜYE OL</button>
-                    `;
-                    document.getElementById('loginBtn').addEventListener('click', () => openModal(loginModal));
-                    document.getElementById('signupBtn').addEventListener('click', () => openModal(signupModal));
-                    addListingContainer.style.display = 'none';
-                }
-            });
-
-            // ========== ÜYE OL ==========
-            document.getElementById('signupForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const email = document.getElementById('signupEmail').value;
-                const password = document.getElementById('signupPassword').value;
-                const name = document.getElementById('signupName').value;
-
-                const { error } = await supabase.auth.signUp({
-                    email,
-                    password,
-                    options: { data: { full_name: name } }
-                });
-
-                if (error) alert('Hata: ' + error.message);
-                else {
-                    alert('Kayıt başarılı! E-postanızı onaylayın.');
-                    closeModal(signupModal);
-                }
-            });
-
-            // ========== GİRİŞ YAP ==========
-            document.getElementById('loginForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
-
-                const { error } = await supabase.auth.signInWithPassword({ email, password });
-                if (error) alert('Hata: ' + error.message);
-                else {
-                    alert('Giriş başarılı!');
-                    closeModal(loginModal);
-                }
-            });
-
-            // ========== İLAN EKLEME ==========
-            addListingBtn.addEventListener('click', () => {
-                // Alt kategori seçimini sıfırla
-                document.getElementById('mainCategory').value = '';
-                document.getElementById('subCategory').style.display = 'none';
-                document.getElementById('subCategory').innerHTML = '<option value="">Alt Kategori Seçin</option>';
-                document.getElementById('ozelAlanlar').innerHTML = '';
-                openModal(addListingModal);
-            });
-
-            // Ana kategori değişince alt kategorileri getir
-            window.altKategorileriGuncelle = function() {
-                const anaKategori = document.getElementById('mainCategory').value;
-                const subSelect = document.getElementById('subCategory');
-                const ozelAlanlar = document.getElementById('ozelAlanlar');
-
-                if (!anaKategori) {
-                    subSelect.style.display = 'none';
-                    ozelAlanlar.innerHTML = '';
-                    return;
-                }
-
-                const altKategoriler = kategoriYapisi[anaKategori]?.altKategoriler || [];
-                subSelect.innerHTML = '<option value="">Alt Kategori Seçin</option>';
-                altKategoriler.forEach(alt => {
-                    const option = document.createElement('option');
-                    option.value = alt;
-                    option.textContent = alt;
-                    subSelect.appendChild(option);
-                });
-                subSelect.style.display = 'block';
-                ozelAlanlar.innerHTML = ''; // Özel alanları temizle
-
-                // Kategoriye göre özel alanları ekle
-                if (anaKategori === 'emlak') {
-                    ozelAlanlar.innerHTML = `
-                        <input type="number" id="emlakAlan" placeholder="Alan (m²)">
-                        <input type="text" id="emlakOda" placeholder="Oda Sayısı (örn: 3+1)">
-                    `;
-                } else if (anaKategori === 'vasita') {
-                    ozelAlanlar.innerHTML = `
-                        <input type="text" id="arabaMarka" placeholder="Marka">
-                        <input type="text" id="arabaModel" placeholder="Model">
-                        <input type="number" id="arabaYil" placeholder="Yıl">
-                        <input type="number" id="arabaKm" placeholder="Kilometre">
-                        <input type="text" id="arabaYakit" placeholder="Yakıt Türü">
-                    `;
-                } else if (anaKategori === 'ikinciel' || anaKategori === 'sifir') {
-                    ozelAlanlar.innerHTML = `
-                        <input type="text" id="urunMarka" placeholder="Marka">
-                        <select id="urunDurum">
-                            <option value="">Durum Seçin</option>
-                            <option value="Sıfır">Sıfır</option>
-                            <option value="İkinci El">İkinci El</option>
-                        </select>
-                    `;
-                }
-                // Diğer kategoriler için benzer eklemeler yapılabilir
+                closeModal('login');
+                openModal('signup');
             };
 
-            document.getElementById('addListingForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
+            // Dışarı tıklayınca kapat
+            window.onclick = (e) => {
+                if (e.target === signupModal) closeModal('signup');
+                if (e.target === loginModal) closeModal('login');
+                if (e.target === addModal) closeModal('add');
+            };
 
-                const { data: { user } } = await supabase.auth.getUser();
-                if (!user) {
+            // İlan ekle butonu
+            document.getElementById('addListingBtn').addEventListener('click', () => {
+                if (!currentUser) {
                     alert('Önce giriş yapmalısınız!');
-                    closeModal(addListingModal);
-                    return;
-                }
-
-                const anaKategori = document.getElementById('mainCategory').value;
-                const altKategori = document.getElementById('subCategory').value;
-
-                if (!anaKategori || !altKategori) {
-                    alert('Lütfen kategori seçimini tamamlayın!');
-                    return;
-                }
-
-                const kategori = `${anaKategori}_${altKategori}`;
-                const title = document.getElementById('listingTitle').value;
-                const location = document.getElementById('listingLocation').value;
-                const price = document.getElementById('listingPrice').value;
-                const description = document.getElementById('listingDescription').value;
-                const imageUrl = document.getElementById('listingImage').value || 'https://via.placeholder.com/400x250';
-
-                // Özel alanları topla
-                let ozellikler = {};
-                if (anaKategori === 'emlak') {
-                    ozellikler = {
-                        alan: document.getElementById('emlakAlan')?.value || '',
-                        oda: document.getElementById('emlakOda')?.value || ''
-                    };
-                } else if (anaKategori === 'vasita') {
-                    ozellikler = {
-                        marka: document.getElementById('arabaMarka')?.value || '',
-                        model: document.getElementById('arabaModel')?.value || '',
-                        yil: document.getElementById('arabaYil')?.value || '',
-                        km: document.getElementById('arabaKm')?.value || '',
-                        yakit: document.getElementById('arabaYakit')?.value || ''
-                    };
-                } else if (anaKategori === 'ikinciel' || anaKategori === 'sifir') {
-                    ozellikler = {
-                        marka: document.getElementById('urunMarka')?.value || '',
-                        durum: document.getElementById('urunDurum')?.value || ''
-                    };
-                }
-
-                const { error } = await supabase.from('ilanlar').insert([
-                    {
-                        baslik: title,
-                        kategori: kategori,
-                        fiyat: price + ' €',
-                        aciklama: description,
-                        resim_url: imageUrl,
-                        konum: location,
-                        ozellikler: ozellikler,
-                        user_id: user.id
-                    }
-                ]);
-
-                if (error) alert('Hata: ' + error.message);
-                else {
-                    alert('İlan başarıyla eklendi!');
-                    closeModal(addListingModal);
-                    document.getElementById('addListingForm').reset();
-                    document.getElementById('subCategory').style.display = 'none';
-                    document.getElementById('ozelAlanlar').innerHTML = '';
-                    loadListings();
+                    openModal('login');
+                } else {
+                    openModal('add');
                 }
             });
 
-            // ========== SAYFA YÜKLENİNCE ==========
-            loadListings();
+            // Form submit işlemleri
+            document.getElementById('signupForm').addEventListener('submit', handleSignup);
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            document.getElementById('addListingForm').addEventListener('submit', handleAddListing);
+        }
 
-            // İletişim butonu (varsa) - silinebilir, ama uyumluluk için
-            if (document.getElementById('contactBtn')) {
-                document.getElementById('contactBtn').addEventListener('click', () => {
-                    alert('Mesajınız iletilmiştir (simülasyon).');
-                });
+        window.openModal = function(type) {
+            document.getElementById(type + 'Modal').style.display = 'flex';
+        };
+
+        window.closeModal = function(type) {
+            document.getElementById(type + 'Modal').style.display = 'none';
+        };
+
+        async function handleSignup(e) {
+            e.preventDefault();
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const name = document.getElementById('signupName').value;
+
+            const { error } = await supabase.auth.signUp({
+                email,
+                password,
+                options: { data: { full_name: name } }
+            });
+
+            if (error) alert('Hata: ' + error.message);
+            else {
+                alert('Kayıt başarılı! Lütfen e-postanızı onaylayın.');
+                closeModal('signup');
             }
-        })();
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) alert('Hata: ' + error.message);
+            else {
+                alert('Giriş başarılı!');
+                closeModal('login');
+            }
+        }
+
+        async function handleAddListing(e) {
+            e.preventDefault();
+
+            if (!currentUser) {
+                alert('Önce giriş yapmalısınız!');
+                closeModal('add');
+                openModal('login');
+                return;
+            }
+
+            const mainCat = document.getElementById('listingMainCategory').value;
+            const subCat = document.getElementById('listingSubCategory').value;
+            const title = document.getElementById('listingTitle').value;
+            const location = document.getElementById('listingLocation').value;
+            const price = document.getElementById('listingPrice').value;
+            const description = document.getElementById('listingDescription').value;
+            const imageUrl = document.getElementById('listingImage').value || 'https://via.placeholder.com/300x200';
+
+            // Özel alanları topla
+            let ozellikler = {};
+            if (mainCat === 'emlak') {
+                ozellikler = {
+                    alan: document.getElementById('emlakAlan')?.value || '',
+                    oda: document.getElementById('emlakOda')?.value || '',
+                    binaYasi: document.getElementById('emlakBinaYasi')?.value || ''
+                };
+            } else if (mainCat === 'vasita') {
+                ozellikler = {
+                    marka: document.getElementById('vasitaMarka')?.value || '',
+                    model: document.getElementById('vasitaModel')?.value || '',
+                    yil: document.getElementById('vasitaYil')?.value || '',
+                    km: document.getElementById('vasitaKm')?.value || '',
+                    yakit: document.getElementById('vasitaYakit')?.value || ''
+                };
+            } else if (mainCat === 'ikinciel') {
+                ozellikler = {
+                    durum: document.getElementById('ikincielDurum')?.value || ''
+                };
+            }
+
+            const { error } = await supabase.from('ilanlar').insert([
+                {
+                    baslik: title,
+                    ana_kategori: mainCat,
+                    alt_kategori: subCat,
+                    fiyat: price + ' TL',
+                    aciklama: description,
+                    resim_url: imageUrl,
+                    konum: location,
+                    ozellikler: ozellikler,
+                    user_id: currentUser.id
+                }
+            ]);
+
+            if (error) alert('Hata: ' + error.message);
+            else {
+                alert('İlan başarıyla eklendi!');
+                closeModal('add');
+                document.getElementById('addListingForm').reset();
+                document.getElementById('ozelAlanlar').innerHTML = '';
+                document.getElementById('listingSubCategory').style.display = 'none';
+                loadListings();
+            }
+        }
+
+        // İlan detay (ilerde eklenebilir)
+        window.ilanDetay = function(id) {
+            alert('İlan detay sayfası yakında! İlan ID: ' + id);
+        };
     </script>
 </body>
 </html>
