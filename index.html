@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AKARAT TUNISIA | Lüks Gayrimenkul</title>
+    <!-- Supabase kütüphanesi -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap');
@@ -213,20 +214,21 @@
         </div>
     </div>
 
-    <!-- İlan Ekle Modal -->
+    <!-- İlan Ekle Modal (DOSYA YÜKLEMELİ) -->
     <div id="addListingModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" id="closeAddListing">&times;</span>
             <h2>İlan Ekle</h2>
-            <form class="modal-form" id="addListingForm">
+            <form class="modal-form" id="addListingForm" enctype="multipart/form-data">
                 <input type="text" id="listingTitle" placeholder="İlan Başlığı" required>
                 <input type="text" id="listingLocation" placeholder="Konum (şehir, mahalle)" required>
                 <input type="number" id="listingPrice" placeholder="Fiyat (€)" required>
                 <input type="number" id="listingArea" placeholder="Alan (m²)" required>
                 <input type="text" id="listingRooms" placeholder="Oda Sayısı (örn: 3+1)" required>
                 <textarea id="listingDescription" placeholder="İlan Açıklaması" rows="4" required></textarea>
-                <input type="url" id="listingImage" placeholder="Resim URL'si (zorunlu değil)">
-                <small style="display:block; margin-bottom:15px; color:#6c757d;">Geçerli bir resim linki girin (isteğe bağlı)</small>
+                <!-- DOSYA SEÇME INPUT'U -->
+                <input type="file" id="listingImageFile" accept="image/*" required>
+                <small style="display:block; margin-bottom:15px; color:#6c757d;">Bir resim seçin (zorunlu)</small>
                 <button type="submit">İLANI YAYINLA</button>
             </form>
         </div>
@@ -338,7 +340,7 @@
                 }
             });
 
-            // İlan ekle
+            // İlan ekle (DOSYA YÜKLEMELİ)
             addListingBtn.addEventListener('click', () => openModal(addListingModal));
 
             document.getElementById('addListingForm').addEventListener('submit', async (e) => {
@@ -351,36 +353,58 @@
                     return;
                 }
 
+                // Form verilerini al
                 const title = document.getElementById('listingTitle').value;
                 const location = document.getElementById('listingLocation').value;
                 const price = document.getElementById('listingPrice').value;
                 const area = document.getElementById('listingArea').value;
                 const rooms = document.getElementById('listingRooms').value;
                 const description = document.getElementById('listingDescription').value;
-                const imageUrl = document.getElementById('listingImage').value || 'https://via.placeholder.com/400x250';
+                const fileInput = document.getElementById('listingImageFile');
+                const file = fileInput.files[0];
 
-                // Sütun adları tablodakiyle birebir aynı olmalı
+                if (!file) {
+                    alert('Lütfen bir resim seçin!');
+                    return;
+                }
+
+                // 1. Resmi storage'e yükle
+                const filePath = `${user.id}/${Date.now()}_${file.name}`;
+                const { error: uploadError, data: uploadData } = await supabase.storage
+                    .from('ilan-resimleri')
+                    .upload(filePath, file);
+
+                if (uploadError) {
+                    alert('Resim yüklenemedi: ' + uploadError.message);
+                    return;
+                }
+
+                // 2. Yüklenen resmin public URL'sini al
+                const { data: { publicUrl } } = supabase.storage
+                    .from('ilan-resimleri')
+                    .getPublicUrl(filePath);
+
+                // 3. İlanı veritabanına ekle (resim_url = publicUrl)
                 const { error } = await supabase.from('ilanlar').insert([
                     { 
                         baslik: title,
                         fiyat: price + ' €',
                         aciklama: description,
-                        resim_url: imageUrl,
+                        resim_url: publicUrl,
                         konum: location,
-                        alan: area,          // Bu sütun tabloda olmalı
-                        oda: rooms,           // Bu sütun tabloda olmalı
+                        alan: area,
+                        oda: rooms,
                         user_id: user.id
                     }
                 ]);
 
                 if (error) {
                     alert('Hata: ' + error.message);
-                    console.error('Detay:', error);
                 } else {
-                    alert('İlan eklendi!');
+                    alert('İlan başarıyla eklendi!');
                     closeModal(addListingModal);
                     document.getElementById('addListingForm').reset();
-                    loadListings();
+                    loadListings(); // Listeyi yenile
                 }
             });
 
@@ -402,7 +426,7 @@
                 const allGrid = document.getElementById('allListings');
 
                 if (ilanlar.length === 0) {
-                    featuredGrid.innerHTML = '<p style="text-align:center;">Henüz ilan bulunmuyor.</p>';
+                    featuredGrid.innerHTML = '<p style="text-align:center; grid-column:1/-1;">Henüz ilan bulunmuyor.</p>';
                     allGrid.innerHTML = '';
                     return;
                 }
@@ -431,6 +455,7 @@
                 featuredGrid.innerHTML = ilanlar.slice(0, 3).map(renderCard).join('');
             }
 
+            // Sayfa yüklenince ilanları getir
             loadListings();
 
             // İletişim butonu (simülasyon)
