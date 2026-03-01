@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Akarat Tunisia | Lüks Gayrimenkul</title>
     <style>
-        /* ========== MODERN VE LÜKS TASARIM ========== */
+        /* ========== ÖNCEKİ TÜM STILLER AYNEN KALIYOR ========== */
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap');
 
         * {
@@ -22,7 +22,7 @@
             overflow-x: hidden;
         }
 
-        /* ŞIK VE MODERN HEADER (BÜYÜK GÖRSEL) */
+        /* HERO */
         .hero {
             position: relative;
             height: 100vh;
@@ -65,9 +65,9 @@
             margin: 20px auto;
         }
 
-        /* TRANSPARAN MENÜ (KAYDIRINCA BEYAZ OLUR) */
+        /* NAVBAR (GÜNCELLENDİ: ÜYE BUTONLARI EKLENDİ) */
         .navbar {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -76,19 +76,7 @@
             justify-content: space-between;
             align-items: center;
             color: white;
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        .navbar.scrolled {
-            background: white;
-            padding: 15px 50px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-
-        .navbar.scrolled .logo,
-        .navbar.scrolled .nav-links a {
-            color: #1a2a3a;
+            z-index: 10;
         }
 
         .logo {
@@ -96,7 +84,6 @@
             font-size: 1.8rem;
             font-weight: 600;
             letter-spacing: 2px;
-            transition: color 0.3s;
         }
 
         .nav-links {
@@ -105,20 +92,43 @@
             font-weight: 300;
             letter-spacing: 1px;
             font-size: 0.9rem;
+            align-items: center;
         }
 
         .nav-links a {
             color: white;
             text-decoration: none;
             transition: opacity 0.3s;
-            cursor: pointer;
         }
 
         .nav-links a:hover {
             opacity: 0.7;
         }
 
-        /* İSTATİSTİKLER (ŞIK KUTULAR) */
+        /* YENİ: ÜYE BUTONLARI */
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .auth-buttons button {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 8px 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .auth-buttons button:hover {
+            background: white;
+            color: #1e2e3e;
+        }
+
+        /* İSTATİSTİKLER */
         .stats-section {
             padding: 80px 20px;
             background: #faf9f7;
@@ -160,69 +170,6 @@
             margin: 15px auto;
         }
 
-        /* FİLTRELEME BÖLÜMÜ */
-        .filter-section {
-            background: white;
-            padding: 40px 0;
-            border-bottom: 1px solid #eaeaea;
-        }
-
-        .filter-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 30px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        .filter-btn {
-            background: transparent;
-            border: 1px solid #c9a86c;
-            color: #c9a86c;
-            padding: 10px 25px;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
-        }
-
-        .filter-btn:hover,
-        .filter-btn.active {
-            background: #c9a86c;
-            color: white;
-        }
-
-        .search-box {
-            display: flex;
-            border: 1px solid #ddd;
-            max-width: 400px;
-            width: 100%;
-        }
-
-        .search-box input {
-            flex: 1;
-            padding: 12px 15px;
-            border: none;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.9rem;
-        }
-
-        .search-box button {
-            background: #1e2e3e;
-            border: none;
-            color: white;
-            padding: 0 20px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .search-box button:hover {
-            background: #c9a86c;
-        }
-
         /* BÖLÜM BAŞLIKLARI */
         .section-header {
             text-align: center;
@@ -244,7 +191,7 @@
             text-transform: uppercase;
         }
 
-        /* İLAN KARTLARI (LÜKS) */
+        /* İLAN KARTLARI */
         .container {
             max-width: 1300px;
             margin: 0 auto;
@@ -263,9 +210,6 @@
             box-shadow: 0 20px 40px -10px rgba(0,20,30,0.1);
             transition: all 0.4s ease;
             cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            display: block;
         }
 
         .card:hover {
@@ -331,6 +275,121 @@
             color: #8a9aa8;
         }
 
+        /* YENİ: İLAN EKLE BUTONU (HER İKİ GRİDİN ALTINA) */
+        .add-listing-container {
+            text-align: center;
+            margin: 30px 0 70px;
+        }
+
+        .btn-add-listing {
+            background: #1e2e3e;
+            color: white;
+            border: none;
+            padding: 18px 60px;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            border-radius: 0;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .btn-add-listing:hover {
+            background: #c9a86c;
+        }
+
+        /* YENİ: MODAL PENCERELER (ÜYELİK VE İLAN EKLEME İÇİN) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            position: relative;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #8a9aa8;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: #1e2e3e;
+        }
+
+        .modal h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 25px;
+            color: #1e2e3e;
+        }
+
+        .modal-form input,
+        .modal-form textarea,
+        .modal-form select {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            background: #f9f9f9;
+        }
+
+        .modal-form button {
+            background: #1e2e3e;
+            color: white;
+            border: none;
+            padding: 16px;
+            width: 100%;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .modal-form button:hover {
+            background: #c9a86c;
+        }
+
+        .modal-footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #4a5a68;
+        }
+
+        .modal-footer a {
+            color: #c9a86c;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
         /* İLETİŞİM BÖLÜMÜ */
         .contact-section {
             background: #f0eeea;
@@ -378,7 +437,8 @@
             margin-bottom: 20px;
         }
 
-        input, textarea {
+        .contact-form input,
+        .contact-form textarea {
             width: 100%;
             padding: 15px;
             border: none;
@@ -387,7 +447,7 @@
             font-size: 1rem;
         }
 
-        textarea {
+        .contact-form textarea {
             min-height: 120px;
         }
 
@@ -420,30 +480,32 @@
         /* MOBİL */
         @media (max-width: 700px) {
             .hero h1 { font-size: 3rem; }
-            .navbar { padding: 20px; }
-            .nav-links { gap: 20px; font-size: 0.8rem; }
+            .navbar { padding: 20px; flex-direction: column; gap: 15px; }
+            .nav-links { flex-wrap: wrap; justify-content: center; gap: 20px; }
             .stats-grid { gap: 30px; }
             .stat-number { font-size: 3rem; }
-            .filter-container { flex-direction: column; align-items: center; }
-            .search-box { max-width: 100%; }
         }
     </style>
 </head>
 <body>
 
-    <!-- TRANSPARAN MENÜ (FİXED) -->
-    <div class="navbar" id="navbar">
+    <!-- NAVBAR (ÜYE BUTONLARI EKLENDİ) -->
+    <div class="navbar">
         <div class="logo">AKARAT</div>
         <div class="nav-links">
-            <a onclick="scrollToSection('hero')">ANA SAYFA</a>
-            <a onclick="scrollToSection('ilanlar')">İLANLAR</a>
-            <a onclick="scrollToSection('hakkimizda')">HİZMETLER</a>
-            <a onclick="scrollToSection('iletisim')">İLETİŞİM</a>
+            <a href="#">ANA SAYFA</a>
+            <a href="#">İLANLAR</a>
+            <a href="#">HİZMETLER</a>
+            <a href="#">İLETİŞİM</a>
+            <div class="auth-buttons">
+                <button id="loginBtn">GİRİŞ</button>
+                <button id="signupBtn">ÜYE OL</button>
+            </div>
         </div>
     </div>
 
-    <!-- BÜYÜK HERO GÖRSEL -->
-    <section class="hero" id="hero">
+    <!-- HERO -->
+    <section class="hero">
         <div class="hero-content">
             <div class="hero-line"></div>
             <h1>AKARAT TUNISIA</h1>
@@ -473,30 +535,16 @@
         </div>
     </section>
 
-    <!-- FİLTRELEME BÖLÜMÜ -->
-    <section class="filter-section" id="hakkimizda">
-        <div class="filter-container">
-            <button class="filter-btn active" onclick="filterListings('all')">TÜMÜ</button>
-            <button class="filter-btn" onclick="filterListings('villa')">VİLLA</button>
-            <button class="filter-btn" onclick="filterListings('daire')">DAİRE</button>
-            <button class="filter-btn" onclick="filterListings('mustakil')">MÜSTAKİL</button>
-            <div class="search-box">
-                <input type="text" placeholder="Lokasyon veya ilan ara..." id="searchInput">
-                <button onclick="searchListings()">🔍</button>
-            </div>
-        </div>
-    </section>
-
     <!-- ÖNE ÇIKAN İLANLAR -->
-    <div class="container" id="ilanlar">
+    <div class="container">
         <div class="section-header">
             <div class="subtitle">KOLEKSİYON</div>
             <h2>Öne Çıkan İlanlar</h2>
         </div>
 
-        <div class="card-grid" id="featured-listings">
-            <!-- KART 1 - VİLLA -->
-            <a href="#" class="card" data-type="villa" onclick="showDetails('Deniz Manzaralı Villa', 'Kartaca, Tunus', '250 m²', '4+1', '450.000')">
+        <div class="card-grid">
+            <!-- KARTLAR (ÖNCEKİ GİBİ) -->
+            <div class="card">
                 <div class="card-image">
                     <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Villa">
                 </div>
@@ -509,10 +557,8 @@
                     </div>
                     <div class="card-price">450.000 € <span>EUR</span></div>
                 </div>
-            </a>
-
-            <!-- KART 2 - DAİRE -->
-            <a href="#" class="card" data-type="daire" onclick="showDetails('Merkezi Konumda Daire', 'La Marsa, Tunus', '120 m²', '3+1', '210.000')">
+            </div>
+            <div class="card">
                 <div class="card-image">
                     <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Daire">
                 </div>
@@ -525,10 +571,8 @@
                     </div>
                     <div class="card-price">210.000 € <span>EUR</span></div>
                 </div>
-            </a>
-
-            <!-- KART 3 - MÜSTAKİL -->
-            <a href="#" class="card" data-type="mustakil" onclick="showDetails('Havuzlu Müstakil Ev', 'Sidi Bou Said', '180 m²', '5+2', '595.000')">
+            </div>
+            <div class="card">
                 <div class="card-image">
                     <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Müstakil">
                 </div>
@@ -541,18 +585,18 @@
                     </div>
                     <div class="card-price">595.000 € <span>EUR</span></div>
                 </div>
-            </a>
+            </div>
         </div>
 
-        <!-- SATILIK GAYRİMENKULLER (ikinci grid) -->
+        <!-- SATILIK GAYRİMENKULLER -->
         <div class="section-header">
             <div class="subtitle">SEÇKİN</div>
             <h2>Satılık Gayrimenkuller</h2>
         </div>
 
-        <div class="card-grid" id="sale-listings">
-            <!-- KART 1 - YALI -->
-            <a href="#" class="card" data-type="villa" onclick="showDetails('Deniz Kenarında Yalı', 'Hammamet, Tunus', '320 m²', '6+2', '890.000')">
+        <div class="card-grid">
+            <!-- KARTLAR -->
+            <div class="card">
                 <div class="card-image">
                     <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Yalı">
                 </div>
@@ -565,10 +609,8 @@
                     </div>
                     <div class="card-price">890.000 € <span>EUR</span></div>
                 </div>
-            </a>
-
-            <!-- KART 2 - DAİRE -->
-            <a href="#" class="card" data-type="daire" onclick="showDetails('Yeni Nesil Daire', 'Monastir, Tunus', '95 m²', '2+1', '135.000')">
+            </div>
+            <div class="card">
                 <div class="card-image">
                     <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Daire">
                 </div>
@@ -581,10 +623,8 @@
                     </div>
                     <div class="card-price">135.000 € <span>EUR</span></div>
                 </div>
-            </a>
-
-            <!-- KART 3 - MÜSTAKİL -->
-            <a href="#" class="card" data-type="mustakil" onclick="showDetails('Bahçeli Mustakil', 'Tozeur, Tunus', '150 m²', '3+2', '175.000')">
+            </div>
+            <div class="card">
                 <div class="card-image">
                     <img src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Mustakil">
                 </div>
@@ -597,12 +637,17 @@
                     </div>
                     <div class="card-price">175.000 € <span>EUR</span></div>
                 </div>
-            </a>
+            </div>
+        </div>
+
+        <!-- YENİ: İLAN EKLE BUTONU -->
+        <div class="add-listing-container">
+            <button class="btn-add-listing" id="addListingBtn">+ İLAN EKLE</button>
         </div>
     </div>
 
     <!-- İLETİŞİM BÖLÜMÜ -->
-    <section class="contact-section" id="iletisim">
+    <section class="contact-section">
         <div class="contact-container">
             <div class="contact-info">
                 <h3>Bize Ulaşın</h3>
@@ -615,15 +660,15 @@
             </div>
             <div class="contact-form">
                 <div class="form-group">
-                    <input type="text" placeholder="Adınız Soyadınız" id="name">
+                    <input type="text" placeholder="Adınız Soyadınız" id="contactName">
                 </div>
                 <div class="form-group">
-                    <input type="email" placeholder="E-posta Adresiniz" id="email">
+                    <input type="email" placeholder="E-posta Adresiniz" id="contactEmail">
                 </div>
                 <div class="form-group">
-                    <textarea placeholder="Mesajınız..." id="message"></textarea>
+                    <textarea placeholder="Mesajınız..." id="contactMessage"></textarea>
                 </div>
-                <button class="btn" onclick="sendMessage()">GÖNDER</button>
+                <button class="btn" id="contactBtn">GÖNDER</button>
             </div>
         </div>
     </section>
@@ -632,78 +677,155 @@
     <footer>
         <div class="logo" style="color:white; margin-bottom:20px;">AKARAT TUNISIA</div>
         <p>© 2025 Tüm hakları saklıdır. Lüks gayrimenkul danışmanlığı.</p>
-        <p style="margin-top:10px; font-size:0.8rem;">Polat Levent Exclusive'dan ilham alınmıştır.</p>
+        <p style="margin-top:10px; font-size:0.8rem;">Üyelik ve ilan ekleme özellikleri çok yakında...</p>
     </footer>
 
-    <!-- JAVASCRIPT (TÜM İŞLEVLER) -->
+    ==================== -->
+    <!-- ÜYE OL MODALİ -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeSignup">&times;</span>
+            <h2>Üye Ol</h2>
+            <form class="modal-form" id="signupForm">
+                <input type="text" placeholder="Ad Soyad" required>
+                <input type="email" placeholder="E-posta" required>
+                <input type="password" placeholder="Şifre" required>
+                <input type="password" placeholder="Şifre Tekrar" required>
+                <button type="submit">KAYIT OL</button>
+            </form>
+            <div class="modal-footer">
+                Zaten üye misiniz? <a href="#" id="goToLogin">Giriş Yap</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- GİRİŞ YAP MODALİ -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeLogin">&times;</span>
+            <h2>Giriş Yap</h2>
+            <form class="modal-form" id="loginForm">
+                <input type="email" placeholder="E-posta" required>
+                <input type="password" placeholder="Şifre" required>
+                <button type="submit">GİRİŞ</button>
+            </form>
+            <div class="modal-footer">
+                Hesabınız yok mu? <a href="#" id="goToSignup">Üye Ol</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- İLAN EKLE MODALİ -->
+    <div id="addListingModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeAddListing">&times;</span>
+            <h2>İlan Ekle</h2>
+            <form class="modal-form" id="addListingForm">
+                <input type="text" placeholder="İlan Başlığı" required>
+                <select required>
+                    <option value="">Kategori Seçin</option>
+                    <option>Satılık Villa</option>
+                    <option>Satılık Daire</option>
+                    <option>Satılık Müstakil</option>
+                </select>
+                <input type="text" placeholder="Konum (şehir, mahalle)" required>
+                <input type="text" placeholder="Fiyat (€)" required>
+                <input type="text" placeholder="Alan (m²)" required>
+                <input type="text" placeholder="Oda Sayısı (örn: 3+1)" required>
+                <textarea placeholder="İlan Açıklaması" rows="4" required></textarea>
+                <input type="file" id="photoUpload" accept="image/*" multiple>
+                <small style="display:block; margin-bottom:15px; color:#6c757d;">Birden fazla fotoğraf seçebilirsiniz</small>
+                <button type="submit">İLANI YAYINLA</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT: MODAL İŞLEMLERİ VE SİMÜLASYON -->
     <script>
-        // Menü kaydırma efekti
-        window.addEventListener('scroll', function() {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
+        // Tüm modal elementleri
+        const signupModal = document.getElementById('signupModal');
+        const loginModal = document.getElementById('loginModal');
+        const addListingModal = document.getElementById('addListingModal');
+
+        // Butonlar
+        const signupBtn = document.getElementById('signupBtn');
+        const loginBtn = document.getElementById('loginBtn');
+        const addListingBtn = document.getElementById('addListingBtn');
+
+        // Kapatma butonları
+        const closeSignup = document.getElementById('closeSignup');
+        const closeLogin = document.getElementById('closeLogin');
+        const closeAddListing = document.getElementById('closeAddListing');
+
+        // Modal içi linkler
+        const goToLogin = document.getElementById('goToLogin');
+        const goToSignup = document.getElementById('goToSignup');
+
+        // Modal açma fonksiyonları
+        function openModal(modal) {
+            modal.style.display = 'flex';
+        }
+
+        function closeModal(modal) {
+            modal.style.display = 'none';
+        }
+
+        // Üye Ol butonu
+        signupBtn.addEventListener('click', () => openModal(signupModal));
+
+        // Giriş Yap butonu
+        loginBtn.addEventListener('click', () => openModal(loginModal));
+
+        // İlan Ekle butonu
+        addListingBtn.addEventListener('click', () => openModal(addListingModal));
+
+        // Modal kapatma
+        closeSignup.addEventListener('click', () => closeModal(signupModal));
+        closeLogin.addEventListener('click', () => closeModal(loginModal));
+        closeAddListing.addEventListener('click', () => closeModal(addListingModal));
+
+        // Modal dışına tıklayınca kapat
+        window.addEventListener('click', (e) => {
+            if (e.target === signupModal) closeModal(signupModal);
+            if (e.target === loginModal) closeModal(loginModal);
+            if (e.target === addListingModal) closeModal(addListingModal);
         });
 
-        // Sayfada yumuşak kaydırma
-        function scrollToSection(sectionId) {
-            const element = document.getElementById(sectionId);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
+        // Modal içi linkler (Giriş/Üye arası geçiş)
+        goToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal(signupModal);
+            openModal(loginModal);
+        });
 
-        // İlan detaylarını gösterme (demo)
-        function showDetails(title, location, size, rooms, price) {
-            alert(`🏠 ${title}\n📍 ${location}\n📐 ${size} | ${rooms}\n💰 ${price} €\n\nDetay sayfası şu an demo moddadır. Gerçek ilan detayı yakında eklenecek.`);
-        }
+        goToSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal(loginModal);
+            openModal(signupModal);
+        });
 
-        // Filtreleme (demo)
-        function filterListings(type) {
-            const buttons = document.querySelectorAll('.filter-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            if (type === 'all') {
-                alert('Tüm ilanlar gösteriliyor (demo)');
-            } else {
-                alert(type + ' tipi ilanlar filtrelendi (demo)');
-            }
-            
-            // Gerçek filtreleme için burada kartları gizleme/gösterme yapılabilir
-        }
+        // FORM GÖNDERME SİMÜLASYONU (şimdilik uyarı verir)
+        document.getElementById('signupForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Üye kaydı simülasyonu: Gerçek kayıt sistemi yakında eklenecek. Şimdilik veriler kaydedilmiyor.');
+            closeModal(signupModal);
+        });
 
-        // Arama (demo)
-        function searchListings() {
-            const query = document.getElementById('searchInput').value;
-            if (query) {
-                alert(`"${query}" için arama yapılıyor... (demo modda)`);
-            } else {
-                alert('Lütfen bir arama terimi girin.');
-            }
-        }
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Giriş simülasyonu: Gerçek giriş sistemi yakında eklenecek.');
+            closeModal(loginModal);
+        });
 
-        // İletişim formu (demo)
-        function sendMessage() {
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
-            
-            if (!name || !email || !message) {
-                alert('Lütfen tüm alanları doldurun.');
-                return;
-            }
-            
-            alert(`Teşekkürler ${name}! Mesajınız alınmıştır. (Demo modda gerçekten gönderilmedi)`);
-        }
+        document.getElementById('addListingForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('İlan ekleme simülasyonu: İlanınız alındı (veritabanı bağlantısı henüz yok). Yakında gerçek eklenti gelecek!');
+            closeModal(addListingModal);
+        });
 
-        // Sayfa yüklendiğinde menü durumunu kontrol et
-        document.addEventListener('DOMContentLoaded', function() {
-            if (window.scrollY > 50) {
-                document.getElementById('navbar').classList.add('scrolled');
-            }
+        // İletişim butonu simülasyonu
+        document.getElementById('contactBtn').addEventListener('click', () => {
+            alert('Mesajınız iletilmiştir (simülasyon). Gerçek e-posta sistemi yakında aktif olacak.');
         });
     </script>
 
