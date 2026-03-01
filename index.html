@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AKARAT TUNISIA | Lüks Gayrimenkul</title>
-    <!-- Supabase kütüphanesi -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        /* ========== TASARIM (AYNEN KORUNDU) ========== */
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Montserrat', sans-serif; background: #fff; color: #1a2a3a; line-height: 1.6; }
@@ -34,7 +34,7 @@
         .section-header .subtitle { font-size: 1rem; letter-spacing: 3px; color: #c9a86c; text-transform: uppercase; }
         .container { max-width: 1300px; margin: 0 auto; padding: 0 30px; }
         .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; margin: 50px 0; }
-        .card { background: white; box-shadow: 0 20px 40px -10px rgba(0,20,30,0.1); transition: all 0.4s ease; cursor: pointer; }
+        .card { background: white; box-shadow: 0 20px 40px -10px rgba(0,20,30,0.1); transition: all 0.4s ease; cursor: pointer; position: relative; }
         .card:hover { transform: translateY(-15px); box-shadow: 0 30px 50px -15px rgba(0,0,0,0.2); }
         .card-image { height: 280px; overflow: hidden; }
         .card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s; }
@@ -45,6 +45,7 @@
         .card-details { display: flex; gap: 15px; color: #4a5a68; font-size: 0.9rem; margin: 10px 0; }
         .card-price { font-size: 2rem; font-weight: 600; color: #1e2e3e; border-top: 1px solid #e5e5e5; padding-top: 15px; margin-top: 15px; }
         .card-price span { font-size: 1rem; font-weight: 300; color: #8a9aa8; }
+        .category-tag { position: absolute; top: 15px; right: 15px; background: #c9a86c; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; z-index: 2; }
         .add-listing-container { text-align: center; margin: 30px 0 70px; }
         .btn-add-listing { background: #1e2e3e; color: white; border: none; padding: 18px 60px; font-size: 1.2rem; letter-spacing: 2px; cursor: pointer; transition: background 0.3s; font-family: 'Montserrat', sans-serif; font-weight: 500; border-radius: 0; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .btn-add-listing:hover { background: #c9a86c; }
@@ -71,6 +72,8 @@
         .contact-form textarea { min-height: 120px; }
         .btn { background: #1e2e3e; color: white; border: none; padding: 16px 40px; font-size: 1rem; letter-spacing: 2px; cursor: pointer; transition: background 0.3s; font-weight: 500; border-radius: 0; }
         .btn:hover { background: #c9a86c; }
+        .filter-buttons { text-align: center; margin: 30px 0; }
+        .filter-buttons .btn { margin: 0 10px; padding: 12px 30px; }
         footer { background: #11181f; color: #8a9aa8; text-align: center; padding: 40px 0; font-size: 0.9rem; letter-spacing: 1px; }
         @media (max-width: 700px) {
             .hero h1 { font-size: 3rem; }
@@ -132,6 +135,15 @@
             <div class="subtitle">KOLEKSİYON</div>
             <h2>Öne Çıkan İlanlar</h2>
         </div>
+
+        <!-- KATEGORİ FİLTRE BUTONLARI -->
+        <div class="filter-buttons">
+            <button class="btn" onclick="filtrele('tumu')">Tümü</button>
+            <button class="btn" onclick="filtrele('emlak')">Emlak</button>
+            <button class="btn" onclick="filtrele('araba')">Araba</button>
+            <button class="btn" onclick="filtrele('mobil')">Mobil</button>
+        </div>
+
         <div class="card-grid" id="featuredListings">
             <!-- İlanlar buraya gelecek -->
         </div>
@@ -214,21 +226,29 @@
         </div>
     </div>
 
-    <!-- İlan Ekle Modal (DOSYA YÜKLEMELİ) -->
+    <!-- İlan Ekle Modal (KATEGORİ EKLENDİ) -->
     <div id="addListingModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" id="closeAddListing">&times;</span>
             <h2>İlan Ekle</h2>
-            <form class="modal-form" id="addListingForm" enctype="multipart/form-data">
+            <form class="modal-form" id="addListingForm">
                 <input type="text" id="listingTitle" placeholder="İlan Başlığı" required>
+
+                <!-- KATEGORİ SEÇİMİ -->
+                <select id="listingCategory" required>
+                    <option value="">Kategori Seçin</option>
+                    <option value="emlak">Emlak</option>
+                    <option value="araba">Araba</option>
+                    <option value="mobil">Mobil Cihaz</option>
+                </select>
+
                 <input type="text" id="listingLocation" placeholder="Konum (şehir, mahalle)" required>
                 <input type="number" id="listingPrice" placeholder="Fiyat (€)" required>
                 <input type="number" id="listingArea" placeholder="Alan (m²)" required>
                 <input type="text" id="listingRooms" placeholder="Oda Sayısı (örn: 3+1)" required>
                 <textarea id="listingDescription" placeholder="İlan Açıklaması" rows="4" required></textarea>
-                <!-- DOSYA SEÇME INPUT'U -->
-                <input type="file" id="listingImageFile" accept="image/*" required>
-                <small style="display:block; margin-bottom:15px; color:#6c757d;">Bir resim seçin (zorunlu)</small>
+                <input type="url" id="listingImage" placeholder="Resim URL'si (zorunlu değil)">
+                <small style="display:block; margin-bottom:15px; color:#6c757d;">Geçerli bir resim linki girin (isteğe bağlı)</small>
                 <button type="submit">İLANI YAYINLA</button>
             </form>
         </div>
@@ -237,10 +257,10 @@
     <!-- ========== SUPABASE BAĞLANTI VE TÜM FONKSİYONLAR ========== -->
     <script>
         (function() {
-            // ---------- SENİN DOĞRU BİLGİLERİN ----------
+            // ---------- SENİN SUPABASE BİLGİLERİN ----------
             const SUPABASE_URL = 'https://sbubvjeguxuqgiklrajk.supabase.co';
             const SUPABASE_ANON_KEY = 'sb_publishable_Ic1qJb5_ljG05NTafWt9ww_2UGX6Xqa';
-            // -------------------------------------------
+            // -----------------------------------------------
 
             const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -283,7 +303,7 @@
                 openModal(signupModal);
             });
 
-            // Auth durumu izle
+            // ========== AUTH DURUMU İZLEME ==========
             supabase.auth.onAuthStateChange((event, session) => {
                 const user = session?.user;
                 const authButtonsDiv = document.getElementById('authButtons');
@@ -306,7 +326,7 @@
                 }
             });
 
-            // Üye ol
+            // ========== ÜYE OL ==========
             document.getElementById('signupForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const email = document.getElementById('signupEmail').value;
@@ -326,7 +346,7 @@
                 }
             });
 
-            // Giriş yap
+            // ========== GİRİŞ YAP ==========
             document.getElementById('loginForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const email = document.getElementById('loginEmail').value;
@@ -340,7 +360,7 @@
                 }
             });
 
-            // İlan ekle (DOSYA YÜKLEMELİ)
+            // ========== İLAN EKLE (KATEGORİ EKLENDİ) ==========
             addListingBtn.addEventListener('click', () => openModal(addListingModal));
 
             document.getElementById('addListingForm').addEventListener('submit', async (e) => {
@@ -353,44 +373,22 @@
                     return;
                 }
 
-                // Form verilerini al
                 const title = document.getElementById('listingTitle').value;
+                const kategori = document.getElementById('listingCategory').value;  // YENİ
                 const location = document.getElementById('listingLocation').value;
                 const price = document.getElementById('listingPrice').value;
                 const area = document.getElementById('listingArea').value;
                 const rooms = document.getElementById('listingRooms').value;
                 const description = document.getElementById('listingDescription').value;
-                const fileInput = document.getElementById('listingImageFile');
-                const file = fileInput.files[0];
+                const imageUrl = document.getElementById('listingImage').value || 'https://via.placeholder.com/400x250';
 
-                if (!file) {
-                    alert('Lütfen bir resim seçin!');
-                    return;
-                }
-
-                // 1. Resmi storage'e yükle
-                const filePath = `${user.id}/${Date.now()}_${file.name}`;
-                const { error: uploadError, data: uploadData } = await supabase.storage
-                    .from('ilan-resimleri')
-                    .upload(filePath, file);
-
-                if (uploadError) {
-                    alert('Resim yüklenemedi: ' + uploadError.message);
-                    return;
-                }
-
-                // 2. Yüklenen resmin public URL'sini al
-                const { data: { publicUrl } } = supabase.storage
-                    .from('ilan-resimleri')
-                    .getPublicUrl(filePath);
-
-                // 3. İlanı veritabanına ekle (resim_url = publicUrl)
                 const { error } = await supabase.from('ilanlar').insert([
                     { 
                         baslik: title,
+                        kategori: kategori,            // YENİ
                         fiyat: price + ' €',
                         aciklama: description,
-                        resim_url: publicUrl,
+                        resim_url: imageUrl,
                         konum: location,
                         alan: area,
                         oda: rooms,
@@ -398,17 +396,16 @@
                     }
                 ]);
 
-                if (error) {
-                    alert('Hata: ' + error.message);
-                } else {
-                    alert('İlan başarıyla eklendi!');
+                if (error) alert('Hata: ' + error.message);
+                else {
+                    alert('İlan eklendi!');
                     closeModal(addListingModal);
                     document.getElementById('addListingForm').reset();
-                    loadListings(); // Listeyi yenile
+                    loadListings(); // Tüm ilanları yeniden yükle
                 }
             });
 
-            // İlanları listele
+            // ========== İLANLARI LİSTELEME (KATEGORİ ETİKETİ EKLENDİ) ==========
             async function loadListings() {
                 const { data: ilanlar, error } = await supabase
                     .from('ilanlar')
@@ -432,8 +429,79 @@
                 }
 
                 function renderCard(item) {
+                    // Kategori etiketi için görsel düzenleme
+                    const kategoriMetin = {
+                        'emlak': 'Emlak',
+                        'araba': 'Araba',
+                        'mobil': 'Mobil'
+                    }[item.kategori] || item.kategori;
+
                     return `
                         <div class="card">
+                            <div class="category-tag">${kategoriMetin}</div>
+                            <div class="card-image">
+                                <img src="${item.resim_url || 'https://via.placeholder.com/400x250'}" alt="${item.baslik}">
+                            </div>
+                            <div class="card-content">
+                                <div class="card-title">${item.baslik}</div>
+                                <div class="card-location">${item.konum || 'Konum belirtilmemiş'}</div>
+                                <div class="card-details">
+                                    <span>${item.alan || '?'} m²</span>
+                                    <span>${item.oda || '?'}</span>
+                                </div>
+                                <div class="card-price">${item.fiyat} <span>EUR</span></div>
+                                <p style="margin-top:10px; color:#4a5a68;">${item.aciklama.substring(0,60)}...</p>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                allGrid.innerHTML = ilanlar.map(renderCard).join('');
+                featuredGrid.innerHTML = ilanlar.slice(0, 3).map(renderCard).join('');
+            }
+
+            // ========== KATEGORİ FİLTRELEME FONKSİYONLARI ==========
+            window.filtrele = function(kategori) {
+                if (kategori === 'tumu') {
+                    loadListings();
+                } else {
+                    loadListingsByCategory(kategori);
+                }
+            };
+
+            async function loadListingsByCategory(kategori) {
+                const { data: ilanlar, error } = await supabase
+                    .from('ilanlar')
+                    .select('*')
+                    .eq('kategori', kategori)
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('İlanlar yüklenemedi:', error);
+                    return;
+                }
+
+                document.getElementById('listingCount').textContent = ilanlar.length;
+
+                const featuredGrid = document.getElementById('featuredListings');
+                const allGrid = document.getElementById('allListings');
+
+                if (ilanlar.length === 0) {
+                    featuredGrid.innerHTML = '<p style="text-align:center;">Bu kategoride ilan bulunmuyor.</p>';
+                    allGrid.innerHTML = '';
+                    return;
+                }
+
+                function renderCard(item) {
+                    const kategoriMetin = {
+                        'emlak': 'Emlak',
+                        'araba': 'Araba',
+                        'mobil': 'Mobil'
+                    }[item.kategori] || item.kategori;
+
+                    return `
+                        <div class="card">
+                            <div class="category-tag">${kategoriMetin}</div>
                             <div class="card-image">
                                 <img src="${item.resim_url || 'https://via.placeholder.com/400x250'}" alt="${item.baslik}">
                             </div>
@@ -462,6 +530,7 @@
             document.getElementById('contactBtn').addEventListener('click', () => {
                 alert('Mesajınız iletilmiştir (simülasyon).');
             });
+
         })();
     </script>
 </body>
