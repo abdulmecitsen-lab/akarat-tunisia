@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AKARAT TUNISIA | Lüks Gayrimenkul</title>
+    <title>AKARAT TUNISIA | Çok Kategorili İlan Platformu</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* Tasarım aynen duruyor (kısaltma yapılmadı) */
+        /* ========== TASARIM (AYNEN KORUNDU) ========== */
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Montserrat', sans-serif; background: #fff; color: #1a2a3a; line-height: 1.6; }
@@ -42,7 +42,7 @@
         .card-content { padding: 25px 20px 20px; }
         .card-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 500; margin-bottom: 5px; }
         .card-location { font-size: 0.9rem; color: #c9a86c; letter-spacing: 1px; margin-bottom: 12px; text-transform: uppercase; }
-        .card-details { display: flex; gap: 15px; color: #4a5a68; font-size: 0.9rem; margin: 10px 0; flex-wrap: wrap; }
+        .card-details { display: flex; gap: 15px; color: #4a5a68; font-size: 0.9rem; margin: 10px 0; }
         .card-price { font-size: 2rem; font-weight: 600; color: #1e2e3e; border-top: 1px solid #e5e5e5; padding-top: 15px; margin-top: 15px; }
         .card-price span { font-size: 1rem; font-weight: 300; color: #8a9aa8; }
         .category-tag { position: absolute; top: 15px; right: 15px; background: #c9a86c; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; z-index: 2; }
@@ -50,7 +50,7 @@
         .btn-add-listing { background: #1e2e3e; color: white; border: none; padding: 18px 60px; font-size: 1.2rem; letter-spacing: 2px; cursor: pointer; transition: background 0.3s; font-family: 'Montserrat', sans-serif; font-weight: 500; border-radius: 0; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .btn-add-listing:hover { background: #c9a86c; }
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 40px; max-width: 600px; width: 90%; box-shadow: 0 30px 60px rgba(0,0,0,0.3); position: relative; animation: slideDown 0.3s ease; max-height: 90vh; overflow-y: auto; }
+        .modal-content { background: white; padding: 40px; max-width: 500px; width: 90%; box-shadow: 0 30px 60px rgba(0,0,0,0.3); position: relative; animation: slideDown 0.3s ease; }
         @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: #8a9aa8; transition: color 0.3s; }
         .close-modal:hover { color: #1e2e3e; }
@@ -74,7 +74,6 @@
         .btn:hover { background: #c9a86c; }
         .filter-buttons { text-align: center; margin: 30px 0; }
         .filter-buttons .btn { margin: 0 10px; padding: 12px 30px; }
-        .extra-field { display: none; } /* Başlangıçta gizli */
         footer { background: #11181f; color: #8a9aa8; text-align: center; padding: 40px 0; font-size: 0.9rem; letter-spacing: 1px; }
         @media (max-width: 700px) {
             .hero h1 { font-size: 3rem; }
@@ -87,7 +86,7 @@
 </head>
 <body>
 
-    <!-- NAVBAR (AYNEN) -->
+    <!-- NAVBAR -->
     <div class="navbar">
         <div class="logo" onclick="scrollToTop()">AKARAT</div>
         <div class="nav-links">
@@ -151,13 +150,13 @@
 
         <div class="section-header">
             <div class="subtitle">SEÇKİN</div>
-            <h2>Tüm İlanlar</h2>
+            <h2>Satılık Gayrimenkuller</h2>
         </div>
         <div class="card-grid" id="allListings">
             <!-- İlanlar buraya gelecek -->
         </div>
 
-        <!-- İLAN EKLE BUTONU -->
+        <!-- İLAN EKLE BUTONU (SADECE GİRİŞ YAPMIŞLARA GÖSTERİLİR) -->
         <div class="add-listing-container" id="addListingContainer" style="display: none;">
             <button class="btn-add-listing" id="addListingBtn">+ İLAN EKLE</button>
         </div>
@@ -200,7 +199,6 @@
     <!-- ========== MODALLAR ========== -->
     <!-- Üye Ol Modal -->
     <div id="signupModal" class="modal">
-        <!-- Aynen önceki gibi -->
         <div class="modal-content">
             <span class="close-modal" id="closeSignup">&times;</span>
             <h2>Üye Ol</h2>
@@ -228,7 +226,7 @@
         </div>
     </div>
 
-    <!-- İlan Ekle Modal (DİNAMİK ALANLAR EKLENDİ) -->
+    <!-- İlan Ekle Modal (Kategoriye Özel Alanlar) -->
     <div id="addListingModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" id="closeAddListing">&times;</span>
@@ -236,7 +234,6 @@
             <form class="modal-form" id="addListingForm">
                 <input type="text" id="listingTitle" placeholder="İlan Başlığı" required>
 
-                <!-- Kategori Seçimi -->
                 <select id="listingCategory" required onchange="kategoriDegisti()">
                     <option value="">Kategori Seçin</option>
                     <option value="emlak">Emlak</option>
@@ -244,41 +241,32 @@
                     <option value="mobil">Mobil Cihaz</option>
                 </select>
 
+                <!-- ORTAK ALANLAR -->
                 <input type="text" id="listingLocation" placeholder="Konum (şehir, mahalle)" required>
-
-                <!-- ORTAK ALAN: Fiyat -->
                 <input type="number" id="listingPrice" placeholder="Fiyat (€)" required>
+                <textarea id="listingDescription" placeholder="İlan Açıklaması" rows="3" required></textarea>
+                <input type="url" id="listingImage" placeholder="Resim URL'si (zorunlu değil)">
 
-                <!-- ===== KATEGORİYE ÖZEL ALANLAR ===== -->
-                <!-- Emlak Alanları -->
-                <div id="emlakFields" class="extra-field">
+                <!-- KATEGORİYE ÖZEL ALANLAR (başlangıçta gizli) -->
+                <div id="emlakAlani" style="display: none;">
                     <input type="number" id="emlakAlan" placeholder="Alan (m²)">
                     <input type="text" id="emlakOda" placeholder="Oda Sayısı (örn: 3+1)">
                 </div>
 
-                <!-- Araba Alanları -->
-                <div id="arabaFields" class="extra-field">
-                    <input type="text" id="arabaMarka" placeholder="Marka (örn: Renault)">
-                    <input type="text" id="arabaModel" placeholder="Model (örn: Clio)">
+                <div id="arabaAlani" style="display: none;">
+                    <input type="text" id="arabaMarka" placeholder="Marka">
+                    <input type="text" id="arabaModel" placeholder="Model">
                     <input type="number" id="arabaYil" placeholder="Yıl">
                     <input type="number" id="arabaKm" placeholder="Kilometre">
-                    <input type="text" id="arabaYakit" placeholder="Yakıt (Benzin/Dizel)">
+                    <input type="text" id="arabaYakit" placeholder="Yakıt Türü">
                 </div>
 
-                <!-- Mobil Alanları -->
-                <div id="mobilFields" class="extra-field">
-                    <input type="text" id="mobilMarka" placeholder="Marka (örn: Apple)">
-                    <input type="text" id="mobilModel" placeholder="Model (örn: iPhone 13)">
-                    <input type="text" id="mobilHafiza" placeholder="Hafıza (örn: 128 GB)">
+                <div id="mobilAlani" style="display: none;">
+                    <input type="text" id="mobilMarka" placeholder="Marka">
+                    <input type="text" id="mobilModel" placeholder="Model">
+                    <input type="text" id="mobilHafiza" placeholder="Depolama (GB)">
                     <input type="text" id="mobilRenk" placeholder="Renk">
                 </div>
-
-                <!-- Açıklama (ortak) -->
-                <textarea id="listingDescription" placeholder="İlan Açıklaması" rows="4" required></textarea>
-                
-                <!-- Resim URL (ortak) -->
-                <input type="url" id="listingImage" placeholder="Resim URL'si (zorunlu değil)">
-                <small style="display:block; margin-bottom:15px; color:#6c757d;">Geçerli bir resim linki girin</small>
 
                 <button type="submit">İLANI YAYINLA</button>
             </form>
@@ -391,30 +379,24 @@
                 }
             });
 
-            // ========== KATEGORİ DEĞİŞTİĞİNDE ALANLARI GÖSTER/GİZLE ==========
+            // ========== KATEGORİ DEĞİŞİNCE ÖZEL ALANLARI GÖSTER ==========
             window.kategoriDegisti = function() {
                 const kategori = document.getElementById('listingCategory').value;
-                // Tüm ek alanları gizle
-                document.getElementById('emlakFields').style.display = 'none';
-                document.getElementById('arabaFields').style.display = 'none';
-                document.getElementById('mobilFields').style.display = 'none';
+                document.getElementById('emlakAlani').style.display = 'none';
+                document.getElementById('arabaAlani').style.display = 'none';
+                document.getElementById('mobilAlani').style.display = 'none';
 
-                // Seçilen kategoriye göre ilgili alanları göster
-                if (kategori === 'emlak') {
-                    document.getElementById('emlakFields').style.display = 'block';
-                } else if (kategori === 'araba') {
-                    document.getElementById('arabaFields').style.display = 'block';
-                } else if (kategori === 'mobil') {
-                    document.getElementById('mobilFields').style.display = 'block';
-                }
+                if (kategori === 'emlak') document.getElementById('emlakAlani').style.display = 'block';
+                else if (kategori === 'araba') document.getElementById('arabaAlani').style.display = 'block';
+                else if (kategori === 'mobil') document.getElementById('mobilAlani').style.display = 'block';
             };
 
-            // ========== İLAN EKLE (KATEGORİYE GÖRE ÖZELLİKLERİ JSON OLARAK KAYDET) ==========
+            // ========== İLAN EKLE ==========
             addListingBtn.addEventListener('click', () => openModal(addListingModal));
 
             document.getElementById('addListingForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                
+
                 const { data: { user } } = await supabase.auth.getUser();
                 if (!user) {
                     alert('Önce giriş yapmalısınız!');
@@ -423,19 +405,13 @@
                 }
 
                 const kategori = document.getElementById('listingCategory').value;
-                if (!kategori) {
-                    alert('Lütfen bir kategori seçin!');
-                    return;
-                }
-
-                // Ortak alanlar
                 const title = document.getElementById('listingTitle').value;
                 const location = document.getElementById('listingLocation').value;
                 const price = document.getElementById('listingPrice').value;
                 const description = document.getElementById('listingDescription').value;
                 const imageUrl = document.getElementById('listingImage').value || 'https://via.placeholder.com/400x250';
 
-                // Kategoriye özel alanları topla ve bir nesne oluştur
+                // Özel alanları topla (kategoriye göre)
                 let ozellikler = {};
                 if (kategori === 'emlak') {
                     ozellikler = {
@@ -459,16 +435,16 @@
                     };
                 }
 
-                // Veritabanına ekle (eski alanlar yerine ozellikler JSON'ını kullanıyoruz)
+                // Veritabanına ekle
                 const { error } = await supabase.from('ilanlar').insert([
-                    { 
+                    {
                         baslik: title,
                         kategori: kategori,
                         fiyat: price + ' €',
                         aciklama: description,
                         resim_url: imageUrl,
                         konum: location,
-                        ozellikler: ozellikler,   // YENİ JSON SÜTUNU
+                        ozellikler: ozellikler,   // JSON olarak kaydedilecek
                         user_id: user.id
                     }
                 ]);
@@ -478,15 +454,15 @@
                     alert('İlan eklendi!');
                     closeModal(addListingModal);
                     document.getElementById('addListingForm').reset();
-                    // Tüm ek alanları gizle
-                    document.getElementById('emlakFields').style.display = 'none';
-                    document.getElementById('arabaFields').style.display = 'none';
-                    document.getElementById('mobilFields').style.display = 'none';
+                    // Tüm özel alanları gizle
+                    document.getElementById('emlakAlani').style.display = 'none';
+                    document.getElementById('arabaAlani').style.display = 'none';
+                    document.getElementById('mobilAlani').style.display = 'none';
                     loadListings();
                 }
             });
 
-            // ========== İLANLARI LİSTELE (ÖZELLİKLERİ GÖSTER) ==========
+            // ========== İLANLARI LİSTELEME ==========
             async function loadListings() {
                 const { data: ilanlar, error } = await supabase
                     .from('ilanlar')
@@ -516,28 +492,14 @@
                         'mobil': 'Mobil'
                     }[item.kategori] || item.kategori;
 
-                    // Özellikleri HTML olarak hazırla
-                    let ozellikHTML = '';
-                    if (item.ozellikler) {
-                        if (item.kategori === 'emlak') {
-                            ozellikHTML = `<span>${item.ozellikler.alan || '?'} m²</span><span>${item.ozellikler.oda || '?'}</span>`;
-                        } else if (item.kategori === 'araba') {
-                            ozellikHTML = `
-                                <span>${item.ozellikler.marka || '?'} ${item.ozellikler.model || '?'}</span>
-                                <span>${item.ozellikler.yil || '?'}</span>
-                                <span>${item.ozellikler.km || '?'} km</span>
-                                <span>${item.ozellikler.yakit || '?'}</span>
-                            `;
-                        } else if (item.kategori === 'mobil') {
-                            ozellikHTML = `
-                                <span>${item.ozellikler.marka || '?'} ${item.ozellikler.model || '?'}</span>
-                                <span>${item.ozellikler.hafiza || '?'}</span>
-                                <span>${item.ozellikler.renk || '?'}</span>
-                            `;
-                        }
-                    } else {
-                        // Eski ilanlar için (ozellikler yoksa) eski alanları göster
-                        ozellikHTML = `<span>${item.alan || '?'} m²</span><span>${item.oda || '?'}</span>`;
+                    // Özellikleri HTML'e çevir
+                    let ozellikHtml = '';
+                    if (item.kategori === 'emlak' && item.ozellikler) {
+                        ozellikHtml = `<p>${item.ozellikler.alan || '?'} m², ${item.ozellikler.oda || '?'} oda</p>`;
+                    } else if (item.kategori === 'araba' && item.ozellikler) {
+                        ozellikHtml = `<p>${item.ozellikler.marka || ''} ${item.ozellikler.model || ''} ${item.ozellikler.yil || ''} - ${item.ozellikler.km || '?'} km, ${item.ozellikler.yakit || ''}</p>`;
+                    } else if (item.kategori === 'mobil' && item.ozellikler) {
+                        ozellikHtml = `<p>${item.ozellikler.marka || ''} ${item.ozellikler.model || ''} ${item.ozellikler.hafiza || ''}GB ${item.ozellikler.renk || ''}</p>`;
                     }
 
                     return `
@@ -549,9 +511,7 @@
                             <div class="card-content">
                                 <div class="card-title">${item.baslik}</div>
                                 <div class="card-location">${item.konum || 'Konum belirtilmemiş'}</div>
-                                <div class="card-details">
-                                    ${ozellikHTML}
-                                </div>
+                                ${ozellikHtml}
                                 <div class="card-price">${item.fiyat} <span>EUR</span></div>
                                 <p style="margin-top:10px; color:#4a5a68;">${item.aciklama.substring(0,60)}...</p>
                             </div>
@@ -563,7 +523,7 @@
                 featuredGrid.innerHTML = ilanlar.slice(0, 3).map(renderCard).join('');
             }
 
-            // ========== KATEGORİ FİLTRELEME ==========
+            // ========== KATEGORİ FİLTRELEME FONKSİYONLARI ==========
             window.filtrele = function(kategori) {
                 if (kategori === 'tumu') {
                     loadListings();
@@ -595,7 +555,6 @@
                     return;
                 }
 
-                // Aynı renderCard fonksiyonunu kullan
                 function renderCard(item) {
                     const kategoriMetin = {
                         'emlak': 'Emlak',
@@ -603,26 +562,13 @@
                         'mobil': 'Mobil'
                     }[item.kategori] || item.kategori;
 
-                    let ozellikHTML = '';
-                    if (item.ozellikler) {
-                        if (item.kategori === 'emlak') {
-                            ozellikHTML = `<span>${item.ozellikler.alan || '?'} m²</span><span>${item.ozellikler.oda || '?'}</span>`;
-                        } else if (item.kategori === 'araba') {
-                            ozellikHTML = `
-                                <span>${item.ozellikler.marka || '?'} ${item.ozellikler.model || '?'}</span>
-                                <span>${item.ozellikler.yil || '?'}</span>
-                                <span>${item.ozellikler.km || '?'} km</span>
-                                <span>${item.ozellikler.yakit || '?'}</span>
-                            `;
-                        } else if (item.kategori === 'mobil') {
-                            ozellikHTML = `
-                                <span>${item.ozellikler.marka || '?'} ${item.ozellikler.model || '?'}</span>
-                                <span>${item.ozellikler.hafiza || '?'}</span>
-                                <span>${item.ozellikler.renk || '?'}</span>
-                            `;
-                        }
-                    } else {
-                        ozellikHTML = `<span>${item.alan || '?'} m²</span><span>${item.oda || '?'}</span>`;
+                    let ozellikHtml = '';
+                    if (item.kategori === 'emlak' && item.ozellikler) {
+                        ozellikHtml = `<p>${item.ozellikler.alan || '?'} m², ${item.ozellikler.oda || '?'} oda</p>`;
+                    } else if (item.kategori === 'araba' && item.ozellikler) {
+                        ozellikHtml = `<p>${item.ozellikler.marka || ''} ${item.ozellikler.model || ''} ${item.ozellikler.yil || ''} - ${item.ozellikler.km || '?'} km, ${item.ozellikler.yakit || ''}</p>`;
+                    } else if (item.kategori === 'mobil' && item.ozellikler) {
+                        ozellikHtml = `<p>${item.ozellikler.marka || ''} ${item.ozellikler.model || ''} ${item.ozellikler.hafiza || ''}GB ${item.ozellikler.renk || ''}</p>`;
                     }
 
                     return `
@@ -634,9 +580,7 @@
                             <div class="card-content">
                                 <div class="card-title">${item.baslik}</div>
                                 <div class="card-location">${item.konum || 'Konum belirtilmemiş'}</div>
-                                <div class="card-details">
-                                    ${ozellikHTML}
-                                </div>
+                                ${ozellikHtml}
                                 <div class="card-price">${item.fiyat} <span>EUR</span></div>
                                 <p style="margin-top:10px; color:#4a5a68;">${item.aciklama.substring(0,60)}...</p>
                             </div>
