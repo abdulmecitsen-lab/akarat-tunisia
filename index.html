@@ -65,9 +65,9 @@
             margin: 20px auto;
         }
 
-        /* TRANSPARAN MENÜ (HAFİF) */
+        /* TRANSPARAN MENÜ (KAYDIRINCA BEYAZ OLUR) */
         .navbar {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -76,7 +76,19 @@
             justify-content: space-between;
             align-items: center;
             color: white;
-            z-index: 10;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: white;
+            padding: 15px 50px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .navbar.scrolled .logo,
+        .navbar.scrolled .nav-links a {
+            color: #1a2a3a;
         }
 
         .logo {
@@ -84,6 +96,7 @@
             font-size: 1.8rem;
             font-weight: 600;
             letter-spacing: 2px;
+            transition: color 0.3s;
         }
 
         .nav-links {
@@ -98,6 +111,7 @@
             color: white;
             text-decoration: none;
             transition: opacity 0.3s;
+            cursor: pointer;
         }
 
         .nav-links a:hover {
@@ -146,6 +160,69 @@
             margin: 15px auto;
         }
 
+        /* FİLTRELEME BÖLÜMÜ */
+        .filter-section {
+            background: white;
+            padding: 40px 0;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .filter-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid #c9a86c;
+            color: #c9a86c;
+            padding: 10px 25px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #c9a86c;
+            color: white;
+        }
+
+        .search-box {
+            display: flex;
+            border: 1px solid #ddd;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .search-box button {
+            background: #1e2e3e;
+            border: none;
+            color: white;
+            padding: 0 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-box button:hover {
+            background: #c9a86c;
+        }
+
         /* BÖLÜM BAŞLIKLARI */
         .section-header {
             text-align: center;
@@ -186,6 +263,9 @@
             box-shadow: 0 20px 40px -10px rgba(0,20,30,0.1);
             transition: all 0.4s ease;
             cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
         }
 
         .card:hover {
@@ -341,27 +421,29 @@
         @media (max-width: 700px) {
             .hero h1 { font-size: 3rem; }
             .navbar { padding: 20px; }
-            .nav-links { display: none; } /* Mobilde menü gizlenebilir */
+            .nav-links { gap: 20px; font-size: 0.8rem; }
             .stats-grid { gap: 30px; }
             .stat-number { font-size: 3rem; }
+            .filter-container { flex-direction: column; align-items: center; }
+            .search-box { max-width: 100%; }
         }
     </style>
 </head>
 <body>
 
-    <!-- TRANSPARAN MENÜ -->
-    <div class="navbar">
+    <!-- TRANSPARAN MENÜ (FİXED) -->
+    <div class="navbar" id="navbar">
         <div class="logo">AKARAT</div>
         <div class="nav-links">
-            <a href="#">ANA SAYFA</a>
-            <a href="#">İLANLAR</a>
-            <a href="#">HİZMETLER</a>
-            <a href="#">İLETİŞİM</a>
+            <a onclick="scrollToSection('hero')">ANA SAYFA</a>
+            <a onclick="scrollToSection('ilanlar')">İLANLAR</a>
+            <a onclick="scrollToSection('hakkimizda')">HİZMETLER</a>
+            <a onclick="scrollToSection('iletisim')">İLETİŞİM</a>
         </div>
     </div>
 
-    <!-- BÜYÜK HERO GÖRSEL (POLAT LEVENT HAVASI) -->
-    <section class="hero">
+    <!-- BÜYÜK HERO GÖRSEL -->
+    <section class="hero" id="hero">
         <div class="hero-content">
             <div class="hero-line"></div>
             <h1>AKARAT TUNISIA</h1>
@@ -370,7 +452,7 @@
         </div>
     </section>
 
-    <!-- İSTATİSTİKLER (LÜKS DOKUNUŞ) -->
+    <!-- İSTATİSTİKLER -->
     <section class="stats-section">
         <div class="stats-grid">
             <div class="stat-item">
@@ -391,16 +473,30 @@
         </div>
     </section>
 
+    <!-- FİLTRELEME BÖLÜMÜ -->
+    <section class="filter-section" id="hakkimizda">
+        <div class="filter-container">
+            <button class="filter-btn active" onclick="filterListings('all')">TÜMÜ</button>
+            <button class="filter-btn" onclick="filterListings('villa')">VİLLA</button>
+            <button class="filter-btn" onclick="filterListings('daire')">DAİRE</button>
+            <button class="filter-btn" onclick="filterListings('mustakil')">MÜSTAKİL</button>
+            <div class="search-box">
+                <input type="text" placeholder="Lokasyon veya ilan ara..." id="searchInput">
+                <button onclick="searchListings()">🔍</button>
+            </div>
+        </div>
+    </section>
+
     <!-- ÖNE ÇIKAN İLANLAR -->
-    <div class="container">
+    <div class="container" id="ilanlar">
         <div class="section-header">
             <div class="subtitle">KOLEKSİYON</div>
             <h2>Öne Çıkan İlanlar</h2>
         </div>
 
-        <div class="card-grid">
+        <div class="card-grid" id="featured-listings">
             <!-- KART 1 - VİLLA -->
-            <div class="card">
+            <a href="#" class="card" data-type="villa" onclick="showDetails('Deniz Manzaralı Villa', 'Kartaca, Tunus', '250 m²', '4+1', '450.000')">
                 <div class="card-image">
                     <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Villa">
                 </div>
@@ -413,10 +509,10 @@
                     </div>
                     <div class="card-price">450.000 € <span>EUR</span></div>
                 </div>
-            </div>
+            </a>
 
             <!-- KART 2 - DAİRE -->
-            <div class="card">
+            <a href="#" class="card" data-type="daire" onclick="showDetails('Merkezi Konumda Daire', 'La Marsa, Tunus', '120 m²', '3+1', '210.000')">
                 <div class="card-image">
                     <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Daire">
                 </div>
@@ -429,10 +525,10 @@
                     </div>
                     <div class="card-price">210.000 € <span>EUR</span></div>
                 </div>
-            </div>
+            </a>
 
             <!-- KART 3 - MÜSTAKİL -->
-            <div class="card">
+            <a href="#" class="card" data-type="mustakil" onclick="showDetails('Havuzlu Müstakil Ev', 'Sidi Bou Said', '180 m²', '5+2', '595.000')">
                 <div class="card-image">
                     <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Müstakil">
                 </div>
@@ -445,7 +541,7 @@
                     </div>
                     <div class="card-price">595.000 € <span>EUR</span></div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <!-- SATILIK GAYRİMENKULLER (ikinci grid) -->
@@ -454,9 +550,9 @@
             <h2>Satılık Gayrimenkuller</h2>
         </div>
 
-        <div class="card-grid">
-            <!-- KART 1 -->
-            <div class="card">
+        <div class="card-grid" id="sale-listings">
+            <!-- KART 1 - YALI -->
+            <a href="#" class="card" data-type="villa" onclick="showDetails('Deniz Kenarında Yalı', 'Hammamet, Tunus', '320 m²', '6+2', '890.000')">
                 <div class="card-image">
                     <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Yalı">
                 </div>
@@ -469,10 +565,10 @@
                     </div>
                     <div class="card-price">890.000 € <span>EUR</span></div>
                 </div>
-            </div>
+            </a>
 
-            <!-- KART 2 -->
-            <div class="card">
+            <!-- KART 2 - DAİRE -->
+            <a href="#" class="card" data-type="daire" onclick="showDetails('Yeni Nesil Daire', 'Monastir, Tunus', '95 m²', '2+1', '135.000')">
                 <div class="card-image">
                     <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Daire">
                 </div>
@@ -485,10 +581,10 @@
                     </div>
                     <div class="card-price">135.000 € <span>EUR</span></div>
                 </div>
-            </div>
+            </a>
 
-            <!-- KART 3 -->
-            <div class="card">
+            <!-- KART 3 - MÜSTAKİL -->
+            <a href="#" class="card" data-type="mustakil" onclick="showDetails('Bahçeli Mustakil', 'Tozeur, Tunus', '150 m²', '3+2', '175.000')">
                 <div class="card-image">
                     <img src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Mustakil">
                 </div>
@@ -501,12 +597,12 @@
                     </div>
                     <div class="card-price">175.000 € <span>EUR</span></div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 
-    <!-- İLETİŞİM BÖLÜMÜ (LÜKS SİTELERDE OLMAZSA OLMAZ) -->
-    <section class="contact-section">
+    <!-- İLETİŞİM BÖLÜMÜ -->
+    <section class="contact-section" id="iletisim">
         <div class="contact-container">
             <div class="contact-info">
                 <h3>Bize Ulaşın</h3>
@@ -519,15 +615,15 @@
             </div>
             <div class="contact-form">
                 <div class="form-group">
-                    <input type="text" placeholder="Adınız Soyadınız">
+                    <input type="text" placeholder="Adınız Soyadınız" id="name">
                 </div>
                 <div class="form-group">
-                    <input type="email" placeholder="E-posta Adresiniz">
+                    <input type="email" placeholder="E-posta Adresiniz" id="email">
                 </div>
                 <div class="form-group">
-                    <textarea placeholder="Mesajınız..."></textarea>
+                    <textarea placeholder="Mesajınız..." id="message"></textarea>
                 </div>
-                <button class="btn">GÖNDER</button>
+                <button class="btn" onclick="sendMessage()">GÖNDER</button>
             </div>
         </div>
     </section>
@@ -539,12 +635,75 @@
         <p style="margin-top:10px; font-size:0.8rem;">Polat Levent Exclusive'dan ilham alınmıştır.</p>
     </footer>
 
-    <!-- BUTONLAR İÇİN BASİT BİR JS (O SİTEDEKİ GİBİ DEĞİL AMA İŞLEVSEL) -->
+    <!-- JAVASCRIPT (TÜM İŞLEVLER) -->
     <script>
-        document.querySelectorAll('.btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                alert('Teşekkürler! Demo sürümde mesaj gönderilemiyor. İleride aktif olacak.');
-            });
+        // Menü kaydırma efekti
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Sayfada yumuşak kaydırma
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // İlan detaylarını gösterme (demo)
+        function showDetails(title, location, size, rooms, price) {
+            alert(`🏠 ${title}\n📍 ${location}\n📐 ${size} | ${rooms}\n💰 ${price} €\n\nDetay sayfası şu an demo moddadır. Gerçek ilan detayı yakında eklenecek.`);
+        }
+
+        // Filtreleme (demo)
+        function filterListings(type) {
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (type === 'all') {
+                alert('Tüm ilanlar gösteriliyor (demo)');
+            } else {
+                alert(type + ' tipi ilanlar filtrelendi (demo)');
+            }
+            
+            // Gerçek filtreleme için burada kartları gizleme/gösterme yapılabilir
+        }
+
+        // Arama (demo)
+        function searchListings() {
+            const query = document.getElementById('searchInput').value;
+            if (query) {
+                alert(`"${query}" için arama yapılıyor... (demo modda)`);
+            } else {
+                alert('Lütfen bir arama terimi girin.');
+            }
+        }
+
+        // İletişim formu (demo)
+        function sendMessage() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            
+            if (!name || !email || !message) {
+                alert('Lütfen tüm alanları doldurun.');
+                return;
+            }
+            
+            alert(`Teşekkürler ${name}! Mesajınız alınmıştır. (Demo modda gerçekten gönderilmedi)`);
+        }
+
+        // Sayfa yüklendiğinde menü durumunu kontrol et
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.scrollY > 50) {
+                document.getElementById('navbar').classList.add('scrolled');
+            }
         });
     </script>
 
