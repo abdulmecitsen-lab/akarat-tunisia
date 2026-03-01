@@ -6,7 +6,400 @@
     <title>Akarat Tunisia - Tunus'ta Gayrimenkul</title>
     <style>
         /* ========== GENEL STILLER ========== */
+        * {<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akarat Tunisia - Tunus'ta Gayrimenkul</title>
+    <style>
+        /* SADE VE TEMİZ TASARIM */
         * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f5f7fa;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        /* HEADER */
+        header {
+            background: #1e4a6f;
+            color: white;
+            padding: 50px 0;
+            text-align: center;
+            border-bottom: 4px solid #fbbf24;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        /* İSTATİSTİKLER */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            background: white;
+            padding: 35px 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #1e4a6f;
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* BÖLÜM BAŞLIKLARI */
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0f2b3d;
+            margin: 50px 0 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title:after {
+            content: "";
+            display: block;
+            width: 70px;
+            height: 3px;
+            background: #fbbf24;
+            margin: 12px auto 0;
+            border-radius: 2px;
+        }
+
+        /* İLAN KARTLARI - TEMİZ VE ŞIK */
+        .ilan-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .ilan-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .ilan-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 30px rgba(0,0,0,0.1);
+        }
+
+        .ilan-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .ilan-card-content {
+            padding: 18px 16px 20px;
+        }
+
+        .ilan-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 6px;
+            color: #1e293b;
+        }
+
+        .ilan-card .lokasyon {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .ilan-card .lokasyon:before {
+            content: "📍";
+        }
+
+        .ilan-card .ozellikler {
+            display: flex;
+            gap: 15px;
+            color: #475569;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .ilan-card .fiyat {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1e4a6f;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 12px;
+            margin-top: 8px;
+        }
+
+        /* BUTON VE YÜKLEME ALANI - ÇALIŞIYOR */
+        .ekle-alani {
+            background: white;
+            border-radius: 24px;
+            padding: 40px 20px;
+            margin: 40px 0 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+            border: 1px solid #e9edf2;
+        }
+
+        .btn-ekle {
+            background: #1e4a6f;
+            color: white;
+            border: none;
+            padding: 16px 45px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: background 0.3s;
+            box-shadow: 0 8px 14px rgba(30,74,111,0.25);
+            border: 1px solid #0f2b3d;
+        }
+
+        .btn-ekle:hover {
+            background: #0f2b3d;
+        }
+
+        .yukle-alani {
+            border: 3px dashed #cbd5e1;
+            background: #f8fafc;
+            padding: 30px 15px;
+            margin: 30px auto 0;
+            max-width: 400px;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .yukle-alani:hover {
+            border-color: #1e4a6f;
+            background: #f1f5f9;
+        }
+
+        .yukle-alani span {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .yukle-alani p {
+            font-size: 1rem;
+            color: #334155;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #0f2b3d;
+            color: #cbd5e1;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+
+        /* MOBİL UYUMLU */
+        @media (max-width: 600px) {
+            header h1 { font-size: 2rem; }
+            .stats { gap: 25px; }
+            .stat-number { font-size: 2.2rem; }
+            .section-title { font-size: 1.7rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="container">
+            <h1>Akarat Tunisia</h1>
+            <p>🇹🇳 Tunus'ta Hayalinizdeki Evi Bulun • Güvenilir, şeffaf ve profesyonel gayrimenkul çözümleri.</p>
+        </div>
+    </header>
+
+    <!-- İSTATİSTİKLER -->
+    <div class="container">
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">24</div>
+                <div class="stat-label">Hizmet Şehri</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">1200+</div>
+                <div class="stat-label">Mutlu Kullanıcı</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Aktif İlan</div>
+            </div>
+        </div>
+
+        <!-- ÖNE ÇIKAN İLANLAR -->
+        <h2 class="section-title">Öne Çıkan İlanlar</h2>
+        <div class="ilan-grid">
+            <!-- Kart 1 -->
+            <div class="ilan-card">
+                <img src="https://via.placeholder.com/400x220/1e4a6f/ffffff?text=Deniz+Villa" alt="Villa">
+                <div class="ilan-card-content">
+                    <h3>Deniz Manzaralı Villa</h3>
+                    <div class="lokasyon">Kartaca, Tunus</div>
+                    <div class="ozellikler">
+                        <span>250 m²</span>
+                        <span>4+1</span>
+                    </div>
+                    <div class="fiyat">450.000 €</div>
+                </div>
+            </div>
+            <!-- Kart 2 -->
+            <div class="ilan-card">
+                <img src="https://via.placeholder.com/400x220/2c6b2f/ffffff?text=Daire+La+Marsa" alt="Daire">
+                <div class="ilan-card-content">
+                    <h3>Merkezi Konumda Daire</h3>
+                    <div class="lokasyon">La Marsa, Tunus</div>
+                    <div class="ozellikler">
+                        <span>120 m²</span>
+                        <span>3+1</span>
+                    </div>
+                    <div class="fiyat">210.000 €</div>
+                </div>
+            </div>
+            <!-- Kart 3 -->
+            <div class="ilan-card">
+                <img src="https://via.placeholder.com/400x220/8e44ad/ffffff?text=Havuzlu+Ev" alt="Müstakil">
+                <div class="ilan-card-content">
+                    <h3>Havuzlu Müstakil Ev</h3>
+                    <div class="lokasyon">Sidi Bou Said, Tunus</div>
+                    <div class="ozellikler">
+                        <span>180 m²</span>
+                        <span>5+2</span>
+                    </div>
+                    <div class="fiyat">595.000 €</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SATILIK GAYRİMENKULLER -->
+        <h2 class="section-title">Satılık Gayrimenkuller</h2>
+        <div class="ilan-grid">
+            <!-- Kart 1 -->
+            <div class="ilan-card">
+                <img src="https://via.placeholder.com/400x220/d97706/ffffff?text=Yalı+Hammamet" alt="Yalı">
+                <div class="ilan-card-content">
+                    <h3>Deniz Kenarında Yalı</h3>
+                    <div class="lokasyon">Hammamet, Tunus</div>
+                    <div class="ozellikler">
+                        <span>320 m²</span>
+                        <span>6+2</span>
+                    </div>
+                    <div class="fiyat">890.000 €</div>
+                </div>
+            </div>
+            <!-- Kart 2 -->
+            <div class="ilan-card">
+                <img src="https://via.placeholder.com/400x220/16a34a/ffffff?text=Daire+Monastir" alt="Daire">
+                <div class="ilan-card-content">
+                    <h3>Yeni Nesil Daire</h3>
+                    <div class="lokasyon">Monastir, Tunus</div>
+                    <div class="ozellikler">
+                        <span>95 m²</span>
+                        <span>2+1</span>
+                    </div>
+                    <div class="fiyat">135.000 €</div>
+                </div>
+            </div>
+            <!-- Kart 3 -->
+            <div class="ilan-card">
+                <img src="https://via.placeholder.com/400x220/b45309/ffffff?text=Bahçeli+Tozeur" alt="Mustakil">
+                <div class="ilan-card-content">
+                    <h3>Bahçeli Mustakil</h3>
+                    <div class="lokasyon">Tozeur, Tunus</div>
+                    <div class="ozellikler">
+                        <span>150 m²</span>
+                        <span>3+2</span>
+                    </div>
+                    <div class="fiyat">175.000 €</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- YENİ İLAN EKLE BUTONU VE FOTOĞRAF YÜKLEME (ÇALIŞIYOR) -->
+        <div class="ekle-alani">
+            <button class="btn-ekle" id="ilanEkleBtn">+ Yeni İlan Ekle</button>
+            <div class="yukle-alani" id="fotografYukle">
+                <span>📸</span>
+                <p><strong>Fotoğraf Yüklemek İçin Tıklayın</strong><br>(şimdilik demo modda)</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <p>© 2025 Akarat Tunisia – Güvenilir gayrimenkul danışmanlığı</p>
+        </div>
+    </footer>
+
+    <!-- BASİT JAVASCRIPT (BUTONLARI ÇALIŞTIRIR) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ilanBtn = document.getElementById('ilanEkleBtn');
+            const fotoYukle = document.getElementById('fotografYukle');
+
+            if (ilanBtn) {
+                ilanBtn.addEventListener('click', function() {
+                    alert('📋 İlan ekleme formu açılacak. (Demo sürüm)');
+                });
+            }
+
+            if (fotoYukle) {
+                fotoYukle.addEventListener('click', function() {
+                    alert('🖼️ Fotoğraf yükleme penceresi simüle ediliyor.');
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
             margin: 0;
             padding: 0;
             box-sizing: border-box;
